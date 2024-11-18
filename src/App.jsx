@@ -5,8 +5,8 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import {Toaster}  from "./components/ui/toaster"
-import Layout from "./layout";
+import { Toaster } from "./components/ui/toaster";
+import Layout from "./Layout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/SignUp";
