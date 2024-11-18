@@ -46,16 +46,8 @@ export default function Signup() {
     medical: {
       bloodGroup: "",
       bloodDonor: "",
-      conditions: [],
-      nsaids: "",
-      steroids: "",
-      anticoagulant: "",
-      surgery: "",
-      organImplant: "",
-      regularMeds: "",
-      otherCondition: "",
-      allergies: "",
-      familyHistory: "",
+      conditions: "",
+      additionalMedicalInfo: "", 
     },
     emergency: {
       contactName: "",
@@ -349,7 +341,96 @@ export default function Signup() {
             </div>
           </div>
         );
-      case 2:
+            case 2:
+        return (
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold text-sky-800 dark:text-sky-200">
+              Medical Information
+            </h2>
+            <Separator className="bg-sky-200 dark:bg-sky-700" />
+            <div className="space-y-2">
+              <Label className="text-sky-700 dark:text-sky-300">
+                Blood Group
+              </Label>
+              <RadioGroup
+                value={formData.medical.bloodGroup}
+                onValueChange={(value) =>
+                  updateFormData("medical", "bloodGroup", value)
+                }
+                className="grid grid-cols-4 gap-2"
+              >
+                {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(
+                  (type) => (
+                    <div key={type} className="flex items-center space-x-2">
+                      <RadioGroupItem value={type} id={`bloodGroup-${type}`} />
+                      <Label
+                        htmlFor={`bloodGroup-${type}`}
+                        className="text-sky-700 dark:text-sky-300"
+                      >
+                        {type}
+                      </Label>
+                    </div>
+                  )
+                )}
+              </RadioGroup>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sky-700 dark:text-sky-300">
+                Are you a blood donor?
+              </Label>
+              <RadioGroup
+                value={formData.medical.bloodDonor}
+                onValueChange={(value) =>
+                  updateFormData("medical", "bloodDonor", value)
+                }
+                className="flex space-x-4"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="yes" id="bloodDonor-yes" />
+                  <Label
+                    htmlFor="bloodDonor-yes"
+                    className="text-sky-700 dark:text-sky-300"
+                  >
+                    Yes
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="no" id="bloodDonor-no" />
+                  <Label
+                    htmlFor="bloodDonor-no"
+                    className="text-sky-700 dark:text-sky-300"
+                  >
+                    No
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+            <div className="space-y-2">
+              
+              <Label htmlFor="additionalMedicalInfo" className="text-sky-700 dark:text-sky-300">
+                Any Medical Condition
+              </Label>
+              <textarea
+                id="conditions"
+                value={formData.medical.conditions}
+                onChange={(e) => updateFormData("medical", "conditions", e.target.value)}
+                className="bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600 w-full h-10 p-2 rounded-md"
+              />
+              
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="additionalMedicalInfo" className="text-sky-700 dark:text-sky-300">
+                Additional Medical Information
+              </Label>
+              <textarea
+                id="additionalMedicalInfo"
+                value={formData.medical.additionalMedicalInfo}
+                onChange={(e) => updateFormData("medical", "additionalMedicalInfo", e.target.value)}
+                className="bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600 w-full h-20 p-2 rounded-md"
+              />
+            </div>
+          </div>
+        );
         return (
           <div className="space-y-4">
             <h2 className="text-2xl font-bold text-sky-800 dark:text-sky-200">
