@@ -9,7 +9,7 @@ import { Toaster } from "./components/ui/toaster";
 import Layout from "./Layout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Signup from "./pages/SignUp";
+import Signup from "./pages/Signup";
 import "./App.css";
 
 function App() {
