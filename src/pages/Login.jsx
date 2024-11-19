@@ -8,15 +8,30 @@ import { PhoneIcon } from "lucide-react";
 import Lottie from "react-lottie";
 import LoginData from "../assets/LoginAnimation.json";
 import { cn } from "../lib/utils";
-import { Link } from "react-router-dom";
+import { Link, replace, useNavigate } from "react-router-dom";
+import { useToast } from "../hooks/use-toast";
 
 function Login() {
   const [phoneNumber, setPhoneNumber] = useState("");
-
+  const {toast} = useToast();
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle OTP generation logic here
+    if (phoneNumber === "") {
+      toast({
+        title: "REQUIRED",
+        description: "Please enter a phone number.",
+        variant : "destructive"
+      })
+      return
+    }
     console.log("Generating OTP for:", phoneNumber);
+    toast({
+      title: "Success",
+      description: "OTP has been generated successfully!",
+    })
+    navigate("/enter-otp", {replace: true, state: {phoneNumber}});
   };
 
   const LoginAnimationOptions = {
@@ -101,7 +116,7 @@ function Login() {
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                         className="pl-10 bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600 focus:border-sky-500 dark:focus:border-sky-400 focus:ring-sky-500 dark:focus:ring-sky-400 text-sky-800 dark:text-sky-100 placeholder-sky-500 dark:placeholder-sky-400"
-                        required
+                        
                       />
                     </div>
                   </div>
