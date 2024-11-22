@@ -10,29 +10,49 @@ import LoginData from "../assets/LoginAnimation.json";
 import { cn } from "../lib/utils";
 import { Link, replace, useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/use-toast";
+import axios from "axios";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { phoneNumberAtom, trace_idAtom } from "../store/UserAtoms";
 
 function Login() {
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useRecoilState(phoneNumberAtom);
+  const setTraceId = useSetRecoilState(trace_idAtom);
+  const baseUrl = import.meta.env.VITE_BASE_URL 
+
   const {toast} = useToast();
   const navigate = useNavigate();
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle OTP generation logic here
     if (phoneNumber === "") {
       toast({
         title: "REQUIRED",
         description: "Please enter a phone number.",
-        variant : "destructive"
-      })
-      return
+        variant: "destructive",
+      });
+      return;
     }
-    console.log("Generating OTP for:", phoneNumber);
-    toast({
-      title: "Success",
-      description: "OTP has been generated successfully!",
-    })
-    navigate("/enter-otp", {replace: true, state: {phoneNumber}});
+    try {
+      const response = await axios.post(`${baseUrl}/account/get_otp`, {
+        phone_number: phoneNumber,
+      });
+        const traceId = response.data.data.trace_id;
+        setTraceId(traceId);
+        // console.log("Trace id : ", traceId);
+        toast({
+          title: "Success",
+          description: response.data.message,
+        });
+        navigate("/enter-otp", { replace: true });
+    } catch (error) {
+      const errorMessage = error.response?.data?.message;
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    }
   };
+
 
   const LoginAnimationOptions = {
     loop: true,
@@ -54,10 +74,6 @@ function Login() {
           [5, 5],
           [10, 10],
           [12, 15],
-          [15, 10],
-          [10, 15],
-          [15, 10],
-          [10, 15],
           [15, 10],
           [10, 15],
           [30, 20],
