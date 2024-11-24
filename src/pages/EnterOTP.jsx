@@ -1,14 +1,17 @@
 'use client'
-
 import { useState, useRef, useEffect } from 'react'
 import { Card } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
 import { Label } from "../components/ui/label"
 import { ArrowLeftIcon, LockIcon } from 'lucide-react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import GridPattern from "../components/ui/grid-pattern";
 import { cn } from "../lib/utils";
+import axios, { AxiosError } from 'axios'
+import { useToast } from '../hooks/use-toast';
+import { useRecoilState, useSetRecoilState } from 'recoil'
+import { accessTokenAtom, emailAtom, idAtom, phoneNumberAtom, refresh_tokenAtom } from '../store/UserAtoms';
 
 export default function Component() {
   const [otp, setOtp] = useState(['', '', '', ''])
@@ -16,9 +19,14 @@ export default function Component() {
   const navigate = useNavigate();
   const [timeleft, setTimeleft] = useState(60); // 60 seconds
   const [isResendingDisabled, setIsResendingDisabled] = useState(true);
-  const location = useLocation();
+  const baseUrl = import.meta.env.VITE_BASE_URL 
+  const {toast} = useToast();
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenAtom);
+  const [refreshToken, setRefreshToken] = useRecoilState(refresh_tokenAtom);
+  const [phoneNumber, setPhoneNumber] = useRecoilState(phoneNumberAtom)
+  const [id, setId] = useRecoilState(idAtom);
+  const [ email, setEmail] = useRecoilState(emailAtom);
 
-  const phoneNumber = location.state?.phoneNumber;
 
   useEffect(() => {
     if (timeleft > 0) {
@@ -51,16 +59,118 @@ export default function Component() {
     }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const enteredOtp = otp.join('')
-    console.log('Submitted OTP:', enteredOtp)
-    // Handle OTP verification logic here
+    console.log(phoneNumber, enteredOtp);
+    if (enteredOtp.length !== 4) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid OTP.",
+        variant: "destructive",
+      });
+      return
+    }
+    try {
+      const response = await axios.post(`${baseUrl}/account/validate_otp`, {
+        phone_number : phoneNumber,
+        otp : enteredOtp
+      } )
+
+      //checking role
+      if (response.data.role === "agent") {
+      navigate('/agent-dashboard', {replace: true});
+      setAccessToken(response.data.data.accessToken);
+      setRefreshToken(response.data.data.refresh_token);
+      // TODO : store other state if agent has more information
+      toast({
+        title : "Successfully signed in",
+        description : "You are now signed in as an agent",
+        variant : "default"
+      })
+      return
+    }
+
+    //checking status of the user
+    if (response.data.status !== "existing") {
+      navigate('/signup', {replace: true});
+      toast({
+        title : "Signup required",
+        descritption : response.data.message || "You are not an existing user, please sign up first",
+        variant : "destructive"
+      })
+      return
+    }
+
+    //updating the state
+    setAccessToken(response.data.accessToken);
+    setRefreshToken(response.data.refresh_token);
+    setId(response.data.user.id);
+    setPhoneNumber(response.data.user.phone_number);
+    setEmail(response.data.user.email);
+    
+    // console.log("Access token : ", accessToken);
+    // console.log("Refresh token : ", refreshToken);
+    // console.log("ID : ", id);
+    // console.log("Phone number : ", phoneNumber);
+    // console.log("Email : ", email);
+    
+    //calling getProfile route
+    try {
+      const res = await axios.get(`${baseUrl}/profile/get_profile/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+      }})
+      //TODO : handling the response (will do when backend is fixed )
+      useNavigate('/user-dashboard', {replace: true});
+      toast({
+        title : "Success",
+        description : response.data.message,
+        variant : "default"
+      })
+    } catch (error) {
+      const errorMessage = error.response?.data?.message;
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      })
+    }    
+
+    } catch (error) {
+      const errorMessage = error.response?.data?.message; 
+      console.log("Error message : ", error);
+      
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      })
+    }
+    // console.log('Submitted OTP:', enteredOtp)
   }
 
-  const handleResendOTP = () => {
+  const handleResendOTP = async () => {
     // Handle resend OTP logic here
-    alert('OTP has been resent!')
+    try {
+      const response = await axios.post(`${baseUrl}/account/get_otp`, {
+        phone_number: phoneNumber,
+      });
+      toast({
+        title : "Success",
+        description : response.data.message || "OTP resent successfully",
+        variant : "default"
+      })
+      setIsResendingDisabled(true);
+      setTimeleft(60);
+    } catch (error) {
+      const errorMessage = error.response?.data?.message;
+      toast ({
+        title : "Error",
+        description : errorMessage,
+        variant : "destructive"
+      })
+    }
   }
 
   const goToPreviousWindow = () => {
@@ -82,10 +192,6 @@ export default function Component() {
           [5, 5],
           [10, 10],
           [12, 15],
-          [15, 10],
-          [10, 15],
-          [15, 10],
-          [10, 15],
           [15, 10],
           [10, 15],
           [30, 20],
