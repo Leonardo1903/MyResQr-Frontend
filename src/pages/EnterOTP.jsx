@@ -77,65 +77,51 @@ export default function Component() {
         otp : enteredOtp
       } )
 
+      //updating the state
+      setAccessToken(response.data.accessToken);
+      setRefreshToken(response.data.refresh_token);
+      setId(response.data.user.id);
+      setPhoneNumber(response.data.user.phone_number);
+      setEmail(response.data.user.email);
+      
+      // console.log("Access token : ", accessToken);
+      // console.log("Refresh token : ", refreshToken);
+      // console.log("ID : ", id);
+      // console.log("Phone number : ", phoneNumber);
+      // console.log("Email : ", email);
+
       //checking role
       if (response.data.role === "agent") {
-      navigate('/agent-dashboard', {replace: true});
-      setAccessToken(response.data.data.accessToken);
-      setRefreshToken(response.data.data.refresh_token);
-      // TODO : store other state if agent has more information
-      toast({
-        title : "Successfully signed in",
-        description : "You are now signed in as an agent",
-        variant : "default"
-      })
-      return
-    }
-
-    //checking status of the user
-    if (response.data.status !== "existing") {
-      navigate('/signup', {replace: true});
-      toast({
-        title : "Signup required",
-        descritption : response.data.message || "You are not an existing user, please sign up first",
-        variant : "destructive"
-      })
-      return
-    }
-
-    //updating the state
-    setAccessToken(response.data.accessToken);
-    setRefreshToken(response.data.refresh_token);
-    setId(response.data.user.id);
-    setPhoneNumber(response.data.user.phone_number);
-    setEmail(response.data.user.email);
-    
-    // console.log("Access token : ", accessToken);
-    // console.log("Refresh token : ", refreshToken);
-    // console.log("ID : ", id);
-    // console.log("Phone number : ", phoneNumber);
-    // console.log("Email : ", email);
-    
-    //calling getProfile route
-    try {
-      const res = await axios.get(`${baseUrl}/profile/get_profile/${id}`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-      }})
-      //TODO : handling the response (will do when backend is fixed )
-      useNavigate('/user-dashboard', {replace: true});
-      toast({
-        title : "Success",
-        description : response.data.message,
-        variant : "default"
-      })
-    } catch (error) {
-      const errorMessage = error.response?.data?.message;
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      })
-    }    
+        navigate('/agent-dashboard', {replace: true});
+        toast({
+          title : "Successfully signed in",
+          description : "You are now signed in as an agent",
+          variant : "default"
+        })
+        return
+      }
+      
+      //calling getProfile route
+      try {
+        const res = await axios.get(`${baseUrl}/profile/get_profile/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }})
+        //TODO : handling the response (will do when backend is fixed )
+        useNavigate('/user-dashboard', {replace: true});
+        toast({
+          title : "Success",
+          description : response.data.message,
+          variant : "default"
+        })
+      } catch (error) {
+        const errorMessage = error.response?.data?.message;
+        toast({
+          title: "Error",
+          description: errorMessage,
+          variant: "destructive",
+        })
+      }    
 
     } catch (error) {
       const errorMessage = error.response?.data?.message; 

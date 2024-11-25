@@ -38,11 +38,21 @@ function Login() {
         const traceId = response.data.data.trace_id;
         setTraceId(traceId);
         // console.log("Trace id : ", traceId);
+        // console.log(response);
+        
+        if (response.data.status==="existing") {
+          navigate("/enter-otp", { replace: true });
+          toast({
+            title: "Success",
+            description: response.data.message,
+          });
+          return 
+        }
+        navigate("/signup", { replace: true });
         toast({
-          title: "Success",
-          description: response.data.message,
-        });
-        navigate("/enter-otp", { replace: true });
+          title: "Sign Up Required",
+          description: "You are a new User, please sign up.",
+        })
     } catch (error) {
       const errorMessage = error.response?.data?.message;
       toast({
