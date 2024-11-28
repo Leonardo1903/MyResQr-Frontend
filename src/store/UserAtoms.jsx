@@ -34,3 +34,49 @@ export const profileIdAtom = atom({
   key: "profileIdAtom",
   default: "",
 });
+
+export const userDashboardDataAtom = atom({
+  key: 'userDashboardDataAtom', 
+  default: {
+    id: null,
+    emergency_contact: [],
+    medical_detail: [
+      {
+        blood_group: "",
+        blood_donor: "",
+        blood_pressure: "",
+        diabetes: "",
+        cholesterol: "",
+        heart_related: "",
+        disabled: "",
+        reason_disabled: "",
+        asthma: "",
+        tuberculosis: "",
+        mental_illness: "",
+        epilepsy: "",
+        nsaids: "",
+        steroids: "",
+        anticogulant: "",
+        surgery_history: "",
+        organ_implant: "",
+        medications: "",
+        other_medical_condition: "",
+        allergies: "",
+        additonal_info: ""
+      }
+    ],
+    mobile_number: "",
+    first_name: "",
+    last_name: "",
+    email_id: "",
+    whatsapp_number: "",
+    dob: "",
+    gender: "",
+    address: "",
+    city: "",
+    state: "",
+    pin_code: "",
+    country: "",
+    image: ""
+  },
+});

@@ -40,15 +40,15 @@ export default function Signup() {
   const [isActivated, setIsActivated] = useState(false);
   const [formData, setFormData] = useState({
     personal: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      mobileNumber: "",
-      whatsappNumber: "",
+      first_name: "",
+      last_name: "",
+      email_id: "",
+      mobile_number: "",
+      whatsapp_number: "",
       gender: "",
-      dateOfBirth: "",
+      dob: "",
       address: "",
-      pincode: "",
+      pin_code: "",
       city: "",
       state: "",
       country: "",
@@ -92,6 +92,11 @@ export default function Signup() {
   const accessToken = useRecoilValue(accessTokenAtom);
   const setProfileId = useSetRecoilState(profileIdAtom);
   const profileId = useRecoilValue(profileIdAtom);
+
+  // <Personal/>
+  //<Medical/>
+  //<Emergency/>
+  //<Pin/>
 
   // Handle WhatsApp checkbox change
   const handleWhatsAppCheckboxChange = (checked) => {
