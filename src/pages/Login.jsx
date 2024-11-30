@@ -8,7 +8,7 @@ import { PhoneIcon } from "lucide-react";
 import Lottie from "react-lottie";
 import LoginData from "../assets/LoginAnimation.json";
 import { cn } from "../lib/utils";
-import { Link, replace, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/use-toast";
 import axios from "axios";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -38,11 +38,21 @@ function Login() {
         const traceId = response.data.data.trace_id;
         setTraceId(traceId);
         // console.log("Trace id : ", traceId);
+        // console.log(response);
+        
+        if (response.data.status==="existing") {
+          navigate("/enter-otp", { replace: true });
+          toast({
+            title: "Success",
+            description: response.data.message,
+          });
+          return 
+        }
+        navigate("/signup", { replace: true });
         toast({
-          title: "Success",
-          description: response.data.message,
-        });
-        navigate("/enter-otp", { replace: true });
+          title: "Sign Up Required",
+          description: "You are a new User, please sign up.",
+        })
     } catch (error) {
       const errorMessage = error.response?.data?.message;
       toast({
@@ -144,7 +154,7 @@ function Login() {
                   </Button>
                 </div>
               </form>
-              <div className="mt-6 text-center">
+              {/* <div className="mt-6 text-center">
                 <p className="text-sky-700 dark:text-sky-300 mb-2">New user?</p>
                 <Link to="/signup">
                   <Button
@@ -154,7 +164,7 @@ function Login() {
                     Sign Up
                   </Button>
                 </Link>
-              </div>
+              </div> */}
               <p className="mt-6 text-center text-sky-600 dark:text-sky-400 text-sm">
                 By continuing, you agree to our Terms of Service and Privacy
                 Policy.

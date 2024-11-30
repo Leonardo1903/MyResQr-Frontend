@@ -15,20 +15,24 @@ import EnterOTP from "./pages/EnterOTP";
 import React, { lazy, Suspense } from "react";
 import CreateNewUserByAgent from "./pages/CreateNewUserByAgent";
 import { RecoilRoot } from "recoil";
-const Dashboard = lazy(() => import("./pages/UserDashboard"));
+import UserDashboard from "./pages/UserDashboard";
+
 
 
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
+      <>
       <Route path="/" element={<Layout />}>
         <Route path="" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/enter-otp" element={<EnterOTP />} />
-        <Route path="/user-dashboard" element={<Suspense fallback={<div>Loading...</div>}><Dashboard /></Suspense>} />
+        <Route path="/user-dashboard" element={<UserDashboard />} />
         <Route path="/agent-dashboard" element={<CreateNewUserByAgent />} />
       </Route>
+      
+      </>
     )
   );
   return (
