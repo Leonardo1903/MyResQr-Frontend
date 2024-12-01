@@ -12,12 +12,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/use-toast";
 import axios from "axios";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { phoneNumberAtom, trace_idAtom } from "../store/UserAtoms";
+import { isUserExistingAtom, phoneNumberAtom, trace_idAtom } from "../store/UserAtoms";
 
 function Login() {
   const [phoneNumber, setPhoneNumber] = useRecoilState(phoneNumberAtom);
   const setTraceId = useSetRecoilState(trace_idAtom);
   const baseUrl = import.meta.env.VITE_BASE_URL 
+  const setIsUserExisting = useSetRecoilState(isUserExistingAtom);
 
   const {toast} = useToast();
   const navigate = useNavigate();
@@ -41,18 +42,19 @@ function Login() {
         // console.log(response);
         
         if (response.data.status==="existing") {
-          navigate("/enter-otp", { replace: true });
+          setIsUserExisting(true);
+        }
+        setIsUserExisting(false);
+        // navigate("/signup", { replace: true });
+        // toast({
+        //   title: "Sign Up Required",
+        //   description: "You are a new User, please sign up.",
+        // })
+        navigate("/enter-otp", { replace: true });
           toast({
             title: "Success",
             description: response.data.message,
           });
-          return 
-        }
-        navigate("/signup", { replace: true });
-        toast({
-          title: "Sign Up Required",
-          description: "You are a new User, please sign up.",
-        })
     } catch (error) {
       const errorMessage = error.response?.data?.message;
       toast({

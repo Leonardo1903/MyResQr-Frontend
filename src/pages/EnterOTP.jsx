@@ -10,8 +10,8 @@ import GridPattern from "../components/ui/grid-pattern";
 import { cn } from "../lib/utils";
 import axios from 'axios'
 import { useToast } from '../hooks/use-toast';
-import { useRecoilState, useSetRecoilState } from 'recoil'
-import { accessTokenAtom, emailAtom, idAtom, phoneNumberAtom, refresh_tokenAtom, userDashboardDataAtom } from '../store/UserAtoms';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { accessTokenAtom, emailAtom, idAtom, isUserExistingAtom, phoneNumberAtom, refresh_tokenAtom, userDashboardDataAtom } from '../store/UserAtoms';
 
 export default function Component() {
   const [otp, setOtp] = useState(['', '', '', ''])
@@ -27,6 +27,7 @@ export default function Component() {
   const [id, setId] = useRecoilState(idAtom);
   const [ email, setEmail] = useRecoilState(emailAtom);
   const setUserDashboardData = useSetRecoilState(userDashboardDataAtom);
+  const isUserExisting = useRecoilValue(isUserExistingAtom);
 
   useEffect(() => {
     if (timeleft > 0) {
@@ -97,6 +98,15 @@ export default function Component() {
           title : "Successfully signed in",
           description : "You are now signed in as an agent",
           variant : "default"
+        })
+        return
+      }
+
+      if (isUserExisting != true) {
+        navigate("/signup", { replace: true });
+        toast({
+          title: "Sign Up Required",
+          description: "You are a new User, please sign up.",
         })
         return
       }
