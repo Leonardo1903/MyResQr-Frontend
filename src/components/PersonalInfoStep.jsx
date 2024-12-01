@@ -90,80 +90,6 @@ export default function PersonalInfoStep({ onStepChange }) {
     }
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   // Ensure all required fields are populated
-  //   if (!firstName || !lastName || !email || !mobileNumber || !dateOfBirth || !gender || !address || !city || !state || !pincode || !country) {
-  //     toast({
-  //       title: "Error",
-  //       description: "Please fill in all required fields.",
-  //       variant: "destructive",
-  //     });
-  //     return;
-  //   }
-
-  //   const formData = new FormData();
-  //   formData.append("account", userId);
-  //   formData.append("first_name", firstName);
-  //   formData.append("last_name", lastName);
-  //   formData.append("email_id", email);
-  //   formData.append("mobile_number", mobileNumber);
-  //   formData.append("whatsapp_number", whatsappNumber);
-  //   formData.append("dob", dateOfBirth);
-  //   formData.append("gender", gender);
-  //   formData.append("address", address);
-  //   formData.append("city", city);
-  //   formData.append("state", state);
-  //   formData.append("pin_code", pincode);
-  //   formData.append("country", country);
-
-  //   if (avatar) {
-  //     formData.append("avatar", avatar);
-  //   }
-
-  //   try {
-  //     console.log("Access Token:", accessToken);
-
-  //     const response = await axios.post(
-  //       `${baseUrl}/profile/create_profile`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //         },
-  //       }
-  //     );
-
-  //     console.log("Response:", response.data);
-
-  //     if (response.status < 200 || response.status >= 300) {
-  //       toast({
-  //         title: "Error",
-  //         description: response.data.message || "An error occurred.",
-  //         variant: "destructive",
-  //       });
-  //       return;
-  //     }
-
-  //     setProfileId(response.data.id);
-  //     onStepChange(2);
-  //     toast({
-  //       title: "Success",
-  //       description: "Personal details submitted successfully.",
-  //       variant: "default",
-  //     });
-  //   } catch (error) {
-  //     console.error("Error response:", error.response?.data || error.message);
-  //     toast({
-  //       title: "Error",
-  //       description:
-  //         error.response?.data?.message || "An unexpected error occurred.",
-  //       variant: "destructive",
-  //     });
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -179,7 +105,7 @@ export default function PersonalInfoStep({ onStepChange }) {
       !city ||
       !state ||
       !pincode ||
-      !country||
+      !country ||
       !avatar
     ) {
       toast({
@@ -204,27 +130,27 @@ export default function PersonalInfoStep({ onStepChange }) {
     formData.append("state", state);
     formData.append("pin_code", pincode);
     formData.append("country", country);
-    formData.append("avatar", avatar);
+    formData.append("profile_image", avatar);
 
-    // Log form data to identify missing fields
+    // Log each field for debugging
     for (let [key, value] of formData.entries()) {
       console.log(`${key}: ${value}`);
     }
 
-    try {
-      console.log("Access Token:", accessToken);
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "multipart/form-data",
+    };
 
+    // Log headers for debugging
+    console.log("Headers:", headers);
+
+    try {
       const response = await axios.post(
         `${baseUrl}/profile/create_profile`,
         formData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+        { headers }
       );
-
-      console.log("Response:", response.data);
 
       if (response.status < 200 || response.status >= 300) {
         toast({
