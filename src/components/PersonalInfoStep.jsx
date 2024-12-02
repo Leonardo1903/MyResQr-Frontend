@@ -130,7 +130,7 @@ export default function PersonalInfoStep({ onStepChange }) {
     formData.append("state", state);
     formData.append("pin_code", pincode);
     formData.append("country", country);
-    formData.append("profile_image", avatar);
+    formData.append("image", avatar);
 
     // Log each field for debugging
     for (let [key, value] of formData.entries()) {
@@ -288,9 +288,9 @@ export default function PersonalInfoStep({ onStepChange }) {
               <SelectValue placeholder="Select gender" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="male">Male</SelectItem>
-              <SelectItem value="female">Female</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
+              <SelectItem value="Male">Male</SelectItem>
+              <SelectItem value="Female">Female</SelectItem>
+              <SelectItem value="Other">Other</SelectItem>
             </SelectContent>
           </Select>
         </div>
