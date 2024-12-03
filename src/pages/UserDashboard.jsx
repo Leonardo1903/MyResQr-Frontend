@@ -3,16 +3,45 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Badge } from "../components/ui/badge";
-import { PhoneCall, Mail, MapPin, Calendar, Activity, UserPlus, Clock, Shield, Users, FileText, Smartphone, Home, Flag, MapPinned, Heart, Droplets, Brain, Pill, Syringe, Stethoscope, Thermometer, Bone, AlertCircle, TreesIcon as Lungs } from 'lucide-react';
+import { PhoneCall, Mail, MapPin, Calendar, Activity, BookUser, Clock, Shield, Users, FileText, Smartphone, Home, Flag, MapPinned, Heart, Droplets, Brain, Pill, Syringe, Stethoscope, Thermometer, Bone, AlertCircle, TreesIcon as Lungs, CreditCard, CreditCardIcon, KeyIcon, IndianRupee , Tag, CheckCircle, Coffee } from 'lucide-react';
 import GridPattern from "../components/ui/grid-pattern";
 import { cn } from "../lib/utils";
 import { useRecoilValue } from "recoil";
-import { userDashboardDataAtom } from "../store/UserAtoms";
+import { accessTokenAtom, idAtom, userDashboardDataAtom } from "../store/UserAtoms";
+import axios from 'axios';
+import { toast } from '../hooks/use-toast';
 
 export default function UserDashboard() {
   const userData = useRecoilValue(userDashboardDataAtom);
   const [showMedicalHistory, setShowMedicalHistory] = useState(false);
   const [showEmergencyContacts, setShowEmergencyContacts] = useState(false);
+  const [showPlanDetails, setShowPlanDetails] = useState(false);
+  const id = useRecoilValue(idAtom);
+  const [planDetails, setPlanDetails] = useState({});
+  const accessToken = useRecoilValue(accessTokenAtom);
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+
+  const handleGetPlanDetails = async () => {
+      console.log("ID:", id);
+      console.log("Access token:", accessToken);
+    try {
+      const response = await axios.get(`${baseUrl}/pin_manager/pin_details/${id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      setPlanDetails(response.data);
+      console.log("Plan details:", response.data);
+    } catch (error) {
+      const errorMessage = error.response?.data?.message;
+      console.error("Failed to fetch plan details:", error);
+      toast({
+        title: "Error",
+        description:errorMessage ,
+        variant: "destructive",
+      })
+    }
+  };
 
   const medicalIcons = {
     blood_group: Droplets,
@@ -44,12 +73,30 @@ export default function UserDashboard() {
   ];
 
   const actionButtons = [
-    { icon: UserPlus, label: "Add Member", color: "bg-sky-600 dark:bg-sky-600" },
+    { icon: BookUser, label: "Plan Details", color: "bg-sky-600 dark:bg-sky-600", onClick: async () => {
+      setShowPlanDetails(!showPlanDetails);
+      if (!showPlanDetails) {
+        await handleGetPlanDetails();
+      }
+    }},
     { icon: Clock, label: "Scan Logs", color: "bg-emerald-600 dark:bg-emerald-600" },
     { icon: Shield, label: "Insurance", color: "bg-violet-600 dark:bg-violet-600" },
     { icon: Users, label: "Emergency Contacts", color: "bg-amber-600 dark:bg-amber-600", onClick: () => setShowEmergencyContacts(!showEmergencyContacts) },
     { icon: FileText, label: "Medical History", color: "bg-indigo-600 dark:bg-indigo-600", onClick: () => setShowMedicalHistory(!showMedicalHistory) }
   ];
+
+  const formatDate = (timestamp) => {
+    return new Date(timestamp * 1000).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const formatCurrency = (amount, currency) => {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency }).format(amount / 100);
+  };
+
 
   const medicalConditions = userData.medical_detail?.[0] || {};
 
@@ -308,6 +355,84 @@ export default function UserDashboard() {
             </Card>
           </div>
         )}
+
+        
+      {showPlanDetails && (
+        <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-sky-800 dark:text-white flex items-center gap-2">
+              <CreditCard className="h-6 w-6 text-sky-500" />
+              Plan Details
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="p-6 rounded-lg bg-sky-500/20 dark:bg-sky-500/20 space-y-4">
+                <h3 className="text-xl font-semibold text-sky-800 dark:text-white flex items-center gap-2">
+                  <CreditCardIcon className="h-5 w-5 text-sky-500" />
+                  Subscription Information
+                </h3>
+                <div className="space-y-2">
+                  <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                    <KeyIcon className="h-4 w-4" />
+                    <span className="font-medium">PIN:</span> {planDetails.pin_number}
+                  </p>
+                  <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4" />
+                    <span className="font-medium">Status:</span> 
+                    <Badge className={cn(
+                      "ml-2",
+                      planDetails.subscription?.status === "active" ? "bg-green-500" : "bg-yellow-500"
+                    )}>
+                      {planDetails.subscription?.status}
+                    </Badge>
+                  </p>
+                  <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    <span className="font-medium">Expires:</span> {planDetails.subscription ? formatDate(planDetails.subscription.expire_by) : 'N/A'}
+                  </p>
+                </div>
+              </div>
+              <div className="p-6 rounded-lg bg-sky-500/20 dark:bg-sky-500/20 space-y-4">
+                <h3 className="text-xl font-semibold text-sky-800 dark:text-white flex items-center gap-2">
+                  <Tag className="h-5 w-5 text-sky-500" />
+                  Plan Details
+                </h3>
+                <div className="space-y-2">
+                  <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                    <FileText className="h-4 w-4" />
+                    <span className="font-medium">Name:</span> {planDetails.plan?.item?.name}
+                  </p>
+                  <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4" />
+                    <span className="font-medium">Description:</span> {planDetails.plan?.item?.description}
+                  </p>
+                  <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                    <IndianRupee className="h-4 w-4" />
+                    <span className="font-medium">Amount:</span> {planDetails.plan?.item ? formatCurrency(planDetails.plan.item.amount, planDetails.plan.item.currency) : 'N/A'}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="p-6 rounded-lg bg-sky-500/20 dark:bg-sky-500/20 space-y-4">
+              <h3 className="text-xl font-semibold text-sky-800 dark:text-white flex items-center gap-2">
+                <Clock className="h-5 w-5 text-sky-500" />
+                Billing Cycle
+              </h3>
+              <div className="space-y-2">
+                <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  <span className="font-medium">Period:</span> {planDetails.plan?.period}
+                </p>
+                <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  <span className="font-medium">Next Charge:</span> {planDetails.subscription ? formatDate(planDetails.subscription.charge_at) : 'N/A'}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
       </div>
     </div>
   );
