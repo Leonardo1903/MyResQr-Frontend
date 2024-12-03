@@ -11,17 +11,17 @@ import { cn } from "../lib/utils";
 import { Link, replace, useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/use-toast";
 import axios from "axios";
-import { useRecoilValue } from "recoil";
-import { accessTokenAtom } from "../store/UserAtoms";
-
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { accessTokenAtom, profileIdAtom } from "../store/UserAtoms";
 
 function Login() {
   const [newUserPhoneNumber, setNewUserPhoneNumber] = useState("");
-  const baseUrl = import.meta.env.VITE_BASE_URL 
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   const accessToken = useRecoilValue(accessTokenAtom);
-  const {toast} = useToast();
+  const setProfileId = useSetRecoilState(profileIdAtom);
+  const { toast } = useToast();
   const navigate = useNavigate();
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (newUserPhoneNumber === "") {
@@ -32,29 +32,40 @@ function Login() {
       });
       return;
     }
+    console.log("Access Token:", accessToken);
     try {
-  const response = await axios.post(`${baseUrl}/account/agent/create_user`, {
-    Headers: {
-      Authorization: `Bearer ${accessToken}`,
+      const response = await axios.post(
+        `${baseUrl}/account/agent/create_user`,
+        {
+          phone_number: newUserPhoneNumber,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const newUserId = response.data.user.id;
+      setProfileId(newUserId);
+
+      toast({
+        title: "Success",
+        description: `User created successfully with user Id ${newUserId}`,
+        variant: "default",
+      });
+      navigate("/signup", { replace: true });
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "Failed to create user. Please try again.";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
     }
-  });
-  const newUserId = response.data.user.id;
-  toast({
-    title: "Success",
-    description: `User created successfully with user Id ${newUserId}`,
-    variant: "default",
-  });
-  navigate("/signup", { replace: true });
-} catch (error) {
-  const errorMessage = error.response?.data?.message || "Failed to create user. Please try again.";
-  toast({
-    title: "Error",
-    description: errorMessage,
-    variant: "destructive",
-  });
-}
-  }
- 
+  };
+
   const LoginAnimationOptions = {
     loop: true,
     autoplay: true,
@@ -103,7 +114,7 @@ function Login() {
                 Welcome Agent!
               </h2>
               <p className="text-sky-700 dark:text-sky-300">
-                Make user's life easy
+                Make user&apos;s life easy
               </p>
             </div>
 
@@ -133,7 +144,6 @@ function Login() {
                         value={newUserPhoneNumber}
                         onChange={(e) => setNewUserPhoneNumber(e.target.value)}
                         className="pl-10 bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600 focus:border-sky-500 dark:focus:border-sky-400 focus:ring-sky-500 dark:focus:ring-sky-400 text-sky-800 dark:text-sky-100 placeholder-sky-500 dark:placeholder-sky-400"
-                        
                       />
                     </div>
                   </div>
@@ -145,7 +155,7 @@ function Login() {
                   </Button>
                 </div>
               </form>
-              
+
               <p className="mt-6 text-center text-sky-600 dark:text-sky-400 text-sm">
                 By continuing, you agree to our Terms of Service and Privacy
                 Policy.

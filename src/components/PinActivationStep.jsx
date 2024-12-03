@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/use-toast";
 import axios from "axios";
 import { useRecoilValue } from "recoil";
-import { accessTokenAtom, profileIdAtom } from "../store/UserAtoms";
+import { accessTokenAtom, profileIdAtom, roleAtom } from "../store/UserAtoms";
 
 export default function PinActivationStep() {
   const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -19,6 +19,7 @@ export default function PinActivationStep() {
 
   const accessToken = useRecoilValue(accessTokenAtom);
   const profileId = useRecoilValue(profileIdAtom);
+  const role = useRecoilValue(roleAtom);
 
   // Handle OTP input change
   const handleChange = (index, value) => {
@@ -40,40 +41,6 @@ export default function PinActivationStep() {
       inputRefs.current[index - 1].focus();
     }
   };
-
-  // // Api call to activate pin
-  // const activatePin = async (pin, activationKey, profileId) => {
-  //   const response = await axios.post(
-  //     `${baseUrl}/pin_manager/activate_pin`,
-  //     { pin, key: activationKey, profile_id: profileId },
-  //     {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${accessToken}`,
-  //       },
-  //     }
-  //   );
-  //   if (response.status < 200 || response.status >= 300) {
-  //     throw new Error(response.data.message || "Error activating PIN");
-  //   }
-  // };
-
-  // // Api call to verify pin
-  // const verifyPin = async (pin, activationKey) => {
-  //   const response = await axios.post(
-  //     `${baseUrl}/pin_manager/activate_pin`,
-  //     { pin, key: activationKey },
-  //     {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${accessToken}`,
-  //       },
-  //     }
-  //   );
-  //   if (response.status < 200 || response.status >= 300) {
-  //     throw new Error(response.data.message || "Error verifying PIN");
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -113,7 +80,12 @@ export default function PinActivationStep() {
               title: "Success",
               description: "PIN Activated",
             });
-            navigate("/user-dashboard");
+
+            if (role === "agent") {
+              navigate("/agent-dashboard");
+              return;
+            }
+            navigate("/login");
           }
         } catch (error) {
           toast({
