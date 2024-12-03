@@ -1,16 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Separator } from "../components/ui/separator";
 import { Button } from "../components/ui/button";
 import { useToast } from "../hooks/use-toast";
 import axios from "axios";
-import { accessTokenAtom } from "../store/UserAtoms";
+import { accessTokenAtom, profileIdAtom } from "../store/UserAtoms";
 import { useRecoilValue } from "recoil";
 
 export default function AdditionalMedicalInfoStep({
   onStepChange,
-  onDataChange,
   medicalInfo,
 }) {
   const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -18,8 +17,9 @@ export default function AdditionalMedicalInfoStep({
   const [otherCondition, setOtherCondition] = useState("");
   const [allergies, setAllergies] = useState("");
   const [familyHistory, setFamilyHistory] = useState("");
-  const toast = useToast();
+  const { toast } = useToast();
   const accessToken = useRecoilValue(accessTokenAtom);
+  const profileId = useRecoilValue(profileIdAtom);
 
   const additionalMedicalDetails = {
     medications: regularMeds,
@@ -28,11 +28,16 @@ export default function AdditionalMedicalInfoStep({
     familyMedicalHistory: familyHistory,
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Flatten and combine the data
     const combinedData = {
       ...medicalInfo,
       ...additionalMedicalDetails,
+      profile_id: profileId,
     };
+
     try {
       const response = await axios.post(
         `${baseUrl}/profile/create_medical`,
@@ -43,12 +48,20 @@ export default function AdditionalMedicalInfoStep({
           },
         }
       );
+
       if (response.status < 200 || response.status >= 300) {
-        throw new Error(
-          response.data.message || "Error submitting medical details"
-        );
+        toast({
+          title: "Error",
+          description:
+            response.data.message ||
+            "An error occurred while submitting medical details.",
+        });
       }
       onStepChange(4);
+      toast({
+        title: "Success",
+        description: "Medical details submitted successfully.",
+      });
     } catch (error) {
       toast({
         title: "Error",
@@ -74,10 +87,6 @@ export default function AdditionalMedicalInfoStep({
           value={regularMeds}
           onChange={(e) => {
             setRegularMeds(e.target.value);
-            onDataChange({
-              ...additionalMedicalDetails,
-              regularMeds: e.target.value,
-            });
           }}
           className="bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600"
         />
@@ -94,10 +103,6 @@ export default function AdditionalMedicalInfoStep({
           value={otherCondition}
           onChange={(e) => {
             setOtherCondition(e.target.value);
-            onDataChange({
-              ...additionalMedicalDetails,
-              otherCondition: e.target.value,
-            });
           }}
           className="bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600"
         />
@@ -111,10 +116,6 @@ export default function AdditionalMedicalInfoStep({
           value={allergies}
           onChange={(e) => {
             setAllergies(e.target.value);
-            onDataChange({
-              ...additionalMedicalDetails,
-              allergies: e.target.value,
-            });
           }}
           className="bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600"
         />
@@ -131,10 +132,6 @@ export default function AdditionalMedicalInfoStep({
           value={familyHistory}
           onChange={(e) => {
             setFamilyHistory(e.target.value);
-            onDataChange({
-              ...additionalMedicalDetails,
-              familyHistory: e.target.value,
-            });
           }}
           className="bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600"
         />

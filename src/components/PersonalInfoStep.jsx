@@ -33,6 +33,8 @@ export default function PersonalInfoStep({ onStepChange }) {
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
   const [isWhatsAppSame, setIsWhatsAppSame] = useState(true);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [captureMode, setCaptureMode] = useState(null); // null, 'upload', 'capture'
   const { toast } = useToast();
   const userId = useRecoilValue(idAtom);
   const accessToken = useRecoilValue(accessTokenAtom);
@@ -93,6 +95,10 @@ export default function PersonalInfoStep({ onStepChange }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Regex patterns for validation
+    const phonePattern = /^\d{10}$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     // Ensure all required fields are populated
     if (
       !firstName ||
@@ -116,6 +122,26 @@ export default function PersonalInfoStep({ onStepChange }) {
       return;
     }
 
+    // Validate phone number
+    if (!phonePattern.test(mobileNumber)) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid 10-digit mobile number.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate email
+    if (!emailPattern.test(email)) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const formData = new FormData();
     formData.append("account", userId);
     formData.append("first_name", firstName);
@@ -132,18 +158,10 @@ export default function PersonalInfoStep({ onStepChange }) {
     formData.append("country", country);
     formData.append("image", avatar);
 
-    // Log each field for debugging
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
-
     const headers = {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "multipart/form-data",
     };
-
-    // Log headers for debugging
-    console.log("Headers:", headers);
 
     try {
       const response = await axios.post(
@@ -312,16 +330,40 @@ export default function PersonalInfoStep({ onStepChange }) {
         </div>
         <div className="space-y-2">
           <Label htmlFor="avatar" className="text-sky-700 dark:text-sky-300">
-            Upload Avatar
+            Avatar
           </Label>
-          <div className="flex items-center space-x-4">
+          <div className="relative">
             <Button
               type="button"
-              onClick={() => document.getElementById("avatar").click()}
+              onClick={() => setShowDropdown(!showDropdown)}
               className="bg-sky-600 hover:bg-sky-800 text-white px-2 rounded-md"
             >
-              Choose File
+              Choose Avatar
             </Button>
+            {showDropdown && (
+              <div className="absolute z-10 mt-2 w-48 bg-sky-600 rounded-md shadow-lg">
+                <div
+                  className="px-4 py-2 cursor-pointer hover:bg-sky-800"
+                  onClick={() => {
+                    setCaptureMode("upload");
+                    setShowDropdown(false);
+                    document.getElementById("avatar-upload").click();
+                  }}
+                >
+                  Upload File
+                </div>
+                <div
+                  className="px-4 py-2 cursor-pointer hover:bg-sky-800"
+                  onClick={() => {
+                    setCaptureMode("capture");
+                    setShowDropdown(false);
+                    document.getElementById("avatar-capture").click();
+                  }}
+                >
+                  Capture Image
+                </div>
+              </div>
+            )}
           </div>
           <div className="flex items-center space-x-2 text-sky-700 dark:text-sky-300 mt-2">
             <span>{avatar ? avatar.name : "No file chosen"}</span>
@@ -336,8 +378,17 @@ export default function PersonalInfoStep({ onStepChange }) {
             )}
           </div>
           <Input
-            id="avatar"
+            id="avatar-upload"
             type="file"
+            accept="image/*"
+            onChange={handleAvatarChange}
+            className="hidden"
+          />
+          <Input
+            id="avatar-capture"
+            type="file"
+            capture="user"
+            accept="image/*"
             onChange={handleAvatarChange}
             className="hidden"
           />

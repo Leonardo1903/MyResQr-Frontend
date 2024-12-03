@@ -1,14 +1,11 @@
-import { useState} from "react";
+import { useState } from "react";
 import { Label } from "../components/ui/label";
 import { Checkbox } from "../components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
 import { Separator } from "../components/ui/separator";
 import { Button } from "../components/ui/button";
 
-export default function MedicalInfoStep({
-  onStepChange,
-  onDataChange,
-}) {
+export default function MedicalInfoStep({ onStepChange, onDataChange }) {
   const [bloodGroup, setBloodGroup] = useState("");
   const [bloodDonor, setBloodDonor] = useState(false);
   const [highBP, setHighBP] = useState("");
@@ -95,7 +92,7 @@ export default function MedicalInfoStep({
           </Label>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label htmlFor="highBP" className="text-sky-700 dark:text-sky-300">
             High Blood Pressure

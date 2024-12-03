@@ -11,12 +11,28 @@ import { accessTokenAtom, profileIdAtom } from "../store/UserAtoms";
 export default function EmergencyContactStep({ onStepChange }) {
   const baseUrl = import.meta.env.VITE_BASE_URL;
   const [emergencyContacts, setEmergencyContacts] = useState([
-    { contactName: "", contactPhone: "", relationship: "Family" },
-    { contactName: "", contactPhone: "", relationship: "Family" },
-    { contactName: "", contactPhone: "", relationship: "Friend" },
-    { contactName: "", contactPhone: "", relationship: "Friend" },
+    {
+      contactName: "",
+      contactPhone: "",
+      relationship: "Family",
+    },
+    {
+      contactName: "",
+      contactPhone: "",
+      relationship: "Family",
+    },
+    {
+      contactName: "",
+      contactPhone: "",
+      relationship: "Friend",
+    },
+    {
+      contactName: "",
+      contactPhone: "",
+      relationship: "Friend",
+    },
   ]);
-  const toast = useToast();
+  const { toast } = useToast();
 
   const profileId = useRecoilValue(profileIdAtom);
   const accessToken = useRecoilValue(accessTokenAtom);
@@ -27,29 +43,41 @@ export default function EmergencyContactStep({ onStepChange }) {
     setEmergencyContacts(newContacts);
   };
 
-  const transformData = () => {
-    const [family1, family2, friend1, friend2] = emergencyContacts;
-
-    return {
-      profile: profileId,
-      family_name1: family1.contactName,
-      family_name2: family2.contactName,
-      friend_name1: friend1.contactName,
-      friend_name2: friend2.contactName,
-      family_phone1: family1.contactPhone,
-      family_phone2: family2.contactPhone,
-      friend_phone1: friend1.contactPhone,
-      friend_phone2: friend2.contactPhone,
-    };
+  const emergencyDetails = {
+    profile: profileId,
+    family_name1: emergencyContacts[0].contactName,
+    family_name2: emergencyContacts[1].contactName,
+    friend_name1: emergencyContacts[2].contactName,
+    friend_name2: emergencyContacts[3].contactName,
+    family_phone1: emergencyContacts[0].contactPhone,
+    family_phone2: emergencyContacts[1].contactPhone,
+    friend_phone1: emergencyContacts[2].contactPhone,
+    friend_phone2: emergencyContacts[3].contactPhone,
   };
 
-  const handleSubmit = async () => {
-    const requestBody = transformData();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Regex pattern for phone number validation
+    const phonePattern = /^\d{10}$/;
+
+    // Validate phone numbers
+    for (const contact of emergencyContacts) {
+      if (!phonePattern.test(contact.contactPhone)) {
+        toast({
+          title: "Error",
+          description:
+            "Please enter valid 10-digit phone numbers for all contacts.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
 
     try {
       const response = await axios.post(
         `${baseUrl}/profile/create_emergency`,
-        requestBody,
+        emergencyDetails,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -57,9 +85,10 @@ export default function EmergencyContactStep({ onStepChange }) {
         }
       );
       if (response.status < 200 || response.status >= 300) {
-        throw new Error(
-          response.data.message || "Error submitting emergency contacts"
-        );
+        toast({
+          title: "Error",
+          description: "An error occurred while submitting emergency contacts.",
+        });
       }
       onStepChange(5);
       toast({
@@ -84,7 +113,7 @@ export default function EmergencyContactStep({ onStepChange }) {
       <Separator className="bg-sky-200 dark:bg-sky-700" />
       <div className="space-y-4">
         {emergencyContacts.map((contact, index) => (
-          <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div key={index} className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label
                 htmlFor={`contactName-${index}`}
