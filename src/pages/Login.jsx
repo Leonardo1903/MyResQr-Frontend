@@ -43,8 +43,10 @@ function Login() {
         
         if (response.data.status==="existing") {
           setIsUserExisting(true);
+        } else {
+          setIsUserExisting(false);
         }
-        setIsUserExisting(false);
+        
         // navigate("/signup", { replace: true });
         // toast({
         //   title: "Sign Up Required",

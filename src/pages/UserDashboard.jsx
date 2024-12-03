@@ -51,7 +51,7 @@ export default function UserDashboard() {
     { icon: FileText, label: "Medical History", color: "bg-indigo-600 dark:bg-indigo-600", onClick: () => setShowMedicalHistory(!showMedicalHistory) }
   ];
 
-  const medicalConditions = userData.medical_detail[0] || {};
+  const medicalConditions = userData.medical_detail?.[0] || {};
 
   const renderMedicalCondition = (label, value, IconComponent) => (
     <div className="flex items-center justify-between p-3 bg-sky-500/20 dark:bg-sky-500/20 rounded-lg transition-all duration-200 hover:bg-sky-500/30 dark:hover:bg-sky-500/30">
@@ -311,4 +311,4 @@ export default function UserDashboard() {
       </div>
     </div>
   );
-}
+} 

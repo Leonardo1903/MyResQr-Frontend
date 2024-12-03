@@ -118,6 +118,23 @@ export default function Component() {
             'Authorization': `Bearer ${response.data.accessToken}`
         }})
         setUserDashboardData(res.data);
+        
+        if (res.data.medical_detail.length === 0) {
+          navigate('/medical-info', {replace: true});
+          toast({
+            title : "Incomplete Profile",
+            description : "Please complete your profile",
+          })
+          return
+        }
+        if (res.data.emergency_contact.length === 0) {
+          navigate('/emergency-info', {replace: true});
+          toast({
+            title : "Incomplete Profile",
+            description : "Please complete your profile",
+          })
+          return
+        }
         navigate('/user-dashboard', {replace: true});
         toast({
           title : "Success",

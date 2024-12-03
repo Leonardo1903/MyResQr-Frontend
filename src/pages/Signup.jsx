@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "../components/ui/card";
 import StepIndicator from "../components/StepIndicator";
 import PersonalInfoStep from "../components/PersonalInfoStep";
@@ -10,9 +10,13 @@ import { User, Activity, Phone, AlertTriangle } from "lucide-react";
 import GridPattern from "../components/ui/grid-pattern";
 import { cn } from "../lib/utils";
 
-export default function Signup() {
-  const [step, setStep] = useState(1);
+export default function Signup({ initialStep = 1 }) {
+  const [step, setStep] = useState(initialStep);
   const [medicalInfo, setMedicalInfo] = useState({});
+
+  useEffect(() => {
+    setStep(initialStep);
+  }, [initialStep]);
 
   const handleStepChange = (newStep) => {
     setStep(newStep);
@@ -83,7 +87,7 @@ export default function Signup() {
       <div className="z-10 absolute inset-0 w-full h-full flex items-center justify-center p-4">
         <Card className="w-full max-w-4xl  rounded-2xl shadow-xl bg-sky-100 bg-opacity-30 dark:bg-sky-800 dark:bg-opacity-30 backdrop-blur-md border border-sky-200 dark:border-sky-700 mt-60">
           <div className="flex flex-col md:flex-row h-full">
-            <div className="w-full md:w-2/3 p-8 md:p-12">
+            <div className="w-full md:w-2/3 p-8 md:p-12 overflow-y-auto">
               {/* Left Side with form */}
               <form className="space-y-6">{renderStepContent()}</form>
             </div>
