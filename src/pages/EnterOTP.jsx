@@ -1,33 +1,43 @@
-'use client'
-import { useState, useRef, useEffect } from 'react'
-import { Card } from "../components/ui/card"
-import { Input } from "../components/ui/input"
-import { Button } from "../components/ui/button"
-import { Label } from "../components/ui/label"
-import { ArrowLeftIcon, LockIcon } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+"use client";
+import { useState, useRef, useEffect } from "react";
+import { Card } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { Label } from "../components/ui/label";
+import { ArrowLeftIcon, LockIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import GridPattern from "../components/ui/grid-pattern";
 import { cn } from "../lib/utils";
-import axios from 'axios'
-import { useToast } from '../hooks/use-toast';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { accessTokenAtom, emailAtom, idAtom, isUserExistingAtom, phoneNumberAtom, refresh_tokenAtom, userDashboardDataAtom } from '../store/UserAtoms';
+import axios from "axios";
+import { useToast } from "../hooks/use-toast";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  accessTokenAtom,
+  emailAtom,
+  idAtom,
+  isUserExistingAtom,
+  phoneNumberAtom,
+  refresh_tokenAtom,
+  userDashboardDataAtom,
+  roleAtom,
+} from "../store/UserAtoms";
 
 export default function Component() {
-  const [otp, setOtp] = useState(['', '', '', ''])
-  const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)]
+  const [otp, setOtp] = useState(["", "", "", ""]);
+  const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
   const navigate = useNavigate();
   const [timeleft, setTimeleft] = useState(60); // 60 seconds
   const [isResendingDisabled, setIsResendingDisabled] = useState(true);
-  const baseUrl = import.meta.env.VITE_BASE_URL 
-  const {toast} = useToast();
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const { toast } = useToast();
   const [accessToken, setAccessToken] = useRecoilState(accessTokenAtom);
   const [refreshToken, setRefreshToken] = useRecoilState(refresh_tokenAtom);
-  const [phoneNumber, setPhoneNumber] = useRecoilState(phoneNumberAtom)
+  const [phoneNumber, setPhoneNumber] = useRecoilState(phoneNumberAtom);
   const [id, setId] = useRecoilState(idAtom);
-  const [ email, setEmail] = useRecoilState(emailAtom);
+  const [email, setEmail] = useRecoilState(emailAtom);
   const setUserDashboardData = useSetRecoilState(userDashboardDataAtom);
   const isUserExisting = useRecoilValue(isUserExistingAtom);
+  const setRole = useSetRecoilState(roleAtom);
 
   useEffect(() => {
     if (timeleft > 0) {
@@ -37,32 +47,32 @@ export default function Component() {
 
       return () => clearInterval(timer); // Cleanup on unmount
     } else {
-        setIsResendingDisabled(false);
+      setIsResendingDisabled(false);
     }
   }, [timeleft]); // It will also depend on the backend logic
 
   const handleChange = (index, value) => {
     if (value.length <= 1 && /^[0-9]*$/.test(value)) {
-      const newOtp = [...otp]
-      newOtp[index] = value
-      setOtp(newOtp)
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
 
       // Move to next input if value is entered
-      if (value !== '' && index < 3) {
-        inputRefs[index + 1].current.focus()
+      if (value !== "" && index < 3) {
+        inputRefs[index + 1].current.focus();
       }
     }
-  }
+  };
 
   const handleKeyDown = (index, e) => {
-    if (e.key === 'Backspace' && index > 0 && otp[index] === '') {
-      inputRefs[index - 1].current.focus()
+    if (e.key === "Backspace" && index > 0 && otp[index] === "") {
+      inputRefs[index - 1].current.focus();
     }
-  }
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    const enteredOtp = otp.join('')
+    e.preventDefault();
+    const enteredOtp = otp.join("");
     console.log(phoneNumber, enteredOtp);
     if (enteredOtp.length !== 4) {
       toast({
@@ -70,13 +80,13 @@ export default function Component() {
         description: "Please enter a valid OTP.",
         variant: "destructive",
       });
-      return
+      return;
     }
     try {
       const response = await axios.post(`${baseUrl}/account/validate_otp`, {
-        phone_number : phoneNumber,
-        otp : enteredOtp
-      } )
+        phone_number: phoneNumber,
+        otp: enteredOtp,
+      });
 
       //updating the state
       setAccessToken(response.data.accessToken);
@@ -84,7 +94,7 @@ export default function Component() {
       setId(response.data.user.id);
       setPhoneNumber(response.data.user.phone_number);
       setEmail(response.data.user.email);
-      
+
       console.log("Access token : ", response.data.accessToken);
       console.log("Refresh token : ", response.data.refresh_token);
       console.log("ID : ", response.data.user.id);
@@ -93,13 +103,14 @@ export default function Component() {
 
       //checking role
       if (response.data.role === "agent") {
-        navigate('/agent-dashboard', {replace: true});
+        setRole("agent");
+        navigate("/agent-dashboard", { replace: true });
         toast({
-          title : "Successfully signed in",
-          description : "You are now signed in as an agent",
-          variant : "default"
-        })
-        return
+          title: "Successfully signed in",
+          description: "You are now signed in as an agent",
+          variant: "default",
+        });
+        return;
       }
 
       if (isUserExisting != true) {
@@ -107,40 +118,44 @@ export default function Component() {
         toast({
           title: "Sign Up Required",
           description: "You are a new User, please sign up.",
-        })
-        return
+        });
+        return;
       }
-      
+
       //calling getProfile route
       try {
-        const res = await axios.get(`${baseUrl}/profile/get_profile/${response.data.user.id}`, {
-          headers: {
-            'Authorization': `Bearer ${response.data.accessToken}`
-        }})
+        const res = await axios.get(
+          `${baseUrl}/profile/get_profile/${response.data.user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${response.data.accessToken}`,
+            },
+          }
+        );
         setUserDashboardData(res.data);
-        
+
         if (res.data.medical_detail.length === 0) {
-          navigate('/medical-info', {replace: true});
+          navigate("/medical-info", { replace: true });
           toast({
-            title : "Incomplete Profile",
-            description : "Please complete your profile",
-          })
-          return
+            title: "Incomplete Profile",
+            description: "Please complete your profile",
+          });
+          return;
         }
         if (res.data.emergency_contact.length === 0) {
-          navigate('/emergency-info', {replace: true});
+          navigate("/emergency-info", { replace: true });
           toast({
-            title : "Incomplete Profile",
-            description : "Please complete your profile",
-          })
-          return
+            title: "Incomplete Profile",
+            description: "Please complete your profile",
+          });
+          return;
         }
-        navigate('/user-dashboard', {replace: true});
+        navigate("/user-dashboard", { replace: true });
         toast({
-          title : "Success",
-          description : response.data.message,
-          variant : "default"
-        })
+          title: "Success",
+          description: response.data.message,
+          variant: "default",
+        });
       } catch (error) {
         const errorMessage = error.response?.data?.message;
         console.log("Error message : ", error);
@@ -148,21 +163,20 @@ export default function Component() {
           title: "Error",
           description: errorMessage,
           variant: "destructive",
-        })
-      }    
-
+        });
+      }
     } catch (error) {
-      const errorMessage = error.response?.data?.message; 
+      const errorMessage = error.response?.data?.message;
       console.log("Error message : ", error);
-      
+
       toast({
         title: "Error",
         description: errorMessage,
         variant: "destructive",
-      })
+      });
     }
     // console.log('Submitted OTP:', enteredOtp)
-  }
+  };
 
   const handleResendOTP = async () => {
     // Handle resend OTP logic here
@@ -171,33 +185,33 @@ export default function Component() {
         phone_number: phoneNumber,
       });
       toast({
-        title : "Success",
-        description : response.data.message || "OTP resent successfully",
-        variant : "default"
-      })
+        title: "Success",
+        description: response.data.message || "OTP resent successfully",
+        variant: "default",
+      });
       setIsResendingDisabled(true);
       setTimeleft(60);
     } catch (error) {
       const errorMessage = error.response?.data?.message;
-      toast ({
-        title : "Error",
-        description : errorMessage,
-        variant : "destructive"
-      })
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
     }
-  }
+  };
 
   const goToPreviousWindow = () => {
-    navigate("/login", {replace: true});
-  }
+    navigate("/login", { replace: true });
+  };
 
   useEffect(() => {
-    inputRefs[0].current.focus()
-  }, [])
+    inputRefs[0].current.focus();
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center  p-4">
-    <GridPattern
+      <GridPattern
         squares={[
           [4, 4],
           [5, 1],
@@ -225,22 +239,34 @@ export default function Component() {
       <Card className="w-full max-w-md overflow-hidden rounded-2xl shadow-xl bg-sky-100 bg-opacity-30 dark:bg-sky-800 dark:bg-opacity-30 backdrop-blur-md border border-sky-200 dark:border-sky-700">
         <div className="p-8">
           <div className="flex items-center mb-6">
-            <Button onClick={goToPreviousWindow} variant="ghost" className="p-0 mr-4 text-sky-700 dark:text-sky-300 hover:bg-transparent">
+            <Button
+              onClick={goToPreviousWindow}
+              variant="ghost"
+              className="p-0 mr-4 text-sky-700 dark:text-sky-300 hover:bg-transparent"
+            >
               <ArrowLeftIcon size={24} />
             </Button>
-            <h2 className="text-2xl font-bold text-sky-800 dark:text-sky-100">Enter OTP</h2>
+            <h2 className="text-2xl font-bold text-sky-800 dark:text-sky-100">
+              Enter OTP
+            </h2>
           </div>
           <div className="mb-8 text-center">
             <div className="w-20 h-20 mx-auto mb-4 flex items-center justify-center bg-sky-200 dark:bg-sky-700 rounded-full">
               <LockIcon size={40} className="text-sky-600 dark:text-sky-300" />
             </div>
-            <p className="text-sky-700 dark:text-sky-300">We've sent a code to your phone</p>
-            <p className="text-sky-600 dark:text-sky-400 font-semibold">{phoneNumber}</p>
+            <p className="text-sky-700 dark:text-sky-300">
+              We've sent a code to your phone
+            </p>
+            <p className="text-sky-600 dark:text-sky-400 font-semibold">
+              {phoneNumber}
+            </p>
           </div>
           <form onSubmit={handleSubmit}>
             <div className="space-y-6">
               <div>
-                <Label htmlFor="otp-1" className="sr-only">OTP</Label>
+                <Label htmlFor="otp-1" className="sr-only">
+                  OTP
+                </Label>
                 <div className="flex justify-between max-w-xs mx-auto">
                   {otp.map((digit, index) => (
                     <Input
@@ -259,8 +285,8 @@ export default function Component() {
                   ))}
                 </div>
               </div>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="w-full bg-sky-600 hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-600 text-white font-semibold py-3 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
               >
                 Verify OTP
@@ -268,18 +294,22 @@ export default function Component() {
             </div>
           </form>
           <div className="mt-6 text-center">
-            <p className="text-sky-700 dark:text-sky-300">Didn't receive the code?</p>
-            <Button 
-              variant="link" 
+            <p className="text-sky-700 dark:text-sky-300">
+              Didn't receive the code?
+            </p>
+            <Button
+              variant="link"
               className="text-sky-600 dark:text-sky-400 hover:text-sky-800 dark:hover:text-sky-200 font-semibold"
-              disabled = {isResendingDisabled}
+              disabled={isResendingDisabled}
               onClick={handleResendOTP}
             >
-              {isResendingDisabled ? `Resend otp in ${timeleft} seconds` : "Resend OTP"}
+              {isResendingDisabled
+                ? `Resend otp in ${timeleft} seconds`
+                : "Resend OTP"}
             </Button>
           </div>
         </div>
       </Card>
     </div>
-  )
+  );
 }

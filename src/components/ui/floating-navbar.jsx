@@ -1,22 +1,69 @@
 "use client";
-import React, { useState } from "react";
-import {
-  motion,
-  AnimatePresence,
-} from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../../lib/utils";
 import { NavLink, Link } from "react-router-dom";
 import { ModeToggle } from "../mode-toggle";
 import logoDark from "../../assets/Logo-Dark.png";
 import logoLight from "../../assets/Logo-Light.png";
 import { useTheme } from "../theme-provider";
+import {
+  accessTokenAtom,
+  refresh_tokenAtom,
+  isUserExistingAtom,
+  idAtom,
+  phoneNumberAtom,
+  emailAtom,
+  trace_idAtom,
+  profileIdAtom,
+  roleAtom,
+  userDashboardDataAtom,
+} from "../../store/UserAtoms";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
+import { Button } from "./button";
 
-export const FloatingNav = ({
-  navItems,
-  className
-}) => {
+export const FloatingNav = ({ navItems, className }) => {
+  const navigate = useNavigate();
   const { theme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const isLoggedIn = useRecoilValue(accessTokenAtom);
+
+  const setRefreshToken = useSetRecoilState(refresh_tokenAtom);
+  const setIsUserExisting = useSetRecoilState(isUserExistingAtom);
+  const setId = useSetRecoilState(idAtom);
+  const setPhoneNumber = useSetRecoilState(phoneNumberAtom);
+  const setEmail = useSetRecoilState(emailAtom);
+  const setTraceId = useSetRecoilState(trace_idAtom);
+  const setProfileId = useSetRecoilState(profileIdAtom);
+  const setRole = useSetRecoilState(roleAtom);
+  const setUserDashboardData = useSetRecoilState(userDashboardDataAtom);
+
+  const handleLogout = () => {
+    setRefreshToken("");
+    setIsUserExisting(false);
+    setId("");
+    setPhoneNumber("");
+    setEmail("");
+    setTraceId("");
+    setProfileId("");
+    setRole("");
+    setUserDashboardData({
+      id: null,
+      emergency_contact: [],
+      medical_detail: [
+        {
+          blood_group: "",
+          blood_donor: "",
+          blood_pressure: "",
+          diabetes: "",
+          cholesterol: "",
+          heart_related: "",
+        },
+      ],
+    });
+    navigate("/");
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -35,7 +82,8 @@ export const FloatingNav = ({
         className={cn(
           "flex max-w-[90%] sm:max-w-[80%] fixed top-2 sm:top-10 inset-x-0 mx-auto border border-transparent dark:border-white/[0.2] rounded-full dark:bg-opacity-40 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] z-[50] pr-2 pl-4 sm:pl-8 py-2 items-center justify-between space-x-2 sm:space-x-4 bg-opacity-40 backdrop-blur-md",
           className
-        )}>
+        )}
+      >
         {theme === "dark" ? (
           <img src={logoDark} alt="Logo" className="h-6 sm:h-8" />
         ) : (
@@ -48,21 +96,27 @@ export const FloatingNav = ({
               to={navItem.link}
               className={cn(
                 "relative dark:text-neutral-50 items-center flex space-x-1 dark:hover:text-neutral-300 hover:text-neutral-500 text-black"
-              )}>
+              )}
+            >
               <span className="block sm:hidden">{navItem.icon}</span>
               <span className="hidden sm:block text-sm">{navItem.name}</span>
             </NavLink>
           ))}
         </div>
-        
+
         <div className="hidden sm:flex space-x-2 sm:space-x-4">
           <Link
             to="/login"
             className="border text-xs sm:text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-2 sm:px-4 py-1 sm:py-2 rounded-full"
           >
-            <span>Login</span>
-            <span
-              className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px" />
+            {isLoggedIn ? (
+              <p onClick={handleLogout} className="text-xs sm:text-sm">
+                Logout
+              </p>
+            ) : (
+              <p className="text-xs sm:text-sm">Login</p>
+            )}
+            <span className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px" />
           </Link>
           <ModeToggle />
         </div>
@@ -83,7 +137,9 @@ export const FloatingNav = ({
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
-                d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"}
+                d={
+                  isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"
+                }
               />
             </svg>
           </button>
@@ -116,9 +172,14 @@ export const FloatingNav = ({
               className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full"
               onClick={() => setIsMenuOpen(false)}
             >
-              <span>Login</span>
-              <span
-                className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px" />
+              {isLoggedIn ? (
+                <p onClick={handleLogout} className="text-xs sm:text-sm">
+                  Logout
+                </p>
+              ) : (
+                <p className="text-xs sm:text-sm">Login</p>
+              )}
+              <span className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px" />
             </Link>
             <ModeToggle />
           </div>

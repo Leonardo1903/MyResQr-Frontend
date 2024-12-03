@@ -40,6 +40,11 @@ export const profileIdAtom = atom({
   default: "",
 });
 
+export const roleAtom =atom({
+  key: "roleAtom",
+  default: "",
+})
+
 export const userDashboardDataAtom = atom({
   key: 'userDashboardDataAtom', 
   default: {
