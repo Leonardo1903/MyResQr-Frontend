@@ -45,6 +45,11 @@ export const roleAtom =atom({
   default: "",
 })
 
+export const pinAtom = atom({
+  key: "pinAtom",
+  default: "",
+})
+
 export const userDashboardDataAtom = atom({
   key: 'userDashboardDataAtom', 
   default: {

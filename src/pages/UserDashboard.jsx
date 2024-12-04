@@ -3,11 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Badge } from "../components/ui/badge";
-import { PhoneCall, Mail, MapPin, Calendar, Activity, BookUser, Clock, Shield, Users, FileText, Smartphone, Home, Flag, MapPinned, Heart, Droplets, Brain, Pill, Syringe, Stethoscope, Thermometer, Bone, AlertCircle, TreesIcon as Lungs, CreditCard, CreditCardIcon, KeyIcon, IndianRupee , Tag, CheckCircle, Coffee } from 'lucide-react';
+import { PhoneCall, Mail, MapPin, Calendar, Activity, BookUser, Clock, Shield, Users, FileText, Smartphone, Home, Flag, MapPinned, Heart, Droplets, Brain, Pill, Syringe, Stethoscope, Thermometer, Bone, AlertCircle, TreesIcon as Lungs, CreditCard, CreditCardIcon, KeyIcon, IndianRupee , Tag, CheckCircle, Coffee, User, Phone, Hospital, ExternalLink  } from 'lucide-react';
 import GridPattern from "../components/ui/grid-pattern";
 import { cn } from "../lib/utils";
-import { useRecoilValue } from "recoil";
-import { accessTokenAtom, idAtom, userDashboardDataAtom } from "../store/UserAtoms";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { accessTokenAtom, idAtom, pinAtom, userDashboardDataAtom } from "../store/UserAtoms";
 import axios from 'axios';
 import { toast } from '../hooks/use-toast';
 
@@ -20,10 +20,14 @@ export default function UserDashboard() {
   const [planDetails, setPlanDetails] = useState({});
   const accessToken = useRecoilValue(accessTokenAtom);
   const baseUrl = import.meta.env.VITE_BASE_URL;
+  const [pin, setPin] = useRecoilState(pinAtom);
+  const [showScanLogs, setShowScanLogs] = useState(false);
+  const [scanLogData, setScanLogData] = useState({});
+  ;
 
   const handleGetPlanDetails = async () => {
-      console.log("ID:", id);
-      console.log("Access token:", accessToken);
+      // console.log("ID:", id);
+      // console.log("Access token:", accessToken);
     try {
       const response = await axios.get(`${baseUrl}/pin_manager/pin_details/${id}`, {
         headers: {
@@ -31,7 +35,8 @@ export default function UserDashboard() {
         },
       });
       setPlanDetails(response.data);
-      console.log("Plan details:", response.data);
+      setPin(response.data.pin_number);
+      // console.log("Plan details:", response.data);
     } catch (error) {
       const errorMessage = error.response?.data?.message;
       console.error("Failed to fetch plan details:", error);
@@ -42,6 +47,21 @@ export default function UserDashboard() {
       })
     }
   };
+
+  const handleScanLogs = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/post_scan/scan_log/${pin}`)
+      setScanLogData(response.data);
+    } catch (error) {
+      console.log(error);
+      const errorMessage = error.response?.data?.message;
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      })
+    }
+  }
 
   const medicalIcons = {
     blood_group: Droplets,
@@ -79,20 +99,28 @@ export default function UserDashboard() {
         await handleGetPlanDetails();
       }
     }},
-    { icon: Clock, label: "Scan Logs", color: "bg-emerald-600 dark:bg-emerald-600" },
+    { icon: Clock, label: "Scan Logs", color: "bg-emerald-600 dark:bg-emerald-600" , onClick: async () => {
+      setShowScanLogs(!showScanLogs);
+      if (!showScanLogs) {
+        await handleScanLogs();
+      }
+    }},
     { icon: Shield, label: "Insurance", color: "bg-violet-600 dark:bg-violet-600" },
     { icon: Users, label: "Emergency Contacts", color: "bg-amber-600 dark:bg-amber-600", onClick: () => setShowEmergencyContacts(!showEmergencyContacts) },
     { icon: FileText, label: "Medical History", color: "bg-indigo-600 dark:bg-indigo-600", onClick: () => setShowMedicalHistory(!showMedicalHistory) }
   ];
 
-  const formatDate = (timestamp) => {
-    return new Date(timestamp * 1000).toLocaleDateString('en-US', {
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
     });
   };
-
   const formatCurrency = (amount, currency) => {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency }).format(amount / 100);
   };
@@ -205,6 +233,7 @@ export default function UserDashboard() {
           </div>
         </div>
 
+        {/* Medical History */}
         {showMedicalHistory && (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {Object.entries(medicalConditions).map(([key, value]) => {
@@ -252,6 +281,7 @@ export default function UserDashboard() {
           </div>
         )}
 
+        {/* Emergency Contacts */}
         {showEmergencyContacts && (
           <div className="grid gap-6 md:grid-cols-2">
             {/* Family Contacts */}
@@ -271,6 +301,7 @@ export default function UserDashboard() {
                         {userData.emergency_contact[0].family_rel1 && (
                           <p className="text-sm text-sky-200">{userData.emergency_contact[0].family_rel1}</p>
                         )}
+                        <p className="text-sm text-sky-200">{userData.emergency_contact[0].family_phone1}</p>
                       </div>
                       <Button 
                         variant="ghost" 
@@ -291,6 +322,7 @@ export default function UserDashboard() {
                         {userData.emergency_contact[0].family_rel2 && (
                           <p className="text-sm text-sky-200">{userData.emergency_contact[0].family_rel2}</p>
                         )}
+                        <p className="text-sm text-sky-200">{userData.emergency_contact[0].family_phone2}</p>
                       </div>
                       <Button 
                         variant="ghost" 
@@ -356,83 +388,144 @@ export default function UserDashboard() {
           </div>
         )}
 
-        
-      {showPlanDetails && (
-        <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-sky-800 dark:text-white flex items-center gap-2">
-              <CreditCard className="h-6 w-6 text-sky-500" />
-              Plan Details
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
+        {/* Plan Details */}
+        {showPlanDetails && (
+          <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-sky-800 dark:text-white flex items-center gap-2">
+                <CreditCard className="h-6 w-6 text-sky-500" />
+                Plan Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="p-6 rounded-lg bg-sky-500/20 dark:bg-sky-500/20 space-y-4">
+                  <h3 className="text-xl font-semibold text-sky-800 dark:text-white flex items-center gap-2">
+                    <CreditCardIcon className="h-5 w-5 text-sky-500" />
+                    Subscription Information
+                  </h3>
+                  <div className="space-y-2">
+                    <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                      <KeyIcon className="h-4 w-4" />
+                      <span className="font-medium">PIN:</span> {planDetails.pin_number}
+                    </p>
+                    <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4" />
+                      <span className="font-medium">Status:</span> 
+                      <Badge className={cn(
+                        "ml-2",
+                        planDetails.subscription?.status === "active" ? "bg-green-500" : "bg-yellow-500"
+                      )}>
+                        {planDetails.subscription?.status}
+                      </Badge>
+                    </p>
+                    <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      <span className="font-medium">Expires:</span> {planDetails.subscription ? formatDate(planDetails.subscription.expire_by) : 'N/A'}
+                    </p>
+                  </div>
+                </div>
+                <div className="p-6 rounded-lg bg-sky-500/20 dark:bg-sky-500/20 space-y-4">
+                  <h3 className="text-xl font-semibold text-sky-800 dark:text-white flex items-center gap-2">
+                    <Tag className="h-5 w-5 text-sky-500" />
+                    Plan Details
+                  </h3>
+                  <div className="space-y-2">
+                    <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      <span className="font-medium">Name:</span> {planDetails.plan?.item?.name}
+                    </p>
+                    <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                      <AlertCircle className="h-4 w-4" />
+                      <span className="font-medium">Description:</span> {planDetails.plan?.item?.description}
+                    </p>
+                    <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                      <IndianRupee className="h-4 w-4" />
+                      <span className="font-medium">Amount:</span> {planDetails.plan?.item ? formatCurrency(planDetails.plan.item.amount, planDetails.plan.item.currency) : 'N/A'}
+                    </p>
+                  </div>
+                </div>
+              </div>
               <div className="p-6 rounded-lg bg-sky-500/20 dark:bg-sky-500/20 space-y-4">
                 <h3 className="text-xl font-semibold text-sky-800 dark:text-white flex items-center gap-2">
-                  <CreditCardIcon className="h-5 w-5 text-sky-500" />
-                  Subscription Information
+                  <Clock className="h-5 w-5 text-sky-500" />
+                  Billing Cycle
                 </h3>
                 <div className="space-y-2">
                   <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                    <KeyIcon className="h-4 w-4" />
-                    <span className="font-medium">PIN:</span> {planDetails.pin_number}
+                    <Calendar className="h-4 w-4" />
+                    <span className="font-medium">Period:</span> {planDetails.plan?.period}
                   </p>
                   <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4" />
-                    <span className="font-medium">Status:</span> 
+                    <Clock className="h-4 w-4" />
+                    <span className="font-medium">Next Charge:</span> {planDetails.subscription ? formatDate(planDetails.subscription.charge_at) : 'N/A'}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Scan Logs Details */}
+        {showScanLogs && (
+          <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-sky-800 dark:text-white flex items-center gap-2">
+                <Clock className="h-6 w-6 text-sky-500" />
+                Scan Logs
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {scanLogData.results?.map((log) => (
+                <div key={log.id} className="p-6 rounded-lg bg-sky-500/20 dark:bg-sky-500/20 space-y-4">
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-semibold text-sky-800 dark:text-white flex items-center gap-2">
+                        <User className="h-5 w-5 text-sky-500" />
+                        <span className="font-medium">Saviour Name:</span>
+                        {log.saviour_name}
+                      </h3>
+                      <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                        <Phone className="h-4 w-4" />
+                        {log.saviour_phone_number}
+                      </p>
+                    </div>
                     <Badge className={cn(
-                      "ml-2",
-                      planDetails.subscription?.status === "active" ? "bg-green-500" : "bg-yellow-500"
+                      log.is_doctor ? "bg-green-500" : "bg-blue-500",
+                      "flex items-center gap-1"
                     )}>
-                      {planDetails.subscription?.status}
+                      {log.is_doctor ? <Hospital className="h-3 w-3" /> : <User className="h-3 w-3" />}
+                      {log.is_doctor ? "Doctor" : "Non-Doctor"}
                     </Badge>
+                  </div>
+                  {log.is_doctor && (
+                    <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                      <Hospital className="h-4 w-4" />
+                      <span className="font-medium">Hospital:</span> {log.hospital_name}
+                    </p>
+                  )}
+                  <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
+                    <MapPin className="h-4 w-4" />
+                    <span className="font-medium">Location:</span> {log.saviour_location}
                   </p>
                   <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
                     <Calendar className="h-4 w-4" />
-                    <span className="font-medium">Expires:</span> {planDetails.subscription ? formatDate(planDetails.subscription.expire_by) : 'N/A'}
+                    <span className="font-medium">Scan Time:</span> {formatDate(log.created)}
                   </p>
+                  <Button 
+                    variant="outline" 
+                    className="w-[40%] mt-2 text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300"
+                    onClick={() => window.open(log.saviour_location_url, '_blank')}
+                  >
+                    <MapPin className="mr-2 h-4 w-4" />
+                    View on Map
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </Button>
                 </div>
-              </div>
-              <div className="p-6 rounded-lg bg-sky-500/20 dark:bg-sky-500/20 space-y-4">
-                <h3 className="text-xl font-semibold text-sky-800 dark:text-white flex items-center gap-2">
-                  <Tag className="h-5 w-5 text-sky-500" />
-                  Plan Details
-                </h3>
-                <div className="space-y-2">
-                  <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
-                    <span className="font-medium">Name:</span> {planDetails.plan?.item?.name}
-                  </p>
-                  <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4" />
-                    <span className="font-medium">Description:</span> {planDetails.plan?.item?.description}
-                  </p>
-                  <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                    <IndianRupee className="h-4 w-4" />
-                    <span className="font-medium">Amount:</span> {planDetails.plan?.item ? formatCurrency(planDetails.plan.item.amount, planDetails.plan.item.currency) : 'N/A'}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="p-6 rounded-lg bg-sky-500/20 dark:bg-sky-500/20 space-y-4">
-              <h3 className="text-xl font-semibold text-sky-800 dark:text-white flex items-center gap-2">
-                <Clock className="h-5 w-5 text-sky-500" />
-                Billing Cycle
-              </h3>
-              <div className="space-y-2">
-                <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  <span className="font-medium">Period:</span> {planDetails.plan?.period}
-                </p>
-                <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  <span className="font-medium">Next Charge:</span> {planDetails.subscription ? formatDate(planDetails.subscription.charge_at) : 'N/A'}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+              ))}
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
