@@ -3,13 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Badge } from "../components/ui/badge";
-import { PhoneCall, Mail, MapPin, Calendar, Activity, BookUser, Clock, Shield, Users, FileText, Smartphone, Home, Flag, MapPinned, Heart, Droplets, Brain, Pill, Syringe, Stethoscope, Thermometer, Bone, AlertCircle, TreesIcon as Lungs, CreditCard, CreditCardIcon, KeyIcon, IndianRupee , Tag, CheckCircle, Coffee, User, Phone, Hospital, ExternalLink  } from 'lucide-react';
+import { PhoneCall, Mail, MapPin, Calendar, Activity, BookUser, Clock, Shield, Users, FileText, Smartphone, Home, Flag, MapPinned, Heart, Droplets, Brain, Pill, Syringe, Stethoscope, Thermometer, Bone, AlertCircle, TreesIcon as Lungs, CreditCard, CreditCardIcon, KeyIcon, IndianRupee , Tag, CheckCircle, Coffee, User, Phone, Hospital, ExternalLink, Edit, UserCog, FileSignature  } from 'lucide-react';
 import GridPattern from "../components/ui/grid-pattern";
 import { cn } from "../lib/utils";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { accessTokenAtom, idAtom, pinAtom, userDashboardDataAtom } from "../store/UserAtoms";
 import axios from 'axios';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../components/ui/dialog";
 import { toast } from '../hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserDashboard() {
   const userData = useRecoilValue(userDashboardDataAtom);
@@ -23,7 +25,8 @@ export default function UserDashboard() {
   const [pin, setPin] = useRecoilState(pinAtom);
   const [showScanLogs, setShowScanLogs] = useState(false);
   const [scanLogData, setScanLogData] = useState({});
-  ;
+  const [isUpdateProfileOpen, setIsUpdateProfileOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleGetPlanDetails = async () => {
       // console.log("ID:", id);
@@ -179,45 +182,72 @@ export default function UserDashboard() {
 
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="grid gap-6">
-          <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20">
-            <CardContent className="p-6">
-              <div className="flex flex-col lg:flex-row gap-6">
-                <div className="flex flex-col items-center lg:items-start gap-4">
-                  <Avatar className="w-32 h-32 border-4 border-sky-200/20">
-                    <AvatarImage src={userData.image} alt={`${userData.first_name} ${userData.last_name}`} />
-                    <AvatarFallback className="text-3xl bg-sky-500">
-                      {userData.first_name[0]}{userData.last_name[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                  <Button 
-                    variant="destructive" 
-                    size="lg"
-                    className="bg-red-500 hover:bg-red-600 text-white w-full lg:w-auto"
-                  >
-                    <PhoneCall className="mr-2 h-5 w-5" />
-                    Emergency Call
-                  </Button>
-                </div>
+        <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20 relative">
+          <div className="flex justify-between items-start p-6">
+            <div className="flex flex-col lg:flex-row gap-6">
+              <div className="flex flex-col items-center lg:items-start gap-4">
+                <Avatar className="w-32 h-32 border-4 border-sky-200/20">
+                  <AvatarImage src={userData.image} alt={`${userData.first_name} ${userData.last_name}`} />
+                  <AvatarFallback className="text-3xl bg-sky-500">
+                    {userData.first_name[0]}{userData.last_name[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <Button 
+                  variant="destructive" 
+                  size="lg"
+                  className="bg-red-500 hover:bg-red-600 text-white w-full lg:w-auto"
+                >
+                  <PhoneCall className="mr-2 h-5 w-5" />
+                  Emergency Call
+                </Button>
+              </div>
 
-                <div className="flex-1">
-                  <div className="mb-6">
-                    <h1 className="text-3xl font-bold text-sky-800 dark:text-white mb-2">
-                      {`${userData.first_name} ${userData.last_name}`}
-                    </h1>
-                    <Badge className="bg-sky-500/50 dark:bg-sky-500/50">ID: #{userData.id}</Badge>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {personalDetails.map((detail, index) => (
-                      <div key={index} className="flex items-center gap-2 text-sky-800 dark:text-sky-100">
-                        <detail.icon className="w-4 h-4 text-sky-500 dark:text-sky-300" />
-                        <span className="text-sm">{detail.value}</span>
-                      </div>
-                    ))}
-                  </div>
+              <div className="flex-1">
+                <div className="mb-6">
+                  <h1 className="text-3xl font-bold text-sky-800 dark:text-white mb-2">
+                    {`${userData.first_name} ${userData.last_name}`}
+                  </h1>
+                  <Badge className="bg-sky-500/50 dark:bg-sky-500/50">ID: #{userData.id}</Badge>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {personalDetails.map((detail, index) => (
+                    <div key={index} className="flex items-center gap-2 text-sky-800 dark:text-sky-100">
+                      <detail.icon className="w-4 h-4 text-sky-500 dark:text-sky-300" />
+                      <span className="text-sm">{detail.value}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+            <Dialog open={isUpdateProfileOpen} onOpenChange={setIsUpdateProfileOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-sky-500 hover:bg-sky-600 text-white">
+                  <Edit className="mr-2 h-5 w-5" />
+                  Update Profile
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] bg-white/10 backdrop-blur-md border-sky-200/20 text-white">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold text-sky-800 dark:text-white">Update Profile</DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <Button className="bg-sky-500 hover:bg-sky-600 text-white" onClick={() => navigate("/update-profile")}>
+                    <UserCog className="mr-2 h-5 w-5" />
+                    Update Personal Details
+                  </Button>
+                  <Button className="bg-amber-500 hover:bg-amber-600 text-white" onClick={() => navigate('/update-emergency-info')}>
+                    <FileSignature className="mr-2 h-5 w-5" />
+                    Update Emergency Details
+                  </Button>
+                  <Button className="bg-emerald-500 hover:bg-emerald-600 text-white" onClick={() => navigate("/update-medical-info")}>
+                    <Stethoscope className="mr-2 h-5 w-5" />
+                    Update Medical Details
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </Card>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {actionButtons.map((button, index) => (

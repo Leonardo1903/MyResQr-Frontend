@@ -18,17 +18,20 @@ import {
   profileIdAtom,
   roleAtom,
   userDashboardDataAtom,
+  pinAtom,
 } from "../../store/UserAtoms";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { Button } from "./button";
+import { toast } from "../../hooks/use-toast";
 
 export const FloatingNav = ({ navItems, className }) => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const isLoggedIn = useRecoilValue(accessTokenAtom);
+  const accessToken = useRecoilValue(accessTokenAtom);
 
+  const setAccessToken = useSetRecoilState(accessTokenAtom);
   const setRefreshToken = useSetRecoilState(refresh_tokenAtom);
   const setIsUserExisting = useSetRecoilState(isUserExistingAtom);
   const setId = useSetRecoilState(idAtom);
@@ -38,8 +41,10 @@ export const FloatingNav = ({ navItems, className }) => {
   const setProfileId = useSetRecoilState(profileIdAtom);
   const setRole = useSetRecoilState(roleAtom);
   const setUserDashboardData = useSetRecoilState(userDashboardDataAtom);
+  const setPin = useSetRecoilState(pinAtom)
 
   const handleLogout = () => {
+    setAccessToken("");
     setRefreshToken("");
     setIsUserExisting(false);
     setId("");
@@ -48,6 +53,7 @@ export const FloatingNav = ({ navItems, className }) => {
     setTraceId("");
     setProfileId("");
     setRole("");
+    setPin("");
     setUserDashboardData({
       id: null,
       emergency_contact: [],
@@ -63,6 +69,10 @@ export const FloatingNav = ({ navItems, className }) => {
       ],
     });
     navigate("/");
+    toast({
+      title: "Logout Successful",
+      description: "You have been logged out successfully",
+    })
   };
 
   return (
@@ -105,19 +115,21 @@ export const FloatingNav = ({ navItems, className }) => {
         </div>
 
         <div className="hidden sm:flex space-x-2 sm:space-x-4">
-          <Link
-            to="/login"
-            className="border text-xs sm:text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-2 sm:px-4 py-1 sm:py-2 rounded-full"
-          >
-            {isLoggedIn ? (
-              <p onClick={handleLogout} className="text-xs sm:text-sm">
-                Logout
-              </p>
-            ) : (
-              <p className="text-xs sm:text-sm">Login</p>
-            )}
-            <span className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px" />
-          </Link>
+          {accessToken ? (
+            <Button
+              onClick={handleLogout}
+              className="border text-xs sm:text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-2 sm:px-4 py-1 sm:py-2 rounded-full"
+            >
+              Logout
+            </Button>
+          ) : (
+            <Link
+              to="/login"
+              className="border text-xs sm:text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-2 sm:px-4 py-1 sm:py-2 rounded-full"
+            >
+              Login
+            </Link>
+          )}
           <ModeToggle />
         </div>
 
@@ -167,20 +179,25 @@ export const FloatingNav = ({ navItems, className }) => {
                 <span className="text-sm">{navItem.name}</span>
               </NavLink>
             ))}
-            <Link
-              to="/login"
-              className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {isLoggedIn ? (
-                <p onClick={handleLogout} className="text-xs sm:text-sm">
-                  Logout
-                </p>
-              ) : (
-                <p className="text-xs sm:text-sm">Login</p>
-              )}
-              <span className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px" />
-            </Link>
+            {accessToken ? (
+              <Button
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
+                className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full"
+              >
+                Logout
+              </Button>
+            ) : (
+              <Link
+                to="/login"
+                className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Login
+              </Link>
+            )}
             <ModeToggle />
           </div>
         </motion.div>
