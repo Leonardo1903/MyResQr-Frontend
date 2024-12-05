@@ -15,6 +15,9 @@ import EnterOTP from "./pages/EnterOTP";
 import CreateNewUserByAgent from "./pages/CreateNewUserByAgent";
 import { RecoilRoot } from "recoil";
 import UserDashboard from "./pages/UserDashboard";
+import ProfileUpdate from "./pages/ProfileUpdate";
+import MedicalInfoUpdate from "./pages/MedicalInfoUpdate";
+import EmergencyContactsUpdate from "./pages/EmergencyContactsUpdate";
 
 function App() {
   const router = createBrowserRouter(
@@ -29,6 +32,9 @@ function App() {
           <Route path="/agent-dashboard" element={<CreateNewUserByAgent />} />
           <Route path="/medical-info" element={<Signup initialStep={2} />} />
           <Route path="/emergency-info" element={<Signup initialStep={4} />} />
+          <Route path="/update-profile" element={<ProfileUpdate />} />
+          <Route path="/update-medical-info" element={<MedicalInfoUpdate />} />
+          <Route path="/update-emergency-info" element={<EmergencyContactsUpdate />} />
         </Route>
       </>
     )
