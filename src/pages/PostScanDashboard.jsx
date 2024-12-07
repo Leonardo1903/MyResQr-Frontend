@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,14 +12,9 @@ import {
   PhoneCall,
   Mail,
   MapPin,
-  Calendar,
   Activity,
-  BookUser,
-  Clock,
-  Shield,
   Users,
   FileText,
-  Smartphone,
   Home,
   Flag,
   MapPinned,
@@ -33,96 +28,60 @@ import {
   Bone,
   AlertCircle,
   TreesIcon as Lungs,
-  CreditCard,
-  CreditCardIcon,
-  KeyIcon,
-  IndianRupee,
-  Tag,
-  CheckCircle,
-  Coffee,
-  User,
-  Phone,
-  Hospital,
-  ExternalLink,
-  Edit,
-  UserCog,
-  FileSignature,
 } from "lucide-react";
 import GridPattern from "../components/ui/grid-pattern";
 import { cn } from "../lib/utils";
-import { useRecoilState, useRecoilValue } from "recoil";
-import {
-  accessTokenAtom,
-  idAtom,
-  pinAtom,
-  userDashboardDataAtom,
-} from "../store/UserAtoms";
+import { useRecoilValue } from "recoil";
+import { postScanPinAtom, saviourDetailsAtom } from "../store/UserAtoms";
 import axios from "axios";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../components/ui/dialog";
-import { toast } from "../hooks/use-toast";
-import { useNavigate } from "react-router-dom";
+import { useToast } from "../hooks/use-toast";
 
-export default function UserDashboard() {
-  const userData = useRecoilValue(userDashboardDataAtom);
+export default function PostScanDashboard() {
+  const { toast } = useToast();
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const pin = useRecoilValue(postScanPinAtom);
+  const saviourDetails = useRecoilValue(saviourDetailsAtom);
   const [showMedicalHistory, setShowMedicalHistory] = useState(false);
   const [showEmergencyContacts, setShowEmergencyContacts] = useState(false);
-  const [showPlanDetails, setShowPlanDetails] = useState(false);
-  const id = useRecoilValue(idAtom);
-  const [planDetails, setPlanDetails] = useState({});
-  const accessToken = useRecoilValue(accessTokenAtom);
-  const baseUrl = import.meta.env.VITE_BASE_URL;
-  const [pin, setPin] = useRecoilState(pinAtom);
-  const [showScanLogs, setShowScanLogs] = useState(false);
-  const [scanLogData, setScanLogData] = useState({});
-  const [isUpdateProfileOpen, setIsUpdateProfileOpen] = useState(false);
-  const navigate = useNavigate();
+  const [nearestHospitalData, setNearestHospitalData] = useState(null);
 
-  const handleGetPlanDetails = async () => {
-    // console.log("ID:", id);
-    // console.log("Access token:", accessToken);
-    try {
-      const response = await axios.get(
-        `${baseUrl}/pin_manager/pin_details/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      setPlanDetails(response.data);
-      setPin(response.data.pin_number);
-      // console.log("Plan details:", response.data);
-    } catch (error) {
-      const errorMessage = error.response?.data?.message;
-      console.error("Failed to fetch plan details:", error);
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleScanLogs = async () => {
-    try {
-      const response = await axios.get(`${baseUrl}/post_scan/scan_log/${pin}`);
-      setScanLogData(response.data);
-    } catch (error) {
-      console.log(error);
-      const errorMessage = error.response?.data?.message;
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    }
-  };
+  const [userData, setUserData] = useState({
+    pin: pin,
+    emergency_contact: [],
+    medical_detail: [
+      {
+        blood_group: "",
+        blood_donor: "",
+        blood_pressure: "",
+        diabetes: "",
+        cholesterol: "",
+        heart_related: "",
+        asthma: "",
+        tuberculosis: "",
+        mental_illness: "",
+        epilepsy: "",
+        nsaids: "",
+        steroids: "",
+        anticogulant: "",
+        surgery_history: "",
+        organ_implant: "",
+        disabled: "",
+        reason_disabled: "",
+        additonal_info: "",
+        medications: "",
+        allergies: "",
+      },
+    ],
+    first_name: "",
+    last_name: "",
+    email_id: "",
+    mobile_number: "",
+    address: "",
+    city: "",
+    state: "",
+    country: "",
+    image: "",
+  });
 
   const medicalIcons = {
     blood_group: Droplets,
@@ -145,8 +104,6 @@ export default function UserDashboard() {
   const personalDetails = [
     { icon: Mail, label: "Email", value: userData.email_id },
     { icon: PhoneCall, label: "Mobile", value: userData.mobile_number },
-    { icon: Smartphone, label: "WhatsApp", value: userData.whatsapp_number },
-    { icon: Calendar, label: "Date of Birth", value: userData.dob },
     { icon: Home, label: "Address", value: userData.address },
     { icon: MapPinned, label: "City", value: userData.city },
     { icon: MapPin, label: "State", value: userData.state },
@@ -154,33 +111,6 @@ export default function UserDashboard() {
   ];
 
   const actionButtons = [
-    {
-      icon: BookUser,
-      label: "Plan Details",
-      color: "bg-sky-600 dark:bg-sky-600",
-      onClick: async () => {
-        setShowPlanDetails(!showPlanDetails);
-        if (!showPlanDetails) {
-          await handleGetPlanDetails();
-        }
-      },
-    },
-    {
-      icon: Clock,
-      label: "Scan Logs",
-      color: "bg-emerald-600 dark:bg-emerald-600",
-      onClick: async () => {
-        setShowScanLogs(!showScanLogs);
-        if (!showScanLogs) {
-          await handleScanLogs();
-        }
-      },
-    },
-    {
-      icon: Shield,
-      label: "Insurance",
-      color: "bg-violet-600 dark:bg-violet-600",
-    },
     {
       icon: Users,
       label: "Emergency Contacts",
@@ -193,27 +123,25 @@ export default function UserDashboard() {
       color: "bg-indigo-600 dark:bg-indigo-600",
       onClick: () => setShowMedicalHistory(!showMedicalHistory),
     },
+    {
+      icon: PhoneCall,
+      label: "Call Ambulance",
+      color: "bg-red-600 dark:bg-red-600",
+      onClick: () => {
+        callAmbulance();
+      },
+    },
+    {
+      icon: MapPin,
+      label: "Nearby Hospital",
+      color: "bg-sky-500 dark:bg-sky-500",
+      onClick: () => {
+        nearestHospital(saviourDetails.latitude, saviourDetails.longitude);
+      },
+    },
   ];
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
-  const formatCurrency = (amount, currency) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(amount / 100);
-  };
-
-  const medicalConditions = userData.medical_detail?.[0] || {};
+  const medicalConditions = userData.medical_detail[0];
 
   const renderMedicalCondition = (label, value, IconComponent) => (
     <div className="flex items-center justify-between p-3 bg-sky-500/20 dark:bg-sky-500/20 rounded-lg transition-all duration-200 hover:bg-sky-500/30 dark:hover:bg-sky-500/30">
@@ -234,6 +162,79 @@ export default function UserDashboard() {
       </Badge>
     </div>
   );
+
+  useEffect(() => {
+    fetchUserData();
+  }, [pin]);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/post_scan/pin/${pin}`);
+      const userData = response.data.profile;
+      userData.pin = response.data.pin_number; // Set the pin in userData
+      setUserData(userData);
+      toast({
+        title: "Success",
+        description: "User data fetched successfully",
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch user data",
+      });
+    }
+  };
+
+  const callAmbulance = async () => {
+    try {
+      const response = await axios.post(`${baseUrl}/post_scan/ambulance_call`, {
+        pin_number: pin,
+        saviour_name: saviourDetails.fullName,
+        saviour_phone_number: saviourDetails.phoneNumber,
+        latitude: saviourDetails.latitude,
+        longitude: saviourDetails.longitude,
+      });
+      console.log(response);
+      toast({
+        title: "Success",
+        description: "Ambulance called successfully",
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error",
+        description: "Failed to call ambulance",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const nearestHospital = async (latitude, longitude) => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/post_scan/nearset_hospital`,
+        {
+          params: {
+            lat: latitude,
+            long: longitude,
+          },
+        }
+      );
+      setNearestHospitalData(response.data[0]);
+      toast({
+        title: "Success",
+        description: "Nearest hospital fetched successfully",
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch nearest hospital",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br  p-4 md:p-8">
@@ -262,11 +263,11 @@ export default function UserDashboard() {
           "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12 overflow-hidden"
         )}
       />
-      <div className="max-w-7xl mx-auto mb-20">
+      <div className="max-w-5xl mx-auto mb-20">
         {/* // Padding div for floating navbar */}
       </div>
 
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="max-w-5xl mx-auto space-y-8">
         <div className="grid gap-6">
           <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20 relative">
             <div className="flex justify-between items-start p-6">
@@ -282,14 +283,6 @@ export default function UserDashboard() {
                       {userData.last_name[0]}
                     </AvatarFallback>
                   </Avatar>
-                  <Button
-                    variant="destructive"
-                    size="lg"
-                    className="bg-red-500 hover:bg-red-600 text-white w-full lg:w-auto"
-                  >
-                    <PhoneCall className="mr-2 h-5 w-5" />
-                    Emergency Call
-                  </Button>
                 </div>
 
                 <div className="flex-1">
@@ -298,7 +291,7 @@ export default function UserDashboard() {
                       {`${userData.first_name} ${userData.last_name}`}
                     </h1>
                     <Badge className="bg-sky-500/50 dark:bg-sky-500/50">
-                      ID: #{userData.id}
+                      Pin: {userData.pin}
                     </Badge>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -314,51 +307,10 @@ export default function UserDashboard() {
                   </div>
                 </div>
               </div>
-              <Dialog
-                open={isUpdateProfileOpen}
-                onOpenChange={setIsUpdateProfileOpen}
-              >
-                <DialogTrigger asChild>
-                  <Button className="bg-sky-500 hover:bg-sky-600 text-white">
-                    <Edit className="mr-2 h-5 w-5" />
-                    Update Profile
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px] bg-white/10 backdrop-blur-md border-sky-200/20 text-white">
-                  <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-sky-800 dark:text-white">
-                      Update Profile
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <Button
-                      className="bg-sky-500 hover:bg-sky-600 text-white"
-                      onClick={() => navigate("/update-profile")}
-                    >
-                      <UserCog className="mr-2 h-5 w-5" />
-                      Update Personal Details
-                    </Button>
-                    <Button
-                      className="bg-amber-500 hover:bg-amber-600 text-white"
-                      onClick={() => navigate("/update-emergency-info")}
-                    >
-                      <FileSignature className="mr-2 h-5 w-5" />
-                      Update Emergency Details
-                    </Button>
-                    <Button
-                      className="bg-emerald-500 hover:bg-emerald-600 text-white"
-                      onClick={() => navigate("/update-medical-info")}
-                    >
-                      <Stethoscope className="mr-2 h-5 w-5" />
-                      Update Medical Details
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
             </div>
           </Card>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {actionButtons.map((button, index) => (
               <Button
                 key={index}
@@ -585,175 +537,24 @@ export default function UserDashboard() {
           </div>
         )}
 
-        {/* Plan Details */}
-        {showPlanDetails && (
+        {nearestHospitalData && (
           <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20">
             <CardHeader>
-              <CardTitle className="text-2xl font-bold text-sky-800 dark:text-white flex items-center gap-2">
-                <CreditCard className="h-6 w-6 text-sky-500" />
-                Plan Details
+              <CardTitle className="text-lg font-medium text-sky-800 dark:text-white flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-sky-300" />
+                Nearest Hospital
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid gap-6 md:grid-cols-2">
-                <div className="p-6 rounded-lg bg-sky-500/20 dark:bg-sky-500/20 space-y-4">
-                  <h3 className="text-xl font-semibold text-sky-800 dark:text-white flex items-center gap-2">
-                    <CreditCardIcon className="h-5 w-5 text-sky-500" />
-                    Subscription Information
-                  </h3>
-                  <div className="space-y-2">
-                    <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                      <KeyIcon className="h-4 w-4" />
-                      <span className="font-medium">PIN:</span>{" "}
-                      {planDetails.pin_number}
-                    </p>
-                    <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4" />
-                      <span className="font-medium">Status:</span>
-                      <Badge
-                        className={cn(
-                          "ml-2",
-                          planDetails.subscription?.status === "active"
-                            ? "bg-green-500"
-                            : "bg-yellow-500"
-                        )}
-                      >
-                        {planDetails.subscription?.status}
-                      </Badge>
-                    </p>
-                    <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      <span className="font-medium">Expires:</span>{" "}
-                      {planDetails.subscription
-                        ? formatDate(planDetails.subscription.expire_by)
-                        : "N/A"}
-                    </p>
-                  </div>
-                </div>
-                <div className="p-6 rounded-lg bg-sky-500/20 dark:bg-sky-500/20 space-y-4">
-                  <h3 className="text-xl font-semibold text-sky-800 dark:text-white flex items-center gap-2">
-                    <Tag className="h-5 w-5 text-sky-500" />
-                    Plan Details
-                  </h3>
-                  <div className="space-y-2">
-                    <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      <span className="font-medium">Name:</span>{" "}
-                      {planDetails.plan?.item?.name}
-                    </p>
-                    <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                      <AlertCircle className="h-4 w-4" />
-                      <span className="font-medium">Description:</span>{" "}
-                      {planDetails.plan?.item?.description}
-                    </p>
-                    <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                      <IndianRupee className="h-4 w-4" />
-                      <span className="font-medium">Amount:</span>{" "}
-                      {planDetails.plan?.item
-                        ? formatCurrency(
-                            planDetails.plan.item.amount,
-                            planDetails.plan.item.currency
-                          )
-                        : "N/A"}
+            <CardContent className="space-y-4">
+              <div className="p-4 rounded-lg bg-sky-500/20 transition-all duration-200 hover:bg-sky-500/30">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-medium text-sky-800 dark:text-white">
+                      {nearestHospitalData}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="p-6 rounded-lg bg-sky-500/20 dark:bg-sky-500/20 space-y-4">
-                <h3 className="text-xl font-semibold text-sky-800 dark:text-white flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-sky-500" />
-                  Billing Cycle
-                </h3>
-                <div className="space-y-2">
-                  <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    <span className="font-medium">Period:</span>{" "}
-                    {planDetails.plan?.period}
-                  </p>
-                  <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
-                    <span className="font-medium">Next Charge:</span>{" "}
-                    {planDetails.subscription
-                      ? formatDate(planDetails.subscription.charge_at)
-                      : "N/A"}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Scan Logs Details */}
-        {showScanLogs && (
-          <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20">
-            <CardHeader>
-              <CardTitle className="text-2xl font-bold text-sky-800 dark:text-white flex items-center gap-2">
-                <Clock className="h-6 w-6 text-sky-500" />
-                Scan Logs
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {scanLogData.results?.map((log) => (
-                <div
-                  key={log.id}
-                  className="p-6 rounded-lg bg-sky-500/20 dark:bg-sky-500/20 space-y-4"
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="space-y-2">
-                      <h3 className="text-xl font-semibold text-sky-800 dark:text-white flex items-center gap-2">
-                        <User className="h-5 w-5 text-sky-500" />
-                        <span className="font-medium">Saviour Name:</span>
-                        {log.saviour_name}
-                      </h3>
-                      <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                        <Phone className="h-4 w-4" />
-                        {log.saviour_phone_number}
-                      </p>
-                    </div>
-                    <Badge
-                      className={cn(
-                        log.is_doctor ? "bg-green-500" : "bg-blue-500",
-                        "flex items-center gap-1"
-                      )}
-                    >
-                      {log.is_doctor ? (
-                        <Hospital className="h-3 w-3" />
-                      ) : (
-                        <User className="h-3 w-3" />
-                      )}
-                      {log.is_doctor ? "Doctor" : "Non-Doctor"}
-                    </Badge>
-                  </div>
-                  {log.is_doctor && (
-                    <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                      <Hospital className="h-4 w-4" />
-                      <span className="font-medium">Hospital:</span>{" "}
-                      {log.hospital_name}
-                    </p>
-                  )}
-                  <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                    <MapPin className="h-4 w-4" />
-                    <span className="font-medium">Location:</span>{" "}
-                    {log.saviour_location}
-                  </p>
-                  <p className="text-sky-700 dark:text-sky-200 flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    <span className="font-medium">Scan Time:</span>{" "}
-                    {formatDate(log.created)}
-                  </p>
-                  <Button
-                    variant="outline"
-                    className="w-[40%] mt-2 text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300"
-                    onClick={() =>
-                      window.open(log.saviour_location_url, "_blank")
-                    }
-                  >
-                    <MapPin className="mr-2 h-4 w-4" />
-                    View on Map
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
             </CardContent>
           </Card>
         )}

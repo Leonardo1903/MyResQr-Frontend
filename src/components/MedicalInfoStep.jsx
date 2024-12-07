@@ -8,20 +8,20 @@ import { Button } from "../components/ui/button";
 export default function MedicalInfoStep({ onStepChange, onDataChange }) {
   const [bloodGroup, setBloodGroup] = useState("");
   const [bloodDonor, setBloodDonor] = useState(false);
-  const [highBP, setHighBP] = useState("");
-  const [diabetes, setDiabetes] = useState("");
-  const [highCholesterol, setHighCholesterol] = useState("");
-  const [heartIssues, setHeartIssues] = useState("");
-  const [differentlyAbled, setDifferentlyAbled] = useState("");
-  const [asthma, setAsthma] = useState("");
-  const [tuberculosis, setTuberculosis] = useState("");
-  const [mentalIllness, setMentalIllness] = useState("");
-  const [epilepsy, setEpilepsy] = useState("");
-  const [nsaids, setNSAIDs] = useState("");
-  const [steroids, setSteroids] = useState("");
-  const [anticoagulant, setAnticoagulant] = useState("");
-  const [surgery, setSurgery] = useState("");
-  const [organImplant, setOrganImplant] = useState("");
+  const [highBP, setHighBP] = useState(false);
+  const [diabetes, setDiabetes] = useState(false);
+  const [highCholesterol, setHighCholesterol] = useState(false);
+  const [heartIssues, setHeartIssues] = useState(false);
+  const [differentlyAbled, setDifferentlyAbled] = useState(false);
+  const [asthma, setAsthma] = useState(false);
+  const [tuberculosis, setTuberculosis] = useState(false);
+  const [mentalIllness, setMentalIllness] = useState(false);
+  const [epilepsy, setEpilepsy] = useState(false);
+  const [nsaids, setNSAIDs] = useState(false);
+  const [steroids, setSteroids] = useState(false);
+  const [anticoagulant, setAnticoagulant] = useState(false);
+  const [surgery, setSurgery] = useState(false);
+  const [organImplant, setOrganImplant] = useState(false);
 
   const medicalDetails = {
     bloodGroup: bloodGroup,

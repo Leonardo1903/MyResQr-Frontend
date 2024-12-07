@@ -116,12 +116,12 @@ export const FloatingNav = ({ navItems, className }) => {
 
         <div className="hidden sm:flex space-x-2 sm:space-x-4">
           {accessToken ? (
-            <Button
+            <Link
               onClick={handleLogout}
               className="border text-xs sm:text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-2 sm:px-4 py-1 sm:py-2 rounded-full"
             >
               Logout
-            </Button>
+            </Link>
           ) : (
             <Link
               to="/login"
@@ -180,7 +180,7 @@ export const FloatingNav = ({ navItems, className }) => {
               </NavLink>
             ))}
             {accessToken ? (
-              <Button
+              <Link
                 onClick={() => {
                   handleLogout();
                   setIsMenuOpen(false);
@@ -188,7 +188,7 @@ export const FloatingNav = ({ navItems, className }) => {
                 className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full"
               >
                 Logout
-              </Button>
+              </Link>
             ) : (
               <Link
                 to="/login"
