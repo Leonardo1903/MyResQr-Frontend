@@ -44,6 +44,7 @@ function App() {
         </Route>
         <Route path="/scan" element={<PostScanLayout />}>
           <Route index element={<PostScanForm />} />
+          <Route path="/scan/:encrypted_pin" element={<PostScanForm />} />
           <Route path="dashboard" element={<PostScanDashboard />} />
         </Route>
       </>

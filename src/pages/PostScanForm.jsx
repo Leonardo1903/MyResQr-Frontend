@@ -12,17 +12,16 @@ import { MapPin } from "lucide-react";
 import { GridPattern } from "../components/ui/grid-pattern";
 import { cn } from "../lib/utils";
 import { useToast } from "../hooks/use-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { postScanPinAtom, saviourDetailsAtom } from "../store/UserAtoms";
 import { useSetRecoilState } from "recoil";
 import axios from "axios";
 
 export default function PostScanForm() {
   const baseUrl = import.meta.env.VITE_BASE_URL;
-  const searchParams = new URLSearchParams(window.location.search);
   const { toast } = useToast();
   const navigate = useNavigate();
-
+  const { encrypted_pin } = useParams();
   const [isDoctor, setIsDoctor] = useState(null);
   const [otpRequested, setOtpRequested] = useState(false);
   const [otp, setOtp] = useState(Array(4).fill(""));
@@ -70,11 +69,10 @@ export default function PostScanForm() {
   }
 
   const decryptPin = async () => {
-    const encryptParam = searchParams.get("encrypted_pin");
-    if (encryptParam) {
+    if (encrypted_pin) {
       try {
         const response = await axios.get(
-          `${baseUrl}/post_scan/scanqr/${encryptParam}`
+          `${baseUrl}/post_scan/scanqr/${encrypted_pin}`
         );
         console.log(response.data);
         setPinNumber(response.data.pin_number);
