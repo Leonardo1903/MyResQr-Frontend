@@ -1,8 +1,7 @@
-"use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../../lib/utils";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { ModeToggle } from "../mode-toggle";
 import logoDark from "../../assets/Logo-Dark.png";
 import logoLight from "../../assets/Logo-Light.png";
@@ -21,13 +20,12 @@ import {
   pinAtom,
 } from "../../store/UserAtoms";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { useNavigate } from "react-router-dom";
-import { Button } from "./button";
 import { toast } from "../../hooks/use-toast";
 
 export const FloatingNav = ({ navItems, className }) => {
   const navigate = useNavigate();
   const { theme } = useTheme();
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const accessToken = useRecoilValue(accessTokenAtom);
 
@@ -41,7 +39,7 @@ export const FloatingNav = ({ navItems, className }) => {
   const setProfileId = useSetRecoilState(profileIdAtom);
   const setRole = useSetRecoilState(roleAtom);
   const setUserDashboardData = useSetRecoilState(userDashboardDataAtom);
-  const setPin = useSetRecoilState(pinAtom)
+  const setPin = useSetRecoilState(pinAtom);
 
   const handleLogout = () => {
     setAccessToken("");
@@ -72,8 +70,10 @@ export const FloatingNav = ({ navItems, className }) => {
     toast({
       title: "Logout Successful",
       description: "You have been logged out successfully",
-    })
+    });
   };
+
+  const isPostScanPath = location.pathname.startsWith("/scan");
 
   return (
     <AnimatePresence mode="wait">
@@ -115,21 +115,22 @@ export const FloatingNav = ({ navItems, className }) => {
         </div>
 
         <div className="hidden sm:flex space-x-2 sm:space-x-4">
-          {accessToken ? (
-            <Link
-              onClick={handleLogout}
-              className="border text-xs sm:text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-2 sm:px-4 py-1 sm:py-2 rounded-full"
-            >
-              Logout
-            </Link>
-          ) : (
-            <Link
-              to="/login"
-              className="border text-xs sm:text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-2 sm:px-4 py-1 sm:py-2 rounded-full"
-            >
-              Login
-            </Link>
-          )}
+          {!isPostScanPath &&
+            (accessToken ? (
+              <Link
+                onClick={handleLogout}
+                className="border text-xs sm:text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-2 sm:px-4 py-1 sm:py-2 rounded-full"
+              >
+                Logout
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                className="border text-xs sm:text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-2 sm:px-4 py-1 sm:py-2 rounded-full"
+              >
+                Login
+              </Link>
+            ))}
           <ModeToggle />
         </div>
 
@@ -179,25 +180,26 @@ export const FloatingNav = ({ navItems, className }) => {
                 <span className="text-sm">{navItem.name}</span>
               </NavLink>
             ))}
-            {accessToken ? (
-              <Link
-                onClick={() => {
-                  handleLogout();
-                  setIsMenuOpen(false);
-                }}
-                className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full"
-              >
-                Logout
-              </Link>
-            ) : (
-              <Link
-                to="/login"
-                className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Login
-              </Link>
-            )}
+            {!isPostScanPath &&
+              (accessToken ? (
+                <Link
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                  className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full"
+                >
+                  Logout
+                </Link>
+              ) : (
+                <Link
+                  to="/login"
+                  className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Login
+                </Link>
+              ))}
             <ModeToggle />
           </div>
         </motion.div>
