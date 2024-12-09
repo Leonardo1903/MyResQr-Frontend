@@ -27,9 +27,6 @@ export default function PostScanForm() {
   const [otpRequested, setOtpRequested] = useState(false);
   const [otp, setOtp] = useState(Array(4).fill(""));
   const inputRefs = useRef([]);
-  const [encryptedPin, setEncryptedPin] = useState(
-    "MzhSVUNCV1EyMDRlYTFFZS9LOUFpZz09"
-  );
   const [pinNumber, setPinNumber] = useState("");
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
@@ -54,7 +51,7 @@ export default function PostScanForm() {
       });
     }
     decryptPin();
-  }, [encryptedPin]);
+  }, []);
 
   function success(position) {
     const latitude = position.coords.latitude;
@@ -75,46 +72,33 @@ export default function PostScanForm() {
   const decryptPin = async () => {
     const encryptParam = searchParams.get("encrypted_pin");
     if (encryptParam) {
-      setEncryptedPin(encryptParam);
-    }
-    try {
-      const response = await axios.get(
-        `${baseUrl}/post_scan/scanqr/${encryptedPin}`
-      );
-      console.log(response.data);
-      setPinNumber(response.data.pin_number);
-      setPin(response.data.pin_number);
-      toast({
-        title: "Success",
-        description: "Pin number decrypted successfully.",
-      });
-    } catch (error) {
-      console.log(error);
+      try {
+        const response = await axios.get(
+          `${baseUrl}/post_scan/scanqr/${encryptParam}`
+        );
+        console.log(response.data);
+        setPinNumber(response.data.pin_number);
+        setPin(response.data.pin_number);
+        toast({
+          title: "Success",
+          description: "Pin number decrypted successfully.",
+        });
+      } catch (error) {
+        console.log(error);
+        toast({
+          title: "Error",
+          description: "Failed to get pin number. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } else {
       toast({
         title: "Error",
-        description: "Failed to get pin number. Please try again.",
+        description: "No encrypted pin found in URL.",
         variant: "destructive",
       });
     }
   };
-
-  const saviourDetails = {
-    saviour_name: saviourInfo.fullName,
-    saviour_phone_number: saviourInfo.phoneNumber,
-    is_doctor: isDoctor ? "True" : "False",
-    pin_number: pinNumber,
-    latitude: latitude,
-    longitude: longitude,
-    ...(isDoctor && { hospital_name: saviourInfo.workPlace }),
-  };
-
-  setSaviourDetails({
-    fullName: saviourInfo.fullName,
-    phoneNumber: saviourInfo.phoneNumber,
-    pinNumber: pinNumber,
-    latitude: latitude,
-    longitude: longitude,
-  })
 
   const handleRequestOtp = async () => {
     setOtpRequested(true);
@@ -137,7 +121,13 @@ export default function PostScanForm() {
 
     try {
       const response = await axios.post(`${baseUrl}/post_scan/saviour_info`, {
-        ...saviourDetails,
+        saviour_name: saviourInfo.fullName,
+        saviour_phone_number: saviourInfo.phoneNumber,
+        is_doctor: isDoctor ? "True" : "False",
+        pin_number: pinNumber,
+        latitude: latitude,
+        longitude: longitude,
+        ...(isDoctor && { hospital_name: saviourInfo.workPlace }),
       });
       toast({
         title: "Saviour Info Saved",

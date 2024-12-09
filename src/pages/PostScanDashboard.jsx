@@ -213,7 +213,7 @@ export default function PostScanDashboard() {
   const nearestHospital = async (latitude, longitude) => {
     try {
       const response = await axios.get(
-        `${baseUrl}/post_scan/nearset_hospital`,
+        `${baseUrl}/post_scan/nearest_hospital`,
         {
           params: {
             lat: latitude,
