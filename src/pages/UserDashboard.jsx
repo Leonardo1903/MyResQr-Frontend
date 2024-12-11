@@ -1,6 +1,10 @@
-
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -36,7 +40,6 @@ import {
   IndianRupee,
   Tag,
   CheckCircle,
-  Coffee,
   User,
   Phone,
   Hospital,
@@ -104,7 +107,7 @@ export default function UserDashboard() {
         title: "Error",
         description: "Geolocation not supported by your browser.",
         variant: "destructive",
-      })
+      });
     }
   }, []);
 
@@ -159,28 +162,31 @@ export default function UserDashboard() {
 
   const handleEmergencyAmbulanceCall = async () => {
     try {
-      const res = await axios.post(`${baseUrl}/post_scan/ambulance_call`, data, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
+      const res = await axios.post(
+        `${baseUrl}/post_scan/ambulance_call`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
-      })
+      );
       console.log("Response : ", res.data);
-      
+
       toast({
         title: "Success",
         description: res.data.response,
         variant: "default",
-      })
-
+      });
     } catch (error) {
       const errorMessage = error.response?.data?.message;
       toast({
         title: "Error",
         description: errorMessage || "Failed to call ambulance",
         variant: "destructive",
-      })  
+      });
     }
-  }
+  };
 
   const medicalIcons = {
     blood_group: Droplets,
@@ -326,35 +332,6 @@ export default function UserDashboard() {
 
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="grid gap-6">
-
-        <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20 relative">
-          <div className="flex justify-between items-start p-6">
-            <div className="flex flex-col lg:flex-row gap-6">
-              <div className="flex flex-col items-center lg:items-start gap-4">
-                <Avatar className="w-32 h-32 border-4 border-sky-200/20">
-                  <AvatarImage src={userData.image} alt={`${userData.first_name} ${userData.last_name}`} />
-                  <AvatarFallback className="text-3xl bg-sky-500">
-                    {userData.first_name[0]}{userData.last_name[0]}
-                  </AvatarFallback>
-                </Avatar>
-                <Button 
-                  variant="destructive" 
-                  size="lg"
-                  className="bg-red-500 hover:bg-red-600 text-white w-full lg:w-auto"
-                  onClick={handleEmergencyAmbulanceCall}
-                >
-                  <PhoneCall className="mr-2 h-5 w-5" />
-                  Emergency Call
-                </Button>
-              </div>
-
-              <div className="flex-1">
-                <div className="mb-6">
-                  <h1 className="text-3xl font-bold text-sky-800 dark:text-white mb-2">
-                    {`${userData.first_name} ${userData.last_name}`}
-                  </h1>
-                  <Badge className="bg-sky-500/50 dark:bg-sky-500/50">ID: #{userData.id}</Badge>
-=======
           <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20 relative">
             <div className="flex justify-between items-start p-6">
               <div className="flex flex-col lg:flex-row gap-6">
@@ -377,7 +354,6 @@ export default function UserDashboard() {
                     <PhoneCall className="mr-2 h-5 w-5" />
                     Emergency Call
                   </Button>
-
                 </div>
 
                 <div className="flex-1">
