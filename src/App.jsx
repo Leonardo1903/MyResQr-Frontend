@@ -18,6 +18,9 @@ import UserDashboard from "./pages/UserDashboard";
 import ProfileUpdate from "./pages/ProfileUpdate";
 import MedicalInfoUpdate from "./pages/MedicalInfoUpdate";
 import EmergencyContactsUpdate from "./pages/EmergencyContactsUpdate";
+import PostScanDashboard from "./pages/PostScanDashboard";
+import PostScanLayout from "./PostScanLayout";
+import PostScanForm from "./pages/PostScanForm";
 
 function App() {
   const router = createBrowserRouter(
@@ -34,7 +37,15 @@ function App() {
           <Route path="/emergency-info" element={<Signup initialStep={4} />} />
           <Route path="/update-profile" element={<ProfileUpdate />} />
           <Route path="/update-medical-info" element={<MedicalInfoUpdate />} />
-          <Route path="/update-emergency-info" element={<EmergencyContactsUpdate />} />
+          <Route
+            path="/update-emergency-info"
+            element={<EmergencyContactsUpdate />}
+          />
+        </Route>
+        <Route path="/scan" element={<PostScanLayout />}>
+          <Route index element={<PostScanForm />} />
+          <Route path="/scan/:encrypted_pin" element={<PostScanForm />} />
+          <Route path="dashboard" element={<PostScanDashboard />} />
         </Route>
       </>
     )
