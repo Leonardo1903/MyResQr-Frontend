@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -27,6 +27,34 @@ export default function UserDashboard() {
   const [scanLogData, setScanLogData] = useState({});
   const [isUpdateProfileOpen, setIsUpdateProfileOpen] = useState(false);
   const navigate = useNavigate();
+  const [location, setLocation] = useState({
+    latitude: null,
+    longitude: null,
+  });
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        (error) => {
+          setError(error.message);
+        }
+      );
+    } else {
+      setError("Geolocation not supported by your browser.");
+      toast({
+        title: "Error",
+        description: "Geolocation not supported by your browser.",
+        variant: "destructive",
+      })
+    }
+  }, []);
 
   const handleGetPlanDetails = async () => {
       // console.log("ID:", id);
@@ -63,6 +91,39 @@ export default function UserDashboard() {
         description: errorMessage,
         variant: "destructive",
       })
+    }
+  }
+
+  const data = {
+    pin_number: `${pin}`,
+    latitude: location.latitude,
+    longitude: location.longitude,
+    saviour_name: `${userData.first_name} ${userData.last_name}`,
+    saviour_phone_number: `${userData.mobile_number}`,
+  };
+
+  const handleEmergencyAmbulanceCall = async () => {
+    try {
+      const res = await axios.post(`${baseUrl}/post_scan/ambulance_call`, data, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      console.log("Response : ", res.data);
+      
+      toast({
+        title: "Success",
+        description: res.data.response,
+        variant: "default",
+      })
+
+    } catch (error) {
+      const errorMessage = error.response?.data?.message;
+      toast({
+        title: "Error",
+        description: errorMessage || "Failed to call ambulance",
+        variant: "destructive",
+      })  
     }
   }
 
@@ -196,6 +257,7 @@ export default function UserDashboard() {
                   variant="destructive" 
                   size="lg"
                   className="bg-red-500 hover:bg-red-600 text-white w-full lg:w-auto"
+                  onClick={handleEmergencyAmbulanceCall}
                 >
                   <PhoneCall className="mr-2 h-5 w-5" />
                   Emergency Call
