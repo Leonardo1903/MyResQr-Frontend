@@ -40,18 +40,18 @@ export const profileIdAtom = atom({
   default: "",
 });
 
-export const roleAtom =atom({
+export const roleAtom = atom({
   key: "roleAtom",
   default: "",
-})
+});
 
 export const pinAtom = atom({
   key: "pinAtom",
   default: "",
-})
+});
 
 export const userDashboardDataAtom = atom({
-  key: 'userDashboardDataAtom', 
+  key: "userDashboardDataAtom",
   default: {
     id: null,
     emergency_contact: [],
@@ -77,8 +77,8 @@ export const userDashboardDataAtom = atom({
         medications: "",
         other_medical_condition: "",
         allergies: "",
-        additonal_info: ""
-      }
+        additonal_info: "",
+      },
     ],
     mobile_number: "",
     first_name: "",
@@ -92,6 +92,22 @@ export const userDashboardDataAtom = atom({
     state: "",
     pin_code: "",
     country: "",
-    image: ""
+    image: "",
+  },
+});
+
+export const postScanPinAtom = atom({
+  key: "postScanPinAtom",
+  default: "",
+});
+
+export const saviourDetailsAtom = atom({
+  key: "saviourDetailsAtom",
+  default: {
+    fullName: "",
+    phoneNumber: "",
+    pinNumber: "",
+    latitude: "",
+    longitude: "",
   },
 });
