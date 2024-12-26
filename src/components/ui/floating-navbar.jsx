@@ -94,11 +94,13 @@ export const FloatingNav = ({ navItems, className }) => {
           className
         )}
       >
-        {theme === "dark" ? (
-          <img src={logoDark} alt="Logo" className="h-6 sm:h-8" />
-        ) : (
-          <img src={logoLight} alt="Logo" className="h-6 sm:h-8" />
-        )}
+        <Link to="/">
+          {theme === "dark" ? (
+            <img src={logoDark} alt="Logo" className="h-6 sm:h-8" />
+          ) : (
+            <img src={logoLight} alt="Logo" className="h-6 sm:h-8" />
+          )}
+        </Link>
         <div className="hidden sm:flex space-x-2 sm:space-x-4">
           {navItems.map((navItem, idx) => (
             <NavLink
