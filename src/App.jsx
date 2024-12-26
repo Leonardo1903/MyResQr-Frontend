@@ -21,6 +21,7 @@ import EmergencyContactsUpdate from "./pages/EmergencyContactsUpdate";
 import PostScanDashboard from "./pages/PostScanDashboard";
 import PostScanLayout from "./PostScanLayout";
 import PostScanForm from "./pages/PostScanForm";
+import About from "./pages/About";
 
 function App() {
   const router = createBrowserRouter(
@@ -28,6 +29,7 @@ function App() {
       <>
         <Route path="/" element={<Layout />}>
           <Route path="" element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/enter-otp" element={<EnterOTP />} />

@@ -1,37 +1,37 @@
 import { Moon, Sun } from "lucide-react";
-
-import { Button } from "../components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu";
 import { useTheme } from "./theme-provider";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
 
 export function ModeToggle() {
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
+
+  const handleToggle = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
-        </DropdownMenuItem>
-        {/* <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
-        </DropdownMenuItem> */}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="flex items-center space-x-4">
+      <Label className="relative inline-flex items-center cursor-pointer">
+        <Input
+          type="checkbox"
+          className="sr-only"
+          checked={theme === "dark"}
+          onChange={handleToggle}
+        />
+        <div className="w-14 h-8 bg-gray-200 rounded-full dark:bg-gray-700">
+          <div
+            className={`w-7 h-7 bg-white rounded-full shadow-md transform transition-transform ${
+              theme === "dark" ? "translate-x-6" : ""
+            }`}
+          />
+        </div>
+      </Label>
+      {theme === "dark" ? (
+        <Moon className="h-8 w-8 text-gray-500" />
+      ) : (
+        <Sun className="h-8 w-8 text-yellow-500" />
+      )}
+    </div>
   );
 }
