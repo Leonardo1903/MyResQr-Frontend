@@ -13,6 +13,7 @@ import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { Label } from "../components/ui/label";
 import { Card, CardContent } from "../components/ui/card";
+import { Link } from "react-router-dom";
 import StylishSeparator from "../components/StylishSeparator";
 
 function Home() {
@@ -191,7 +192,9 @@ function Home() {
           </h1>
 
           <button className="bg-sky-600 hover:bg-sky-700 hover:scale-110 transition-all ease-in-out duration-300 text-white font-bold py-2 px-4 rounded mt-4 flex items-center shadow-xl">
-            Try now <CircleArrowRight className="ml-4" />
+            <Link to="/login" className="flex items-center">
+              Get MyResQR ID <CircleArrowRight className="ml-4" />
+            </Link>
           </button>
         </div>
         <div className="w-full md:w-1/2 h-full flex flex-col justify-center items-center">
