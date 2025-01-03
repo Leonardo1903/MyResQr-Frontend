@@ -28,6 +28,7 @@ import {
   Bone,
   AlertCircle,
   TreesIcon as Lungs,
+  Shield,
 } from "lucide-react";
 import GridPattern from "../components/ui/grid-pattern";
 import { cn } from "../lib/utils";
@@ -44,6 +45,7 @@ export default function PostScanDashboard() {
   const [showMedicalHistory, setShowMedicalHistory] = useState(false);
   const [showEmergencyContacts, setShowEmergencyContacts] = useState(false);
   const [nearestHospitalData, setNearestHospitalData] = useState(null);
+  const [planDescription, setPlanDescription] = useState(null);
 
   const [userData, setUserData] = useState({
     pin: pin,
@@ -114,19 +116,19 @@ export default function PostScanDashboard() {
     {
       icon: Users,
       label: "Emergency Contacts",
-      color: "bg-amber-600 dark:bg-amber-600",
+      color: "bg-sky-500 hover:bg-sky-600",
       onClick: () => setShowEmergencyContacts(!showEmergencyContacts),
     },
     {
       icon: FileText,
       label: "Medical History",
-      color: "bg-indigo-600 dark:bg-indigo-600",
+      color: "bg-sky-500 hover:bg-sky-600",
       onClick: () => setShowMedicalHistory(!showMedicalHistory),
     },
     {
       icon: PhoneCall,
       label: "Call Ambulance",
-      color: "bg-red-600 dark:bg-red-600",
+      color: "bg-sky-500 hover:bg-sky-600",
       onClick: () => {
         callAmbulance();
       },
@@ -139,7 +141,15 @@ export default function PostScanDashboard() {
         nearestHospital(saviourDetails.latitude, saviourDetails.longitude);
       },
     },
-  ];
+    {
+      icon: Shield,
+      label: "Insurance",
+      color: "bg-sky-500 hover:bg-sky-600",
+    },
+  ].filter(
+    (button) =>
+      planDescription === "Rakshak" || button.label !== "Medical History"
+  );
 
   const medicalConditions = userData.medical_detail[0];
 
@@ -151,9 +161,9 @@ export default function PostScanDashboard() {
       </div>
       <Badge
         className={
-          value.toLowerCase() === "yes" || value.toLowerCase() === "true"
+          value?.toLowerCase() === "yes" || value?.toLowerCase() === "true"
             ? "bg-green-500 hover:bg-green-600"
-            : value.toLowerCase() === "no" || value.toLowerCase() === "false"
+            : value?.toLowerCase() === "no" || value?.toLowerCase() === "false"
             ? "bg-red-500 hover:bg-red-600"
             : "bg-sky-500 hover:bg-sky-600"
         }
@@ -171,8 +181,9 @@ export default function PostScanDashboard() {
     try {
       const response = await axios.get(`${baseUrl}/post_scan/pin/${pin}`);
       const userData = response.data.profile;
-      userData.pin = response.data.pin_number; // Set the pin in userData
+      userData.pin = response.data.pin_number;
       setUserData(userData);
+      setPlanDescription(response.data.plan?.item?.description || "Sandesh");
       toast({
         title: "Success",
         description: "User data fetched successfully",
@@ -443,35 +454,36 @@ export default function PostScanDashboard() {
                     </div>
                   </div>
                 )}
-                {userData.emergency_contact[0]?.family_name2 && (
-                  <div className="p-4 rounded-lg bg-sky-500/20 transition-all duration-200 hover:bg-sky-500/30">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="font-medium text-sky-800 dark:text-white">
-                          {userData.emergency_contact[0].family_name2}
-                        </p>
-                        {userData.emergency_contact[0].family_rel2 && (
-                          <p className="text-sm text-sky-200">
-                            {userData.emergency_contact[0].family_rel2}
+                {planDescription === "Rakshak" &&
+                  userData.emergency_contact[0]?.family_name2 && (
+                    <div className="p-4 rounded-lg bg-sky-500/20 transition-all duration-200 hover:bg-sky-500/30">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-medium text-sky-800 dark:text-white">
+                            {userData.emergency_contact[0].family_name2}
                           </p>
-                        )}
-                        <p className="text-sm text-sky-200">
-                          {userData.emergency_contact[0].family_phone2}
-                        </p>
+                          {userData.emergency_contact[0].family_rel2 && (
+                            <p className="text-sm text-sky-200">
+                              {userData.emergency_contact[0].family_rel2}
+                            </p>
+                          )}
+                          <p className="text-sm text-sky-200">
+                            {userData.emergency_contact[0].family_phone2}
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-sky-300 hover:text-sky-100 hover:bg-sky-500/20"
+                          onClick={() =>
+                            (window.location.href = `tel:${userData.emergency_contact[0].family_phone2}`)
+                          }
+                        >
+                          <PhoneCall className="h-4 w-4" />
+                        </Button>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-sky-300 hover:text-sky-100 hover:bg-sky-500/20"
-                        onClick={() =>
-                          (window.location.href = `tel:${userData.emergency_contact[0].family_phone2}`)
-                        }
-                      >
-                        <PhoneCall className="h-4 w-4" />
-                      </Button>
                     </div>
-                  </div>
-                )}
+                  )}
               </CardContent>
             </Card>
 
@@ -508,30 +520,31 @@ export default function PostScanDashboard() {
                     </div>
                   </div>
                 )}
-                {userData.emergency_contact[0]?.friend_name2 && (
-                  <div className="p-4 rounded-lg bg-sky-500/20 transition-all duration-200 hover:bg-sky-500/30">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="font-medium text-sky-800 dark:text-white">
-                          {userData.emergency_contact[0].friend_name2}
-                        </p>
-                        <p className="text-sm text-sky-200">
-                          {userData.emergency_contact[0].friend_phone2}
-                        </p>
+                {planDescription === "Rakshak" &&
+                  userData.emergency_contact[0]?.friend_name2 && (
+                    <div className="p-4 rounded-lg bg-sky-500/20 transition-all duration-200 hover:bg-sky-500/30">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-medium text-sky-800 dark:text-white">
+                            {userData.emergency_contact[0].friend_name2}
+                          </p>
+                          <p className="text-sm text-sky-200">
+                            {userData.emergency_contact[0].friend_phone2}
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-sky-300 hover:text-sky-100 hover:bg-sky-500/20"
+                          onClick={() =>
+                            (window.location.href = `tel:${userData.emergency_contact[0].friend_phone2}`)
+                          }
+                        >
+                          <PhoneCall className="h-4 w-4" />
+                        </Button>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-sky-300 hover:text-sky-100 hover:bg-sky-500/20"
-                        onClick={() =>
-                          (window.location.href = `tel:${userData.emergency_contact[0].friend_phone2}`)
-                        }
-                      >
-                        <PhoneCall className="h-4 w-4" />
-                      </Button>
                     </div>
-                  </div>
-                )}
+                  )}
               </CardContent>
             </Card>
           </div>

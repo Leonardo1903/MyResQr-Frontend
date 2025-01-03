@@ -221,7 +221,7 @@ export default function UserDashboard() {
     {
       icon: BookUser,
       label: "Plan Details",
-      color: "bg-sky-600 dark:bg-sky-600",
+      color: "bg-sky-500 hover:bg-sky-600",
       onClick: async () => {
         setShowPlanDetails(!showPlanDetails);
         if (!showPlanDetails) {
@@ -232,7 +232,7 @@ export default function UserDashboard() {
     {
       icon: Clock,
       label: "Scan Logs",
-      color: "bg-emerald-600 dark:bg-emerald-600",
+      color: "bg-sky-500 hover:bg-sky-600",
       onClick: async () => {
         setShowScanLogs(!showScanLogs);
         if (!showScanLogs) {
@@ -243,18 +243,18 @@ export default function UserDashboard() {
     {
       icon: Shield,
       label: "Insurance",
-      color: "bg-violet-600 dark:bg-violet-600",
+      color: "bg-sky-500 hover:bg-sky-600",
     },
     {
       icon: Users,
       label: "Emergency Contacts",
-      color: "bg-amber-600 dark:bg-amber-600",
+      color: "bg-sky-500 hover:bg-sky-600",
       onClick: () => setShowEmergencyContacts(!showEmergencyContacts),
     },
     {
       icon: FileText,
       label: "Medical History",
-      color: "bg-indigo-600 dark:bg-indigo-600",
+      color: "bg-sky-500 hover:bg-sky-600",
       onClick: () => setShowMedicalHistory(!showMedicalHistory),
     },
   ];
@@ -287,9 +287,9 @@ export default function UserDashboard() {
       </div>
       <Badge
         className={
-          value.toLowerCase() === "yes" || value.toLowerCase() === "true"
+          value?.toLowerCase() === "yes" || value?.toLowerCase() === "true"
             ? "bg-green-500 hover:bg-green-600"
-            : value.toLowerCase() === "no" || value.toLowerCase() === "false"
+            : value?.toLowerCase() === "no" || value?.toLowerCase() === "false"
             ? "bg-red-500 hover:bg-red-600"
             : "bg-sky-500 hover:bg-sky-600"
         }
@@ -403,14 +403,14 @@ export default function UserDashboard() {
                       Update Personal Details
                     </Button>
                     <Button
-                      className="bg-amber-500 hover:bg-amber-600 text-white"
+                      className="bg-sky-500 hover:bg-sky-600 text-white"
                       onClick={() => navigate("/update-emergency-info")}
                     >
                       <FileSignature className="mr-2 h-5 w-5" />
                       Update Emergency Details
                     </Button>
                     <Button
-                      className="bg-emerald-500 hover:bg-emerald-600 text-white"
+                      className="bg-sky-500 hover:bg-sky-600 text-white"
                       onClick={() => navigate("/update-medical-info")}
                     >
                       <Stethoscope className="mr-2 h-5 w-5" />

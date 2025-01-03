@@ -54,7 +54,7 @@ export default function Signup({ initialStep = 1 }) {
   };
 
   return (
-    <div className="w-screen h-screen relative overflow-x-hidden">
+    <div className="w-screen h-screen relative overflow-x-hidden mb-20">
       <GridPattern
         squares={[
           [4, 4],
