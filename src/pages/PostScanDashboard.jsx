@@ -148,7 +148,7 @@ export default function PostScanDashboard() {
     },
   ].filter(
     (button) =>
-      planDescription === "Rakshak" || button.label !== "Medical History"
+      planDescription === "Rakshak plan" || button.label !== "Medical History"
   );
 
   const medicalConditions = userData.medical_detail[0];
@@ -180,10 +180,12 @@ export default function PostScanDashboard() {
   const fetchUserData = async () => {
     try {
       const response = await axios.get(`${baseUrl}/post_scan/pin/${pin}`);
+      setPlanDescription(
+        response.data.plan?.item?.description || "Sandesh plan"
+      );
       const userData = response.data.profile;
       userData.pin = response.data.pin_number;
       setUserData(userData);
-      setPlanDescription(response.data.plan?.item?.description || "Sandesh");
       toast({
         title: "Success",
         description: "User data fetched successfully",
@@ -454,7 +456,7 @@ export default function PostScanDashboard() {
                     </div>
                   </div>
                 )}
-                {planDescription === "Rakshak" &&
+                {planDescription === "Rakshak plan" &&
                   userData.emergency_contact[0]?.family_name2 && (
                     <div className="p-4 rounded-lg bg-sky-500/20 transition-all duration-200 hover:bg-sky-500/30">
                       <div className="flex justify-between items-start">
@@ -520,7 +522,7 @@ export default function PostScanDashboard() {
                     </div>
                   </div>
                 )}
-                {planDescription === "Rakshak" &&
+                {planDescription === "Rakshak plan" &&
                   userData.emergency_contact[0]?.friend_name2 && (
                     <div className="p-4 rounded-lg bg-sky-500/20 transition-all duration-200 hover:bg-sky-500/30">
                       <div className="flex justify-between items-start">

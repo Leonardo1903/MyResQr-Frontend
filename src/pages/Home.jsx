@@ -8,15 +8,25 @@ import {
   ScanSearch,
 } from "lucide-react";
 import { Spotlight } from "../components/ui/Spotlight";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { Label } from "../components/ui/label";
 import { Card, CardContent } from "../components/ui/card";
 import StylishSeparator from "../components/StylishSeparator";
+import HomePopup from "../assets/HomePopup.jpg";
 
 function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(true);
+
+  useEffect(() => {
+    setIsModalOpen(true);
+  }, []);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
   const aboutUsData = [
     {
       index: 1,
@@ -178,6 +188,20 @@ function Home() {
 
   return (
     <div className="max-w-7xl mx-auto h-fit antialiased">
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-transparent p-4 rounded-lg shadow-lg relative">
+            <Button
+              onClick={closeModal}
+              className="absolute top-2 right-2 bg-transparent hover:bg-transparent w-10 h-10 text-4xl text-red-500"
+            >
+              &times;
+            </Button>
+            <img src={HomePopup} alt="Home Popup" className="w-[50rem] h-auto" />
+          </div>
+        </div>
+      )}
+
       <Spotlight
         className="-top-40 left-0 md:left-60 md:-top-20"
         fill="#27a9e1"
@@ -187,13 +211,16 @@ function Home() {
       <section className="w-full h-screen flex flex-col md:flex-row justify-center items-center">
         <div className="w-full md:w-1/2 h-full flex flex-col justify-center items-center md:items-baseline md:space-y-10 ">
           <h1 className="text-4xl md:text-6xl text-sky-600 font-bold">
-          Empower Yourself with myresQR –<br />{" "} </h1>
-          <span className="text-2xl md:text-4xl">Respond to Emergencies in Just 10 Seconds! </span>{" "}
-         
-        <Link to="/login">
-          <button className="bg-sky-600 hover:bg-sky-700 hover:scale-110 transition-all ease-in-out duration-300 text-white font-bold py-4 px-6 rounded mt-4 flex items-center shadow-xl">
-            Get MyResQID <CircleArrowRight className="ml-4" />
-          </button></Link>
+            Empower Yourself with myresQR –<br />{" "}
+          </h1>
+          <span className="text-2xl md:text-4xl">
+            Respond to Emergencies in Just 10 Seconds!{" "}
+          </span>{" "}
+          <Link to="/login">
+            <button className="bg-sky-600 hover:bg-sky-700 hover:scale-110 transition-all ease-in-out duration-300 text-white font-bold py-4 px-6 rounded mt-4 flex items-center shadow-xl">
+              Get MyResQID <CircleArrowRight className="ml-4" />
+            </button>
+          </Link>
         </div>
         <div className="w-full md:w-1/2 h-full flex flex-col justify-center items-center">
           <img src={hero1} alt="Image-1" className="" />
