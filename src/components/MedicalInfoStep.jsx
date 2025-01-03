@@ -1,46 +1,46 @@
 import { useState } from "react";
 import { Label } from "../components/ui/label";
-import { Checkbox } from "../components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
 import { Separator } from "../components/ui/separator";
 import { Button } from "../components/ui/button";
+import { Checkbox } from "./ui/checkbox";
 
 export default function MedicalInfoStep({ onStepChange, onDataChange }) {
   const [bloodGroup, setBloodGroup] = useState("");
-  const [bloodDonor, setBloodDonor] = useState(false);
-  const [highBP, setHighBP] = useState(false);
-  const [diabetes, setDiabetes] = useState(false);
-  const [highCholesterol, setHighCholesterol] = useState(false);
-  const [heartIssues, setHeartIssues] = useState(false);
-  const [differentlyAbled, setDifferentlyAbled] = useState(false);
-  const [asthma, setAsthma] = useState(false);
-  const [tuberculosis, setTuberculosis] = useState(false);
-  const [mentalIllness, setMentalIllness] = useState(false);
-  const [epilepsy, setEpilepsy] = useState(false);
-  const [nsaids, setNSAIDs] = useState(false);
-  const [steroids, setSteroids] = useState(false);
-  const [anticoagulant, setAnticoagulant] = useState(false);
-  const [surgery, setSurgery] = useState(false);
-  const [organImplant, setOrganImplant] = useState(false);
+  const [bloodDonor, setBloodDonor] = useState("No");
+  const [highBP, setHighBP] = useState("No");
+  const [diabetes, setDiabetes] = useState("No");
+  const [highCholesterol, setHighCholesterol] = useState("No");
+  const [heartIssues, setHeartIssues] = useState("No");
+  const [differentlyAbled, setDifferentlyAbled] = useState("No");
+  const [asthma, setAsthma] = useState("false");
+  const [tuberculosis, setTuberculosis] = useState("false");
+  const [mentalIllness, setMentalIllness] = useState("false");
+  const [epilepsy, setEpilepsy] = useState("false");
+  const [nsaids, setNSAIDs] = useState("No");
+  const [steroids, setSteroids] = useState("No");
+  const [anticoagulant, setAnticoagulant] = useState("No");
+  const [surgery, setSurgery] = useState("No");
+  const [organImplant, setOrganImplant] = useState("No");
 
   const medicalDetails = {
     bloodGroup: bloodGroup,
-    bloodDonor: bloodDonor ? "Yes" : "No",
-    bloodPressure: highBP ? "Yes" : "No",
-    diabetes: diabetes ? "Yes" : "No",
-    cholesterol: highCholesterol ? "Yes" : "No",
-    heartRelated: heartIssues ? "Yes" : "No",
-    disabled: differentlyAbled ? "Yes" : "No",
-    reasonDisabled: differentlyAbled ? "Yes" : "No",
-    asthma: asthma ? "true" : "false",
-    tuberculosis: tuberculosis ? "true" : "false",
-    mentalIllness: mentalIllness ? "true" : "false",
-    epilepsy: epilepsy ? "true" : "false",
-    nsaids: nsaids ? "Yes" : "No",
-    steroids: steroids ? "Yes" : "No",
-    anticogulant: anticoagulant ? "Yes" : "No",
-    surgeryHistory: surgery ? "Yes" : "No",
-    organImplant: organImplant ? "Yes" : "No",
+    bloodDonor: bloodDonor,
+    bloodPressure: highBP,
+    diabetes: diabetes,
+    cholesterol: highCholesterol,
+    heartRelated: heartIssues,
+    disabled: differentlyAbled,
+    reasonDisabled: differentlyAbled,
+    asthma: asthma,
+    tuberculosis: tuberculosis,
+    mentalIllness: mentalIllness,
+    epilepsy: epilepsy,
+    nsaids: nsaids,
+    steroids: steroids,
+    anticogulant: anticoagulant,
+    surgeryHistory: surgery,
+    organImplant: organImplant,
   };
 
   const handleNext = () => {
@@ -78,44 +78,65 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
         <Label className="text-sky-700 dark:text-sky-300">
           Are you a blood donor?
         </Label>
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="bloodDonor"
-            checked={bloodDonor}
-            onCheckedChange={(checked) => setBloodDonor(checked)}
-          />
-          <Label
-            htmlFor="bloodDonor"
-            className="text-sky-700 dark:text-sky-300"
-          >
-            Yes, I am a blood donor
-          </Label>
-        </div>
+        <Checkbox
+          id="bloodDonor"
+          checked={bloodDonor}
+          onCheckedChange={(checked) => setBloodDonor(checked)}
+        />
+        <Label htmlFor="bloodDonor" className="text-sky-700 dark:text-sky-300">
+          Yes, I am a blood donor
+        </Label>
       </div>
       <div className="grid grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label htmlFor="highBP" className="text-sky-700 dark:text-sky-300">
             High Blood Pressure
           </Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="highBP"
-              checked={highBP}
-              onCheckedChange={(checked) => setHighBP(checked)}
-            />
-          </div>
+          <RadioGroup
+            value={highBP}
+            onValueChange={(value) => setHighBP(value)}
+            className="flex space-x-4"
+          >
+            <RadioGroupItem value="Yes" id="highBP-yes" />
+            <Label
+              htmlFor="highBP-yes"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              Yes
+            </Label>
+            <RadioGroupItem value="No" id="highBP-no" />
+            <Label
+              htmlFor="highBP-no"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              No
+            </Label>
+          </RadioGroup>
         </div>
         <div className="space-y-2">
           <Label htmlFor="diabetes" className="text-sky-700 dark:text-sky-300">
             Diabetes
           </Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="diabetes"
-              checked={diabetes}
-              onCheckedChange={(checked) => setDiabetes(checked)}
-            />
-          </div>
+          <RadioGroup
+            value={diabetes}
+            onValueChange={(value) => setDiabetes(value)}
+            className="flex space-x-4"
+          >
+            <RadioGroupItem value="Yes" id="diabetes-yes" />
+            <Label
+              htmlFor="diabetes-yes"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              Yes
+            </Label>
+            <RadioGroupItem value="No" id="diabetes-no" />
+            <Label
+              htmlFor="diabetes-no"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              No
+            </Label>
+          </RadioGroup>
         </div>
         <div className="space-y-2">
           <Label
@@ -124,13 +145,26 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           >
             High Cholesterol
           </Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="highCholesterol"
-              checked={highCholesterol}
-              onCheckedChange={(checked) => setHighCholesterol(checked)}
-            />
-          </div>
+          <RadioGroup
+            value={highCholesterol}
+            onValueChange={(value) => setHighCholesterol(value)}
+            className="flex space-x-4"
+          >
+            <RadioGroupItem value="Yes" id="highCholesterol-yes" />
+            <Label
+              htmlFor="highCholesterol-yes"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              Yes
+            </Label>
+            <RadioGroupItem value="No" id="highCholesterol-no" />
+            <Label
+              htmlFor="highCholesterol-no"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              No
+            </Label>
+          </RadioGroup>
         </div>
         <div className="space-y-2">
           <Label
@@ -139,13 +173,26 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           >
             Heart Issues
           </Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="heartIssues"
-              checked={heartIssues}
-              onCheckedChange={(checked) => setHeartIssues(checked)}
-            />
-          </div>
+          <RadioGroup
+            value={heartIssues}
+            onValueChange={(value) => setHeartIssues(value)}
+            className="flex space-x-4"
+          >
+            <RadioGroupItem value="Yes" id="heartIssues-yes" />
+            <Label
+              htmlFor="heartIssues-yes"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              Yes
+            </Label>
+            <RadioGroupItem value="No" id="heartIssues-no" />
+            <Label
+              htmlFor="heartIssues-no"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              No
+            </Label>
+          </RadioGroup>
         </div>
         <div className="space-y-2">
           <Label
@@ -154,25 +201,51 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           >
             Differently Abled
           </Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="differentlyAbled"
-              checked={differentlyAbled}
-              onCheckedChange={(checked) => setDifferentlyAbled(checked)}
-            />
-          </div>
+          <RadioGroup
+            value={differentlyAbled}
+            onValueChange={(value) => setDifferentlyAbled(value)}
+            className="flex space-x-4"
+          >
+            <RadioGroupItem value="Yes" id="differentlyAbled-yes" />
+            <Label
+              htmlFor="differentlyAbled-yes"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              Yes
+            </Label>
+            <RadioGroupItem value="No" id="differentlyAbled-no" />
+            <Label
+              htmlFor="differentlyAbled-no"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              No
+            </Label>
+          </RadioGroup>
         </div>
         <div className="space-y-2">
           <Label htmlFor="asthma" className="text-sky-700 dark:text-sky-300">
             Asthma
           </Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="asthma"
-              checked={asthma}
-              onCheckedChange={(checked) => setAsthma(checked)}
-            />
-          </div>
+          <RadioGroup
+            value={asthma}
+            onValueChange={(value) => setAsthma(value)}
+            className="flex space-x-4"
+          >
+            <RadioGroupItem value="true" id="asthma-yes" />
+            <Label
+              htmlFor="asthma-yes"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              Yes
+            </Label>
+            <RadioGroupItem value="false" id="asthma-no" />
+            <Label
+              htmlFor="asthma-no"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              No
+            </Label>
+          </RadioGroup>
         </div>
         <div className="space-y-2">
           <Label
@@ -181,13 +254,26 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           >
             Tuberculosis
           </Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="tuberculosis"
-              checked={tuberculosis}
-              onCheckedChange={(checked) => setTuberculosis(checked)}
-            />
-          </div>
+          <RadioGroup
+            value={tuberculosis}
+            onValueChange={(value) => setTuberculosis(value)}
+            className="flex space-x-4"
+          >
+            <RadioGroupItem value="true" id="tuberculosis-yes" />
+            <Label
+              htmlFor="tuberculosis-yes"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              Yes
+            </Label>
+            <RadioGroupItem value="false" id="tuberculosis-no" />
+            <Label
+              htmlFor="tuberculosis-no"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              No
+            </Label>
+          </RadioGroup>
         </div>
         <div className="space-y-2">
           <Label
@@ -196,49 +282,101 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           >
             Mental Illness
           </Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="mentalIllness"
-              checked={mentalIllness}
-              onCheckedChange={(checked) => setMentalIllness(checked)}
-            />
-          </div>
+          <RadioGroup
+            value={mentalIllness}
+            onValueChange={(value) => setMentalIllness(value)}
+            className="flex space-x-4"
+          >
+            <RadioGroupItem value="true" id="mentalIllness-yes" />
+            <Label
+              htmlFor="mentalIllness-yes"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              Yes
+            </Label>
+            <RadioGroupItem value="false" id="mentalIllness-no" />
+            <Label
+              htmlFor="mentalIllness-no"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              No
+            </Label>
+          </RadioGroup>
         </div>
         <div className="space-y-2">
           <Label htmlFor="epilepsy" className="text-sky-700 dark:text-sky-300">
             Epilepsy
           </Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="epilepsy"
-              checked={epilepsy}
-              onCheckedChange={(checked) => setEpilepsy(checked)}
-            />
-          </div>
+          <RadioGroup
+            value={epilepsy}
+            onValueChange={(value) => setEpilepsy(value)}
+            className="flex space-x-4"
+          >
+            <RadioGroupItem value="true" id="epilepsy-yes" />
+            <Label
+              htmlFor="epilepsy-yes"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              Yes
+            </Label>
+            <RadioGroupItem value="false" id="epilepsy-no" />
+            <Label
+              htmlFor="epilepsy-no"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              No
+            </Label>
+          </RadioGroup>
         </div>
         <div className="space-y-2">
           <Label htmlFor="nsaids" className="text-sky-700 dark:text-sky-300">
             NSAIDs
           </Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="nsaids"
-              checked={nsaids}
-              onCheckedChange={(checked) => setNSAIDs(checked)}
-            />
-          </div>
+          <RadioGroup
+            value={nsaids}
+            onValueChange={(value) => setNSAIDs(value)}
+            className="flex space-x-4"
+          >
+            <RadioGroupItem value="Yes" id="nsaids-yes" />
+            <Label
+              htmlFor="nsaids-yes"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              Yes
+            </Label>
+            <RadioGroupItem value="No" id="nsaids-no" />
+            <Label
+              htmlFor="nsaids-no"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              No
+            </Label>
+          </RadioGroup>
         </div>
         <div className="space-y-2">
           <Label htmlFor="steroids" className="text-sky-700 dark:text-sky-300">
             Steroids
           </Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="steroids"
-              checked={steroids}
-              onCheckedChange={(checked) => setSteroids(checked)}
-            />
-          </div>
+          <RadioGroup
+            value={steroids}
+            onValueChange={(value) => setSteroids(value)}
+            className="flex space-x-4"
+          >
+            <RadioGroupItem value="Yes" id="steroids-yes" />
+            <Label
+              htmlFor="steroids-yes"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              Yes
+            </Label>
+            <RadioGroupItem value="No" id="steroids-no" />
+            <Label
+              htmlFor="steroids-no"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              No
+            </Label>
+          </RadioGroup>
         </div>
         <div className="space-y-2">
           <Label
@@ -247,25 +385,51 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           >
             Anticoagulant
           </Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="anticoagulant"
-              checked={anticoagulant}
-              onCheckedChange={(checked) => setAnticoagulant(checked)}
-            />
-          </div>
+          <RadioGroup
+            value={anticoagulant}
+            onValueChange={(value) => setAnticoagulant(value)}
+            className="flex space-x-4"
+          >
+            <RadioGroupItem value="Yes" id="anticoagulant-yes" />
+            <Label
+              htmlFor="anticoagulant-yes"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              Yes
+            </Label>
+            <RadioGroupItem value="No" id="anticoagulant-no" />
+            <Label
+              htmlFor="anticoagulant-no"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              No
+            </Label>
+          </RadioGroup>
         </div>
         <div className="space-y-2">
           <Label htmlFor="surgery" className="text-sky-700 dark:text-sky-300">
             Surgery
           </Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="surgery"
-              checked={surgery}
-              onCheckedChange={(checked) => setSurgery(checked)}
-            />
-          </div>
+          <RadioGroup
+            value={surgery}
+            onValueChange={(value) => setSurgery(value)}
+            className="flex space-x-4"
+          >
+            <RadioGroupItem value="Yes" id="surgery-yes" />
+            <Label
+              htmlFor="surgery-yes"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              Yes
+            </Label>
+            <RadioGroupItem value="No" id="surgery-no" />
+            <Label
+              htmlFor="surgery-no"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              No
+            </Label>
+          </RadioGroup>
         </div>
         <div className="space-y-2">
           <Label
@@ -274,13 +438,26 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           >
             Organ Implant
           </Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="organImplant"
-              checked={organImplant}
-              onCheckedChange={(checked) => setOrganImplant(checked)}
-            />
-          </div>
+          <RadioGroup
+            value={organImplant}
+            onValueChange={(value) => setOrganImplant(value)}
+            className="flex space-x-4"
+          >
+            <RadioGroupItem value="Yes" id="organImplant-yes" />
+            <Label
+              htmlFor="organImplant-yes"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              Yes
+            </Label>
+            <RadioGroupItem value="No" id="organImplant-no" />
+            <Label
+              htmlFor="organImplant-no"
+              className="text-sky-700 dark:text-sky-300"
+            >
+              No
+            </Label>
+          </RadioGroup>
         </div>
       </div>
       <Button

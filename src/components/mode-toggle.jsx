@@ -19,7 +19,7 @@ export function ModeToggle() {
           checked={theme === "dark"}
           onChange={handleToggle}
         />
-        <div className="w-14 h-8 bg-gray-200 rounded-full dark:bg-gray-700">
+        <div className="w-14 h-8 bg-gray-200 rounded-full dark:bg-gray-700 flex items-center">
           <div
             className={`w-7 h-7 bg-white rounded-full shadow-md transform transition-transform ${
               theme === "dark" ? "translate-x-6" : ""

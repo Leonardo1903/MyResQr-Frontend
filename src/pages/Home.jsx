@@ -1,4 +1,5 @@
 import hero1 from "../assets/hero-1.png";
+import { Link } from "react-router-dom";
 import {
   CircleArrowRight,
   Cpu,
@@ -13,7 +14,6 @@ import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { Label } from "../components/ui/label";
 import { Card, CardContent } from "../components/ui/card";
-import { Link } from "react-router-dom";
 import StylishSeparator from "../components/StylishSeparator";
 
 function Home() {
@@ -186,16 +186,14 @@ function Home() {
       {/* Landing section */}
       <section className="w-full h-screen flex flex-col md:flex-row justify-center items-center">
         <div className="w-full md:w-1/2 h-full flex flex-col justify-center items-center md:items-baseline md:space-y-10 ">
-          <h1 className=" text-4xl md:text-6xl">
-            Empower Yourself with <br />{" "}
-            <span className="text-sky-600 font-bold">myresQR.life</span>{" "}
-          </h1>
-
-          <button className="bg-sky-600 hover:bg-sky-700 hover:scale-110 transition-all ease-in-out duration-300 text-white font-bold py-2 px-4 rounded mt-4 flex items-center shadow-xl">
-            <Link to="/login" className="flex items-center">
-              Get MyResQR ID <CircleArrowRight className="ml-4" />
-            </Link>
-          </button>
+          <h1 className="text-4xl md:text-6xl text-sky-600 font-bold">
+          Empower Yourself with myresQR –<br />{" "} </h1>
+          <span className="text-2xl md:text-4xl">Respond to Emergencies in Just 10 Seconds! </span>{" "}
+         
+        <Link to="/login">
+          <button className="bg-sky-600 hover:bg-sky-700 hover:scale-110 transition-all ease-in-out duration-300 text-white font-bold py-4 px-6 rounded mt-4 flex items-center shadow-xl">
+            Get MyResQID <CircleArrowRight className="ml-4" />
+          </button></Link>
         </div>
         <div className="w-full md:w-1/2 h-full flex flex-col justify-center items-center">
           <img src={hero1} alt="Image-1" className="" />
