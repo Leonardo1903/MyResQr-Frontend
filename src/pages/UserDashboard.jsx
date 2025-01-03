@@ -116,7 +116,7 @@ export default function UserDashboard() {
     // console.log("Access token:", accessToken);
     try {
       const response = await axios.get(
-        `${baseUrl}/pin_manager/pin_details/${id}`,
+        `${baseUrl}/pin_manager/pin_details/${userData.id}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -151,6 +151,7 @@ export default function UserDashboard() {
       });
     }
   };
+  handleGetPlanDetails();
 
   const data = {
     pin_number: `${pin}`,
@@ -171,7 +172,7 @@ export default function UserDashboard() {
           },
         }
       );
-      console.log("Response : ", res.data);
+      //console.log("Response : ", res.data);
 
       toast({
         title: "Success",

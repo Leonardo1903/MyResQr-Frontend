@@ -208,7 +208,7 @@ export default function PostScanDashboard() {
         latitude: saviourDetails.latitude,
         longitude: saviourDetails.longitude,
       });
-      console.log(response);
+      //console.log(response);
       toast({
         title: "Success",
         description: "Ambulance called successfully",
@@ -226,13 +226,7 @@ export default function PostScanDashboard() {
   const nearestHospital = async (latitude, longitude) => {
     try {
       const response = await axios.get(
-        `${baseUrl}/post_scan/nearest_hospital`,
-        {
-          params: {
-            lat: latitude,
-            long: longitude,
-          },
-        }
+        `${baseUrl}/post_scan/nearest_hospital?lat=${latitude}&long=${longitude}`,
       );
       setNearestHospitalData(response.data[0]);
       toast({

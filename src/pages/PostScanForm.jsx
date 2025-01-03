@@ -74,7 +74,7 @@ export default function PostScanForm() {
         const response = await axios.get(
           `${baseUrl}/post_scan/scanqr/${encrypted_pin}`
         );
-        console.log(response.data);
+        //console.log(response.data);
         setPinNumber(response.data.pin_number);
         setPin(response.data.pin_number);
         toast({

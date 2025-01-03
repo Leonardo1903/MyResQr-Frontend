@@ -32,7 +32,7 @@ function Login() {
       });
       return;
     }
-    console.log("Access Token:", accessToken);
+    //console.log("Access Token:", accessToken);
     try {
       const response = await axios.post(
         `${baseUrl}/account/agent/create_user`,
