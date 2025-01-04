@@ -64,7 +64,7 @@ function Home() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    //console.log("Form submitted:", formData);
     // Here you would typically send the data to your backend
   };
 
@@ -143,9 +143,9 @@ function Home() {
       ),
     },
     {
-      title: "Display Your QR Code",
+      title: "Display Your myresQR safetag",
       description:
-        "Place your QR code on personal items like phone cases, wallets, or wearables.",
+        "Display your myres QR safetag on helmet and bike and phone",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -166,7 +166,7 @@ function Home() {
     {
       title: "In Case of Emergency",
       description:
-        "First responders can scan your QR code to access your critical information quickly.",
+        "Scanning your tag allows triggering SoS to your family within 15 seconds",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"

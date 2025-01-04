@@ -73,7 +73,7 @@ export default function Component() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const enteredOtp = otp.join("");
-    console.log(phoneNumber, enteredOtp);
+    //console.log(phoneNumber, enteredOtp);
     if (enteredOtp.length !== 4) {
       toast({
         title: "Error",
@@ -95,11 +95,11 @@ export default function Component() {
       setPhoneNumber(response.data.user.phone_number);
       setEmail(response.data.user.email);
 
-      console.log("Access token : ", response.data.accessToken);
-      console.log("Refresh token : ", response.data.refresh_token);
-      console.log("ID : ", response.data.user.id);
-      console.log("Phone number : ", response.data.user.phone_number);
-      console.log("Email : ", response.data.user.email);
+      //console.log("Access token : ", response.data.accessToken);
+      //console.log("Refresh token : ", response.data.refresh_token);
+      //console.log("ID : ", response.data.user.id);
+      //console.log("Phone number : ", response.data.user.phone_number);
+      //console.log("Email : ", response.data.user.email);
 
       //checking role
       if (response.data.role === "agent") {

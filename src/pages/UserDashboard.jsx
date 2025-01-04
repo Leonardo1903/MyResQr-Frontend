@@ -116,7 +116,7 @@ export default function UserDashboard() {
     // console.log("Access token:", accessToken);
     try {
       const response = await axios.get(
-        `${baseUrl}/pin_manager/pin_details/${id}`,
+        `${baseUrl}/pin_manager/pin_details/${userData.id}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -151,6 +151,7 @@ export default function UserDashboard() {
       });
     }
   };
+  handleGetPlanDetails();
 
   const data = {
     pin_number: `${pin}`,
@@ -171,7 +172,7 @@ export default function UserDashboard() {
           },
         }
       );
-      console.log("Response : ", res.data);
+      //console.log("Response : ", res.data);
 
       toast({
         title: "Success",
@@ -280,7 +281,7 @@ export default function UserDashboard() {
   const medicalConditions = userData.medical_detail?.[0] || {};
 
   const renderMedicalCondition = (label, value, IconComponent) => (
-    <div className="flex items-center justify-between p-3 bg-sky-500/20 dark:bg-sky-500/20 rounded-lg transition-all duration-200 hover:bg-sky-500/30 dark:hover:bg-sky-500/30">
+    <div className="flex items-center justify-between p-3 bg-sky-500/20 dark:bg-sky-500/20 rounded-lg transition-all duration-200 hover:bg-sky-500/30 dark:hover:bg-sky-500/30 ">
       <div className="flex items-center">
         <IconComponent className="w-5 h-5 mr-2 text-sky-500 dark:text-sky-200" />
         <span className="text-sky-800 dark:text-white">{label}</span>
@@ -464,7 +465,7 @@ export default function UserDashboard() {
               return (
                 <Card
                   key={key}
-                  className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20 transition-transform duration-200 hover:scale-[1.02]"
+                  className="bg-white/10 dark:bg-white/10 backdrop-blur-md light:border-black/20 dark:border-sky-200/20 transition-transform duration-200 hover:scale-[1.02]"
                 >
                   <CardContent className="p-6">
                     {renderMedicalCondition(label, value, IconComponent)}
@@ -473,7 +474,7 @@ export default function UserDashboard() {
               );
             })}
 
-            <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20 md:col-span-2 lg:col-span-3">
+            <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md light:border-black/20 dark:border-sky-200/20 md:col-span-2 lg:col-span-3">
               <CardHeader>
                 <CardTitle className="text-lg font-medium text-sky-800 dark:text-white">
                   Additional Information
@@ -518,7 +519,7 @@ export default function UserDashboard() {
         {showEmergencyContacts && (
           <div className="grid gap-6 md:grid-cols-2">
             {/* Family Contacts */}
-            <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20">
+            <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md light:border-black/20 dark:border-sky-200/20">
               <CardHeader>
                 <CardTitle className="text-lg font-medium text-sky-800 dark:text-white flex items-center gap-2">
                   <Users className="h-5 w-5 text-sky-300" />
@@ -534,11 +535,11 @@ export default function UserDashboard() {
                           {userData.emergency_contact[0].family_name1}
                         </p>
                         {userData.emergency_contact[0].family_rel1 && (
-                          <p className="text-sm text-sky-200">
+                          <p className="text-sm light:text-black dark:text-sky-200">
                             {userData.emergency_contact[0].family_rel1}
                           </p>
                         )}
-                        <p className="text-sm text-sky-200">
+                        <p className="text-sm light:text-black dark:text-sky-200">
                           {userData.emergency_contact[0].family_phone1}
                         </p>
                       </div>
@@ -563,11 +564,11 @@ export default function UserDashboard() {
                           {userData.emergency_contact[0].family_name2}
                         </p>
                         {userData.emergency_contact[0].family_rel2 && (
-                          <p className="text-sm text-sky-200">
+                          <p className="text-sm light:text-black dark:text-sky-200">
                             {userData.emergency_contact[0].family_rel2}
                           </p>
                         )}
-                        <p className="text-sm text-sky-200">
+                        <p className="text-sm light:text-black dark:text-sky-200">
                           {userData.emergency_contact[0].family_phone2}
                         </p>
                       </div>
@@ -588,7 +589,7 @@ export default function UserDashboard() {
             </Card>
 
             {/* Friend Contacts */}
-            <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20">
+            <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md light:border-black/20 dark:border-sky-200/20">
               <CardHeader>
                 <CardTitle className="text-lg font-medium text-sky-800 dark:text-white flex items-center gap-2">
                   <Heart className="h-5 w-5 text-sky-300" />
@@ -603,7 +604,7 @@ export default function UserDashboard() {
                         <p className="font-medium text-sky-800 dark:text-white">
                           {userData.emergency_contact[0].friend_name1}
                         </p>
-                        <p className="text-sm text-sky-200">
+                        <p className="text-sm light:text-black dark:text-sky-200">
                           {userData.emergency_contact[0].friend_phone1}
                         </p>
                       </div>
@@ -627,7 +628,7 @@ export default function UserDashboard() {
                         <p className="font-medium text-sky-800 dark:text-white">
                           {userData.emergency_contact[0].friend_name2}
                         </p>
-                        <p className="text-sm text-sky-200">
+                        <p className="text-sm light:text-black dark:text-sky-200">
                           {userData.emergency_contact[0].friend_phone2}
                         </p>
                       </div>
