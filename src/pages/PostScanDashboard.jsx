@@ -429,11 +429,11 @@ export default function PostScanDashboard() {
                           {userData.emergency_contact[0].family_name1}
                         </p>
                         {userData.emergency_contact[0].family_rel1 && (
-                          <p className="text-sm text-sky-200">
+                          <p className="text-sm light:text-black dark:text-sky-200">
                             {userData.emergency_contact[0].family_rel1}
                           </p>
                         )}
-                        <p className="text-sm text-sky-200">
+                        <p className="text-sm light:text-black dark:text-sky-200">
                           {userData.emergency_contact[0].family_phone1}
                         </p>
                       </div>
@@ -459,11 +459,11 @@ export default function PostScanDashboard() {
                             {userData.emergency_contact[0].family_name2}
                           </p>
                           {userData.emergency_contact[0].family_rel2 && (
-                            <p className="text-sm text-sky-200">
+                            <p className="text-sm light:text-black dark:text-sky-200">
                               {userData.emergency_contact[0].family_rel2}
                             </p>
                           )}
-                          <p className="text-sm text-sky-200">
+                          <p className="text-sm light:text-black dark:text-sky-200">
                             {userData.emergency_contact[0].family_phone2}
                           </p>
                         </div>
@@ -499,7 +499,7 @@ export default function PostScanDashboard() {
                         <p className="font-medium text-sky-800 dark:text-white">
                           {userData.emergency_contact[0].friend_name1}
                         </p>
-                        <p className="text-sm text-sky-200">
+                        <p className="text-sm light:text-black dark:text-sky-200">
                           {userData.emergency_contact[0].friend_phone1}
                         </p>
                       </div>
@@ -524,7 +524,7 @@ export default function PostScanDashboard() {
                           <p className="font-medium text-sky-800 dark:text-white">
                             {userData.emergency_contact[0].friend_name2}
                           </p>
-                          <p className="text-sm text-sky-200">
+                          <p className="text-sm light:text-black dark:text-sky-200">
                             {userData.emergency_contact[0].friend_phone2}
                           </p>
                         </div>
