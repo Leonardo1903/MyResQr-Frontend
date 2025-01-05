@@ -9,7 +9,7 @@ const ThemeProviderContext = createContext(initialState);
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
+  defaultTheme = "light",
   storageKey = "vite-ui-theme",
   ...props
 }) {
@@ -18,6 +18,7 @@ export function ThemeProvider({
   );
 
   useEffect(() => {
+    console.log(`Applying theme: ${theme}`); // Add this line for debugging
     const root = window.document.documentElement;
 
     root.classList.remove("light", "dark");
@@ -38,6 +39,7 @@ export function ThemeProvider({
   const value = {
     theme,
     setTheme: (theme) => {
+      console.log(`Setting theme: ${theme}`); // Add this line for debugging
       localStorage.setItem(storageKey, theme);
       setTheme(theme);
     },

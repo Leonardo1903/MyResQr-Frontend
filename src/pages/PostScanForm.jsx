@@ -74,7 +74,6 @@ export default function PostScanForm() {
         const response = await axios.get(
           `${baseUrl}/post_scan/scanqr/${encrypted_pin}`
         );
-        //console.log(response.data);
         setPinNumber(response.data.pin_number);
         setPin(response.data.pin_number);
         toast({
@@ -127,6 +126,13 @@ export default function PostScanForm() {
         longitude: longitude,
         ...(isDoctor && { hospital_name: saviourInfo.workPlace }),
       });
+
+      setSaviourDetails(
+        saviourInfo.fullName,
+        saviourInfo.phoneNumber,
+        isDoctor ? saviourInfo.workPlace : null
+      );
+
       toast({
         title: "Saviour Info Saved",
         message: response.data.response,

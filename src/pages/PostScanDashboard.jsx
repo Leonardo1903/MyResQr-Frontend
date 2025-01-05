@@ -10,14 +10,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Badge } from "../components/ui/badge";
 import {
   PhoneCall,
-  Mail,
   MapPin,
   Activity,
   Users,
   FileText,
-  Home,
-  Flag,
-  MapPinned,
   Heart,
   Droplets,
   Brain,
@@ -76,12 +72,6 @@ export default function PostScanDashboard() {
     ],
     first_name: "",
     last_name: "",
-    email_id: "",
-    mobile_number: "",
-    address: "",
-    city: "",
-    state: "",
-    country: "",
     image: "",
   });
 
@@ -102,16 +92,6 @@ export default function PostScanDashboard() {
     surgery_history: Bone,
     organ_implant: Stethoscope,
   };
-
-  const personalDetails = [
-    { icon: Mail, label: "Email", value: userData.email_id },
-    { icon: PhoneCall, label: "Mobile", value: userData.mobile_number },
-    { icon: Home, label: "Address", value: userData.address },
-    { icon: MapPinned, label: "City", value: userData.city },
-    { icon: MapPin, label: "State", value: userData.state },
-    { icon: Flag, label: "Country", value: userData.country },
-  ];
-
   const actionButtons = [
     {
       icon: Users,
@@ -208,7 +188,6 @@ export default function PostScanDashboard() {
         latitude: saviourDetails.latitude,
         longitude: saviourDetails.longitude,
       });
-      //console.log(response);
       toast({
         title: "Success",
         description: "Ambulance called successfully",
@@ -226,7 +205,7 @@ export default function PostScanDashboard() {
   const nearestHospital = async (latitude, longitude) => {
     try {
       const response = await axios.get(
-        `${baseUrl}/post_scan/nearest_hospital?lat=${latitude}&long=${longitude}`,
+        `${baseUrl}/post_scan/nearest_hospital?lat=${latitude}&long=${longitude}`
       );
       setNearestHospitalData(response.data[0]);
       toast({
@@ -277,7 +256,7 @@ export default function PostScanDashboard() {
       <div className="max-w-5xl mx-auto space-y-8">
         <div className="grid gap-6">
           <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20 relative">
-            <div className="flex justify-between items-start p-6">
+            <div className="flex justify-center items-center p-6">
               <div className="flex flex-col lg:flex-row gap-6">
                 <div className="flex flex-col items-center lg:items-start gap-4">
                   <Avatar className="w-32 h-32 border-4 border-sky-200/20">
@@ -300,17 +279,6 @@ export default function PostScanDashboard() {
                     <Badge className="bg-sky-500/50 dark:bg-sky-500/50">
                       Pin: {userData.pin}
                     </Badge>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {personalDetails.map((detail, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center gap-2 text-sky-800 dark:text-sky-100"
-                      >
-                        <detail.icon className="w-4 h-4 text-sky-500 dark:text-sky-300" />
-                        <span className="text-sm">{detail.value}</span>
-                      </div>
-                    ))}
                   </div>
                 </div>
               </div>
