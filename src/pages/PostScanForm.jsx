@@ -97,6 +97,24 @@ export default function PostScanForm() {
     }
   };
 
+  const saviourDetails = {
+    saviour_name: saviourInfo.fullName,
+    saviour_phone_number: saviourInfo.phoneNumber,
+    is_doctor: isDoctor ? "True" : "False",
+    pin_number: pinNumber,
+    latitude: latitude,
+    longitude: longitude,
+    ...(isDoctor && { hospital_name: saviourInfo.workPlace }),
+  };
+
+  setSaviourDetails({
+    fullName: saviourInfo.fullName,
+    phoneNumber: saviourInfo.phoneNumber,
+    pinNumber: pinNumber,
+    latitude: latitude,
+    longitude: longitude,
+  });
+
   const handleRequestOtp = async () => {
     setOtpRequested(true);
     try {
@@ -115,24 +133,10 @@ export default function PostScanForm() {
         variant: "destructive",
       });
     }
-
     try {
       const response = await axios.post(`${baseUrl}/post_scan/saviour_info`, {
-        saviour_name: saviourInfo.fullName,
-        saviour_phone_number: saviourInfo.phoneNumber,
-        is_doctor: isDoctor ? "True" : "False",
-        pin_number: pinNumber,
-        latitude: latitude,
-        longitude: longitude,
-        ...(isDoctor && { hospital_name: saviourInfo.workPlace }),
+        ...saviourDetails,
       });
-
-      setSaviourDetails(
-        saviourInfo.fullName,
-        saviourInfo.phoneNumber,
-        isDoctor ? saviourInfo.workPlace : null
-      );
-
       toast({
         title: "Saviour Info Saved",
         message: response.data.response,
