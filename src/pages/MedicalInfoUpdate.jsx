@@ -126,12 +126,6 @@ export default function MedicalInfoUpdate() {
       });
     } catch (error) {
       console.error("Error response:", error.response?.data || error.message);
-      toast({
-        title: "Error",
-        description:
-          error.response?.data?.message || "An unexpected error occurred.",
-        variant: "destructive",
-      });
     }
   };
 

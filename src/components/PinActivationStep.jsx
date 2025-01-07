@@ -88,11 +88,6 @@ export default function PinActivationStep() {
             navigate("/login");
           }
         } catch (error) {
-          toast({
-            title: "Error",
-            description: `Error activating PIN: ${error.message}`,
-            variant: "destructive",
-          });
         }
       } else {
         toast({

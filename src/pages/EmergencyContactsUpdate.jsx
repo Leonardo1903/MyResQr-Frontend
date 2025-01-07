@@ -92,11 +92,6 @@ export default function EmergencyContactsUpdate() {
       );
 
       if (response.status < 200 || response.status >= 300) {
-        toast({
-          title: "Error",
-          description: response.data.message || "An error occurred.",
-          variant: "destructive",
-        });
         return;
       }
 
@@ -112,12 +107,6 @@ export default function EmergencyContactsUpdate() {
       });
     } catch (error) {
       console.error("Error response:", error.response?.data || error.message);
-      toast({
-        title: "Error",
-        description:
-          error.response?.data?.message || "An unexpected error occurred.",
-        variant: "destructive",
-      });
     }
   };
 

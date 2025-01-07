@@ -50,12 +50,6 @@ export default function AdditionalMedicalInfoStep({
       );
 
       if (response.status < 200 || response.status >= 300) {
-        toast({
-          title: "Error",
-          description:
-            response.data.message ||
-            "An error occurred while submitting medical details.",
-        });
       }
       onStepChange(4);
       toast({
@@ -63,12 +57,6 @@ export default function AdditionalMedicalInfoStep({
         description: "Medical details submitted successfully.",
       });
     } catch (error) {
-      toast({
-        title: "Error",
-        description:
-          error.message ||
-          "An error occurred while submitting medical details.",
-      });
     }
   };
 

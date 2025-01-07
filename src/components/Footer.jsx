@@ -129,7 +129,7 @@ export default function Component() {
 
         {/* Copyright */}
         <div className="mt-8 text-center text-gray-600 dark:text-gray-400">
-          <p>2024 Kuberakshi Business Solutions Pvt. Ltd.</p>
+        <p>&copy; {new Date().getFullYear()} Kuberakshi Business Solutions Pvt. Ltd.</p>
         </div>
       </div>
     </footer>

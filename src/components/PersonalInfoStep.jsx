@@ -70,17 +70,9 @@ export default function PersonalInfoStep({ onStepChange }) {
         setState(postOffice.State);
         setCountry(postOffice.Country);
       } else {
-        toast({
-          title: "Error",
-          description: "Unable to fetch location data for the given pincode.",
-        });
       }
     } catch (error) {
       console.error("Error fetching location data:", error);
-      toast({
-        title: "Error",
-        description: "An error occurred while fetching location data.",
-      });
     }
   };
 
@@ -171,11 +163,6 @@ export default function PersonalInfoStep({ onStepChange }) {
       );
 
       if (response.status < 200 || response.status >= 300) {
-        toast({
-          title: "Error",
-          description: response.data.message || "An error occurred.",
-          variant: "destructive",
-        });
         return;
       }
 
@@ -188,12 +175,6 @@ export default function PersonalInfoStep({ onStepChange }) {
       });
     } catch (error) {
       console.error("Error response:", error.response?.data || error.message);
-      toast({
-        title: "Error",
-        description:
-          error.response?.data?.message || "An unexpected error occurred.",
-        variant: "destructive",
-      });
     }
   };
 

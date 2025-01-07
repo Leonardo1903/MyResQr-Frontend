@@ -117,7 +117,7 @@ export default function Component() {
         navigate("/signup", { replace: true });
         toast({
           title: "Sign Up Required",
-          description: "You are a new User, please sign up.",
+          description: "You are a new User, please complete the sign up process.",
         });
         return;
       }
@@ -151,29 +151,13 @@ export default function Component() {
           return;
         }
         navigate("/user-dashboard", { replace: true });
-        toast({
-          title: "Success",
-          description: response.data.message,
-          variant: "default",
-        });
       } catch (error) {
         const errorMessage = error.response?.data?.message;
         console.log("Error message : ", error);
-        toast({
-          title: "Error",
-          description: errorMessage,
-          variant: "destructive",
-        });
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message;
       console.log("Error message : ", error);
-
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
     }
     // console.log('Submitted OTP:', enteredOtp)
   };
@@ -184,20 +168,10 @@ export default function Component() {
       const response = await axios.post(`${baseUrl}/account/get_otp`, {
         phone_number: phoneNumber,
       });
-      toast({
-        title: "Success",
-        description: response.data.message || "OTP resent successfully",
-        variant: "default",
-      });
       setIsResendingDisabled(true);
       setTimeleft(60);
     } catch (error) {
       const errorMessage = error.response?.data?.message;
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
     }
   };
 

@@ -53,17 +53,8 @@ function Login() {
         //   description: "You are a new User, please sign up.",
         // })
         navigate("/enter-otp", { replace: true });
-          toast({
-            title: "Success",
-            description: response.data.message,
-          });
     } catch (error) {
       const errorMessage = error.response?.data?.message;
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
     }
   };
 
