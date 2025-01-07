@@ -40,7 +40,7 @@ export default function PostScanDashboard() {
   const saviourDetails = useRecoilValue(saviourDetailsAtom);
   const [showMedicalHistory, setShowMedicalHistory] = useState(false);
   const [showEmergencyContacts, setShowEmergencyContacts] = useState(false);
-  const [nearestHospitalData, setNearestHospitalData] = useState(null);
+  const [nearestHospitalData, setNearestHospitalData] = useState([]);
   const [planDescription, setPlanDescription] = useState(null);
 
   const [userData, setUserData] = useState({
@@ -207,7 +207,8 @@ export default function PostScanDashboard() {
       const response = await axios.get(
         `${baseUrl}/post_scan/nearest_hospital?lat=${latitude}&long=${longitude}`
       );
-      setNearestHospitalData(response.data[0]);
+      // console.log("Nearest hospital data:", response.data);
+      setNearestHospitalData(response.data);
       toast({
         title: "Success",
         description: "Nearest hospital fetched successfully",
@@ -514,24 +515,36 @@ export default function PostScanDashboard() {
           </div>
         )}
 
-        {nearestHospitalData && (
+        {/* Nearest Hospitals */}
+        {nearestHospitalData.length > 0 && (
           <Card className="bg-white/10 dark:bg-white/10 backdrop-blur-md border-sky-200/20">
             <CardHeader>
               <CardTitle className="text-lg font-medium text-sky-800 dark:text-white flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-sky-300" />
-                Nearest Hospital
+                Nearest Hospitals
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-4 rounded-lg bg-sky-500/20 transition-all duration-200 hover:bg-sky-500/30">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-medium text-sky-800 dark:text-white">
-                      {nearestHospitalData}
-                    </p>
+              {nearestHospitalData.slice(1, 6).map((hospital, index) => (
+                <div key={index} className="p-4 rounded-lg bg-sky-500/20 transition-all duration-200 hover:bg-sky-500/30">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-medium text-sky-800 dark:text-white">{hospital.name}</p>
+                      <p className="text-sm light:text-black dark:text-sky-200">{hospital.address}</p>
+                      <p className="text-sm light:text-black dark:text-sky-200">Distance: {hospital.distance}</p>
+                      <p className="text-sm light:text-black dark:text-sky-200">Approx. Time: {hospital.approx_time}</p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-sky-300 hover:text-sky-100 hover:bg-sky-500/20"
+                      onClick={() => window.open(hospital.map_direction, "_blank")}
+                    >
+                      <MapPin className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
-              </div>
+              ))}
             </CardContent>
           </Card>
         )}
