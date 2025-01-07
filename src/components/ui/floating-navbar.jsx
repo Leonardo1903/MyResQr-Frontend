@@ -68,7 +68,7 @@ export const FloatingNav = ({ navItems, className }) => {
     });
     navigate("/");
     toast({
-      title: "Logout Successful",
+      title: "Logout",
       description: "You have been logged out successfully",
     });
   };

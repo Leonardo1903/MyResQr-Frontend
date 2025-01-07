@@ -129,11 +129,6 @@ export default function UserDashboard() {
     } catch (error) {
       const errorMessage = error.response?.data?.message;
       console.error("Failed to fetch plan details:", error);
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
     }
   };
 
@@ -144,11 +139,6 @@ export default function UserDashboard() {
     } catch (error) {
       console.log(error);
       const errorMessage = error.response?.data?.message;
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
     }
   };
   handleGetPlanDetails();
@@ -173,19 +163,8 @@ export default function UserDashboard() {
         }
       );
       //console.log("Response : ", res.data);
-
-      toast({
-        title: "Success",
-        description: res.data.response,
-        variant: "default",
-      });
     } catch (error) {
       const errorMessage = error.response?.data?.message;
-      toast({
-        title: "Error",
-        description: errorMessage || "Failed to call ambulance",
-        variant: "destructive",
-      });
     }
   };
 

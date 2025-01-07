@@ -82,17 +82,9 @@ export default function ProfileUpdate() {
         setState(postOffice.State);
         setCountry(postOffice.Country);
       } else {
-        toast({
-          title: "Error",
-          description: "Unable to fetch location data for the given pincode.",
-        });
       }
     } catch (error) {
       console.error("Error fetching location data:", error);
-      toast({
-        title: "Error",
-        description: "An error occurred while fetching location data.",
-      });
     }
   };
 
@@ -125,11 +117,6 @@ export default function ProfileUpdate() {
       !pincode ||
       !country
     ) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields.",
-        variant: "destructive",
-      });
       return;
     }
 
@@ -183,11 +170,6 @@ export default function ProfileUpdate() {
       );
 
       if (response.status < 200 || response.status >= 300) {
-        toast({
-          title: "Error",
-          description: response.data.message || "An error occurred.",
-          variant: "destructive",
-        });
         return;
       }
 
@@ -195,17 +177,11 @@ export default function ProfileUpdate() {
       navigate("/user-dashboard", { replace: true });
       toast({
         title: "Success",
-        description: "Profile updated successfully.",
+        description: "Profile updated.",
         variant: "default",
       });
     } catch (error) {
       console.error("Error response:", error.response?.data || error.message);
-      toast({
-        title: "Error",
-        description:
-          error.response?.data?.message || "An unexpected error occurred.",
-        variant: "destructive",
-      });
     }
   };
 
@@ -255,6 +231,7 @@ export default function ProfileUpdate() {
                     onChange={(e) => setFirstName(e.target.value)}
                     className="bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600"
                     required
+                    readOnly={true}
                   />
                 </div>
                 <div className="space-y-2">
@@ -267,6 +244,7 @@ export default function ProfileUpdate() {
                     onChange={(e) => setLastName(e.target.value)}
                     className="bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600"
                     required
+                    readOnly={true}
                   />
                 </div>
               </div>
@@ -342,7 +320,7 @@ export default function ProfileUpdate() {
                   <Label htmlFor="gender" className="text-sky-700 dark:text-sky-300">
                     Gender
                   </Label>
-                  <Select onValueChange={(value) => setGender(value)} value={gender}>
+                  <Select onValueChange={(value) => setGender(value)} value={gender} disabled={true}>
                     <SelectTrigger className="bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600">
                       <SelectValue placeholder="Select gender" />
                     </SelectTrigger>

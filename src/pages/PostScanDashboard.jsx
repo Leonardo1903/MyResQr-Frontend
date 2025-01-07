@@ -166,16 +166,16 @@ export default function PostScanDashboard() {
       const userData = response.data.profile;
       userData.pin = response.data.pin_number;
       setUserData(userData);
-      toast({
-        title: "Success",
-        description: "User data fetched successfully",
-      });
+      //toast({
+      //  title: "Success",
+      //  description: "User data fetched successfully",
+      //});
     } catch (error) {
       console.error(error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch user data",
-      });
+      //toast({
+        //title: "Error",
+      //  description: "Failed to fetch user data",
+     // });
     }
   };
 
@@ -194,11 +194,6 @@ export default function PostScanDashboard() {
       });
     } catch (error) {
       console.error(error);
-      toast({
-        title: "Error",
-        description: "Failed to call ambulance",
-        variant: "destructive",
-      });
     }
   };
 
@@ -213,13 +208,9 @@ export default function PostScanDashboard() {
         title: "Success",
         description: "Nearest hospital fetched successfully",
       });
+
     } catch (error) {
       console.error(error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch nearest hospital",
-        variant: "destructive",
-      });
     }
   };
 

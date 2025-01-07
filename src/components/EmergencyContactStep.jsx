@@ -85,10 +85,6 @@ export default function EmergencyContactStep({ onStepChange }) {
         }
       );
       if (response.status < 200 || response.status >= 300) {
-        toast({
-          title: "Error",
-          description: "An error occurred while submitting emergency contacts.",
-        });
       }
       onStepChange(5);
       toast({
@@ -96,12 +92,6 @@ export default function EmergencyContactStep({ onStepChange }) {
         description: "Emergency contacts submitted successfully.",
       });
     } catch (error) {
-      toast({
-        title: "Error",
-        description:
-          error.message ||
-          "An error occurred while submitting emergency contacts.",
-      });
     }
   };
 

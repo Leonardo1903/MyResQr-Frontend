@@ -48,21 +48,11 @@ function Login() {
       const newUserId = response.data.user.id;
       setProfileId(newUserId);
 
-      toast({
-        title: "Success",
-        description: `User created successfully with user Id ${newUserId}`,
-        variant: "default",
-      });
       navigate("/signup", { replace: true });
     } catch (error) {
       const errorMessage =
         error.response?.data?.message ||
         "Failed to create user. Please try again.";
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
     }
   };
 

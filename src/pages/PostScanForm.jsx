@@ -76,17 +76,8 @@ export default function PostScanForm() {
         );
         setPinNumber(response.data.pin_number);
         setPin(response.data.pin_number);
-        toast({
-          title: "Success",
-          description: "Pin number decrypted successfully.",
-        });
       } catch (error) {
         console.log(error);
-        toast({
-          title: "Error",
-          description: "Failed to get pin number. Please try again.",
-          variant: "destructive",
-        });
       }
     } else {
       toast({
@@ -121,33 +112,8 @@ export default function PostScanForm() {
       const response = await axios.post(`${baseUrl}/post_scan/otp_generation`, {
         saviour_phone_number: saviourInfo.phoneNumber,
       });
-      toast({
-        title: "OTP Generated",
-        message: response.data.response,
-      });
     } catch (error) {
       console.log(error);
-      toast({
-        title: "Error",
-        description: "Failed to generate OTP. Please try again.",
-        variant: "destructive",
-      });
-    }
-    try {
-      const response = await axios.post(`${baseUrl}/post_scan/saviour_info`, {
-        ...saviourDetails,
-      });
-      toast({
-        title: "Saviour Info Saved",
-        message: response.data.response,
-      });
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: "Error",
-        description: "Failed to save saviour info. Please try again.",
-        variant: "destructive",
-      });
     }
   };
 
@@ -162,17 +128,19 @@ export default function PostScanForm() {
         }
       );
       toast({
-        title: "OTP Verified",
+        title: "Thank you for help, Saviour my Family has been informed",
         message: response.data.response,
       });
       navigate("/scan/dashboard");
     } catch (error) {
       console.log(error);
-      toast({
-        title: "Error",
-        description: "Failed to verify OTP. Please try again.",
-        variant: "destructive",
+    }
+    try {
+      const response = await axios.post(`${baseUrl}/post_scan/saviour_info`, {
+        ...saviourDetails,
       });
+    } catch (error) {
+      console.log(error);
     }
   };
 
