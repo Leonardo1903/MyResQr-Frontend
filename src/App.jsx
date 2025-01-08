@@ -54,7 +54,7 @@ function App() {
   );
 
   return (
-    <div>
+    <div className="max-w-screen">
       <RecoilRoot>
         <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
           <RouterProvider router={router} />

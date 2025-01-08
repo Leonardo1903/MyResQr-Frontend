@@ -134,14 +134,16 @@ export default function Component() {
         );
         setUserDashboardData(res.data);
 
-        if (res.data.medical_detail.length === 0) {
-          navigate("/medical-info", { replace: true });
-          toast({
-            title: "Incomplete Profile",
-            description: "Please complete your profile",
-          });
-          return;
-        }
+
+        // TODO:  Making Medical details optional for now...
+        // if (res.data.medical_detail.length === 0) {
+        //   navigate("/medical-info", { replace: true });
+        //   toast({
+        //     title: "Incomplete Profile",
+        //     description: "Please complete your profile",
+        //   });
+        //   return;
+        // }
         if (res.data.emergency_contact.length === 0) {
           navigate("/emergency-info", { replace: true });
           toast({

@@ -204,6 +204,11 @@ export default function PostScanDashboard() {
       );
       // console.log("Nearest hospital data:", response.data);
       setNearestHospitalData(response.data);
+      toast({
+        title: "Success",
+        description: "Nearest hospital fetched successfully",
+      });
+
     } catch (error) {
       console.error(error);
     }
