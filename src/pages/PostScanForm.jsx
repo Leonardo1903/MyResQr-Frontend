@@ -76,6 +76,14 @@ export default function PostScanForm() {
         );
         setPinNumber(response.data.pin_number);
         setPin(response.data.pin_number);
+
+        const pinResponse = await axios.get(
+          `${baseUrl}/post_scan/pin/${pinNumber}`
+        );
+
+        if (pinResponse.data.profile === null) {
+          navigate("/login");
+        }
       } catch (error) {
         console.log(error);
       }
@@ -112,6 +120,7 @@ export default function PostScanForm() {
       const response = await axios.post(`${baseUrl}/post_scan/otp_generation`, {
         saviour_phone_number: saviourInfo.phoneNumber,
       });
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
