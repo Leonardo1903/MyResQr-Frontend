@@ -38,6 +38,7 @@ export default function Component() {
   const setUserDashboardData = useSetRecoilState(userDashboardDataAtom);
   const isUserExisting = useRecoilValue(isUserExistingAtom);
   const setRole = useSetRecoilState(roleAtom);
+  const setIsUserExisting = useSetRecoilState(isUserExistingAtom);
 
   useEffect(() => {
     if (timeleft > 0) {
@@ -111,6 +112,12 @@ export default function Component() {
           variant: "default",
         });
         return;
+      }
+
+      if (response.data.status==="existing") {
+        setIsUserExisting(true);
+      } else {
+        setIsUserExisting(false);
       }
 
       if (isUserExisting != true) {

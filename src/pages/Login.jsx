@@ -41,11 +41,7 @@ function Login() {
         // console.log("Trace id : ", traceId);
         // console.log(response);
         
-        if (response.data.status==="existing") {
-          setIsUserExisting(true);
-        } else {
-          setIsUserExisting(false);
-        }
+        
         
         // navigate("/signup", { replace: true });
         // toast({
