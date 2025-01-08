@@ -88,6 +88,7 @@ export default function PinActivationStep() {
             navigate("/login");
           }
         } catch (error) {
+          console.error(error);
         }
       } else {
         toast({
