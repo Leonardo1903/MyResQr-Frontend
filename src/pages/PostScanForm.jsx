@@ -74,11 +74,12 @@ export default function PostScanForm() {
         const response = await axios.get(
           `${baseUrl}/post_scan/scanqr/${encrypted_pin}`
         );
-        setPinNumber(response.data.pin_number);
-        setPin(response.data.pin_number);
+        const decryptedPin = response.data.pin_number;
+        setPinNumber(decryptedPin);
+        setPin(decryptedPin);
 
         const pinResponse = await axios.get(
-          `${baseUrl}/post_scan/pin/${pinNumber}`
+          `${baseUrl}/post_scan/pin/${decryptedPin}`
         );
 
         if (pinResponse.data.profile === null) {
@@ -148,6 +149,7 @@ export default function PostScanForm() {
       const response = await axios.post(`${baseUrl}/post_scan/saviour_info`, {
         ...saviourDetails,
       });
+      
     } catch (error) {
       console.log(error);
     }

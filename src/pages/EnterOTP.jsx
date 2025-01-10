@@ -36,7 +36,7 @@ export default function Component() {
   const [id, setId] = useRecoilState(idAtom);
   const [email, setEmail] = useRecoilState(emailAtom);
   const setUserDashboardData = useSetRecoilState(userDashboardDataAtom);
-  const isUserExisting = useRecoilValue(isUserExistingAtom);
+  const setIsUserExisting = useSetRecoilState(isUserExistingAtom);
   const setRole = useSetRecoilState(roleAtom);
 
   useEffect(() => {
@@ -73,7 +73,6 @@ export default function Component() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const enteredOtp = otp.join("");
-    //console.log(phoneNumber, enteredOtp);
     if (enteredOtp.length !== 4) {
       toast({
         title: "Error",
@@ -109,6 +108,7 @@ export default function Component() {
 
       // Check if user is existing
       if (response.data.status === "existing") {
+        setIsUserExisting(true);
         navigate("/user-dashboard", { replace: true });
         toast({
           title: "Welcome Back",
