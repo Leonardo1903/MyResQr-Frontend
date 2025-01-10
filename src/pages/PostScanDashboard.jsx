@@ -32,6 +32,8 @@ import { useRecoilValue } from "recoil";
 import { postScanPinAtom, saviourDetailsAtom } from "../store/UserAtoms";
 import axios from "axios";
 import { useToast } from "../hooks/use-toast";
+import { Input } from "../components/ui/input";
+import Modal from "../components/ui/Modal";
 
 export default function PostScanDashboard() {
   const { toast } = useToast();
@@ -42,6 +44,12 @@ export default function PostScanDashboard() {
   const [showEmergencyContacts, setShowEmergencyContacts] = useState(false);
   const [nearestHospitalData, setNearestHospitalData] = useState([]);
   const [planDescription, setPlanDescription] = useState(null);
+  const [showLocationModal, setShowLocationModal] = useState(false);
+  const [manualLocation, setManualLocation] = useState({
+    latitude: "",
+    longitude: "",
+  });
+  const [actionType, setActionType] = useState(null);
 
   const [userData, setUserData] = useState({
     pin: pin,
@@ -92,6 +100,7 @@ export default function PostScanDashboard() {
     surgery_history: Bone,
     organ_implant: Stethoscope,
   };
+
   const actionButtons = [
     {
       icon: Users,
@@ -110,7 +119,7 @@ export default function PostScanDashboard() {
       label: "Call Ambulance",
       color: "bg-sky-500 hover:bg-sky-600",
       onClick: () => {
-        callAmbulance();
+        handleCallAmbulance();
       },
     },
     {
@@ -118,7 +127,7 @@ export default function PostScanDashboard() {
       label: "Nearby Hospital",
       color: "bg-sky-500 dark:bg-sky-500",
       onClick: () => {
-        nearestHospital(saviourDetails.latitude, saviourDetails.longitude);
+        handleNearbyHospital();
       },
     },
     {
@@ -166,27 +175,51 @@ export default function PostScanDashboard() {
       const userData = response.data.profile;
       userData.pin = response.data.pin_number;
       setUserData(userData);
-      //toast({
-      //  title: "Success",
-      //  description: "User data fetched successfully",
-      //});
     } catch (error) {
       console.error(error);
-      //toast({
-        //title: "Error",
-      //  description: "Failed to fetch user data",
-     // });
     }
   };
 
-  const callAmbulance = async () => {
+  const handleCallAmbulance = () => {
+    setActionType("callAmbulance");
+    if (!navigator.geolocation) {
+      setShowLocationModal(true);
+    } else {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          callAmbulance(position.coords.latitude, position.coords.longitude);
+        },
+        (error) => {
+          setShowLocationModal(true);
+        }
+      );
+    }
+  };
+
+  const handleNearbyHospital = () => {
+    setActionType("nearestHospital");
+    if (!navigator.geolocation) {
+      setShowLocationModal(true);
+    } else {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          nearestHospital(position.coords.latitude, position.coords.longitude);
+        },
+        (error) => {
+          setShowLocationModal(true);
+        }
+      );
+    }
+  };
+
+  const callAmbulance = async (latitude, longitude) => {
     try {
       const response = await axios.post(`${baseUrl}/post_scan/ambulance_call`, {
         pin_number: pin,
         saviour_name: saviourDetails.fullName,
         saviour_phone_number: saviourDetails.phoneNumber,
-        latitude: saviourDetails.latitude,
-        longitude: saviourDetails.longitude,
+        latitude: latitude || manualLocation.latitude,
+        longitude: longitude || manualLocation.longitude,
       });
       toast({
         title: "Success",
@@ -200,15 +233,15 @@ export default function PostScanDashboard() {
   const nearestHospital = async (latitude, longitude) => {
     try {
       const response = await axios.get(
-        `${baseUrl}/post_scan/nearest_hospital?lat=${latitude}&long=${longitude}`
+        `${baseUrl}/post_scan/nearest_hospital?lat=${
+          latitude || manualLocation.latitude
+        }&long=${longitude || manualLocation.longitude}`
       );
-      // console.log("Nearest hospital data:", response.data);
       setNearestHospitalData(response.data);
       toast({
         title: "Success",
         description: "Nearest hospital fetched successfully",
       });
-
     } catch (error) {
       console.error(error);
     }
@@ -290,6 +323,69 @@ export default function PostScanDashboard() {
             ))}
           </div>
         </div>
+
+        {showLocationModal && (
+          <Modal onClose={() => setShowLocationModal(false)}>
+            <div className="p-4 relative">
+              <button
+                className="absolute top-1 right-1 text-4xl text-red-500"
+                onClick={() => setShowLocationModal(false)}
+              >
+                &times;
+              </button>
+              <h2 className="text-lg font-medium text-sky-800 dark:text-white mb-4">
+                Enter Your Location
+              </h2>
+              <Input
+                type="text"
+                placeholder="Latitude"
+                value={manualLocation.latitude}
+                onChange={(e) =>
+                  setManualLocation({
+                    ...manualLocation,
+                    latitude: e.target.value,
+                  })
+                }
+                className="mb-4"
+              />
+              <Input
+                type="text"
+                placeholder="Longitude"
+                value={manualLocation.longitude}
+                onChange={(e) =>
+                  setManualLocation({
+                    ...manualLocation,
+                    longitude: e.target.value,
+                  })
+                }
+                className="mb-4"
+              />
+              <div className="flex justify-center">
+                <Button
+                  className="bg-sky-500 hover:bg-sky-600 text-white"
+                  onClick={() => {
+                    setShowLocationModal(false);
+                    if (manualLocation.latitude && manualLocation.longitude) {
+                      if (actionType === "callAmbulance") {
+                        callAmbulance(
+                          manualLocation.latitude,
+                          manualLocation.longitude
+                        );
+                      } else if (actionType === "nearestHospital") {
+                        nearestHospital(
+                          manualLocation.latitude,
+                          manualLocation.longitude
+                        );
+                      }
+                    }
+                  }}
+                >
+                  Submit
+                </Button>
+              </div>
+            </div>
+          </Modal>
+        )}
 
         {/* Medical History */}
         {showMedicalHistory && (
@@ -517,19 +613,32 @@ export default function PostScanDashboard() {
             </CardHeader>
             <CardContent className="space-y-4">
               {nearestHospitalData.slice(1, 6).map((hospital, index) => (
-                <div key={index} className="p-4 rounded-lg bg-sky-500/20 transition-all duration-200 hover:bg-sky-500/30">
+                <div
+                  key={index}
+                  className="p-4 rounded-lg bg-sky-500/20 transition-all duration-200 hover:bg-sky-500/30"
+                >
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="font-medium text-sky-800 dark:text-white">{hospital.name}</p>
-                      <p className="text-sm light:text-black dark:text-sky-200">{hospital.address}</p>
-                      <p className="text-sm light:text-black dark:text-sky-200">Distance: {hospital.distance}</p>
-                      <p className="text-sm light:text-black dark:text-sky-200">Approx. Time: {hospital.approx_time}</p>
+                      <p className="font-medium text-sky-800 dark:text-white">
+                        {hospital.name}
+                      </p>
+                      <p className="text-sm light:text-black dark:text-sky-200">
+                        {hospital.address}
+                      </p>
+                      <p className="text-sm light:text-black dark:text-sky-200">
+                        Distance: {hospital.distance}
+                      </p>
+                      <p className="text-sm light:text-black dark:text-sky-200">
+                        Approx. Time: {hospital.approx_time}
+                      </p>
                     </div>
                     <Button
                       variant="ghost"
                       size="sm"
                       className="text-sky-300 hover:text-sky-100 hover:bg-sky-500/20"
-                      onClick={() => window.open(hospital.map_direction, "_blank")}
+                      onClick={() =>
+                        window.open(hospital.map_direction, "_blank")
+                      }
                     >
                       <MapPin className="h-4 w-4" />
                     </Button>
