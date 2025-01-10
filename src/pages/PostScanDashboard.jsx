@@ -33,7 +33,7 @@ import { postScanPinAtom, saviourDetailsAtom } from "../store/UserAtoms";
 import axios from "axios";
 import { useToast } from "../hooks/use-toast";
 import { Input } from "../components/ui/input";
-import Modal from '../components/ui/Modal';
+import Modal from "../components/ui/modal";
 
 export default function PostScanDashboard() {
   const { toast } = useToast();
