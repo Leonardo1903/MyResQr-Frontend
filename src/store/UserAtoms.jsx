@@ -13,7 +13,7 @@ export const refresh_tokenAtom = atom({
 export const isUserExistingAtom = atom({
   key: "isUserExistingAtom",
   default: false,
-});
+})
 
 export const idAtom = atom({
   key: "idAtom",
