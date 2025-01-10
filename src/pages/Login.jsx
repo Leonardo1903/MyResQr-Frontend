@@ -12,13 +12,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/use-toast";
 import axios from "axios";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { isUserExistingAtom, phoneNumberAtom, trace_idAtom } from "../store/UserAtoms";
+import {  phoneNumberAtom, trace_idAtom } from "../store/UserAtoms";
 
 function Login() {
   const [phoneNumber, setPhoneNumber] = useRecoilState(phoneNumberAtom);
   const setTraceId = useSetRecoilState(trace_idAtom);
   const baseUrl = import.meta.env.VITE_BASE_URL 
-  const setIsUserExisting = useSetRecoilState(isUserExistingAtom);
 
   const {toast} = useToast();
   const navigate = useNavigate();
@@ -38,14 +37,7 @@ function Login() {
       });
         const traceId = response.data.data.trace_id;
         setTraceId(traceId);
-        // console.log("Trace id : ", traceId);
-        // console.log(response);
-        
-        if (response.data.status==="existing") {
-          setIsUserExisting(true);
-        } else {
-          setIsUserExisting(false);
-        }
+
         
         // navigate("/signup", { replace: true });
         // toast({

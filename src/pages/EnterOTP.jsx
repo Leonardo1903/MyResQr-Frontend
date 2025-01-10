@@ -95,12 +95,6 @@ export default function Component() {
       setPhoneNumber(response.data.user.phone_number);
       setEmail(response.data.user.email);
 
-      //console.log("Access token : ", response.data.accessToken);
-      //console.log("Refresh token : ", response.data.refresh_token);
-      //console.log("ID : ", response.data.user.id);
-      //console.log("Phone number : ", response.data.user.phone_number);
-      //console.log("Email : ", response.data.user.email);
-
       //checking role
       if (response.data.role === "agent") {
         setRole("agent");
@@ -113,14 +107,23 @@ export default function Component() {
         return;
       }
 
-      if (isUserExisting != true) {
-        navigate("/signup", { replace: true });
+      // Check if user is existing
+      if (response.data.status === "existing") {
+        navigate("/user-dashboard", { replace: true });
         toast({
-          title: "Sign Up Required",
-          description: "You are a new User, please complete the sign up process.",
+          title: "Welcome Back",
+          description: "You are now signed in",
+          variant: "default",
         });
         return;
       }
+
+      // If user is new, navigate to signup
+      navigate("/signup", { replace: true });
+      toast({
+        title: "Sign Up Required",
+        description: "You are a new User, please complete the sign up process.",
+      });
 
       //calling getProfile route
       try {
@@ -133,7 +136,6 @@ export default function Component() {
           }
         );
         setUserDashboardData(res.data);
-
 
         // TODO:  Making Medical details optional for now...
         // if (res.data.medical_detail.length === 0) {
