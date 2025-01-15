@@ -32,7 +32,6 @@ import { useRecoilValue } from "recoil";
 import { postScanPinAtom, saviourDetailsAtom } from "../store/UserAtoms";
 import axios from "axios";
 import { useToast } from "../hooks/use-toast";
-import { Input } from "../components/ui/input";
 import Modal from "../components/ui/modal";
 
 export default function PostScanDashboard() {
@@ -183,14 +182,14 @@ export default function PostScanDashboard() {
   const handleCallAmbulance = () => {
     setActionType("callAmbulance");
     if (!navigator.geolocation) {
-      setShowLocationModal(true);
+      showLocationAccessDenied();
     } else {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           callAmbulance(position.coords.latitude, position.coords.longitude);
         },
         (error) => {
-          setShowLocationModal(true);
+          showLocationAccessDenied();
         }
       );
     }
@@ -199,17 +198,21 @@ export default function PostScanDashboard() {
   const handleNearbyHospital = () => {
     setActionType("nearestHospital");
     if (!navigator.geolocation) {
-      setShowLocationModal(true);
+      showLocationAccessDenied();
     } else {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           nearestHospital(position.coords.latitude, position.coords.longitude);
         },
         (error) => {
-          setShowLocationModal(true);
+          showLocationAccessDenied();
         }
       );
     }
+  };
+
+  const showLocationAccessDenied = () => {
+    setShowLocationModal(true);
   };
 
   const callAmbulance = async (latitude, longitude) => {
@@ -334,53 +337,45 @@ export default function PostScanDashboard() {
                 &times;
               </button>
               <h2 className="text-lg font-medium text-sky-800 dark:text-white mb-4">
-                Enter Your Location
+                Location Access Required
               </h2>
-              <Input
-                type="text"
-                placeholder="Latitude"
-                value={manualLocation.latitude}
-                onChange={(e) =>
-                  setManualLocation({
-                    ...manualLocation,
-                    latitude: e.target.value,
-                  })
-                }
-                className="mb-4"
-              />
-              <Input
-                type="text"
-                placeholder="Longitude"
-                value={manualLocation.longitude}
-                onChange={(e) =>
-                  setManualLocation({
-                    ...manualLocation,
-                    longitude: e.target.value,
-                  })
-                }
-                className="mb-4"
-              />
-              <div className="flex justify-center">
+              <p className="mb-4 text-sky-800 dark:text-white">
+                Location access is required for this service. Please allow
+                location access.
+              </p>
+              <div className="flex justify-center mb-4">
                 <Button
                   className="bg-sky-500 hover:bg-sky-600 text-white"
                   onClick={() => {
                     setShowLocationModal(false);
-                    if (manualLocation.latitude && manualLocation.longitude) {
-                      if (actionType === "callAmbulance") {
-                        callAmbulance(
-                          manualLocation.latitude,
-                          manualLocation.longitude
-                        );
-                      } else if (actionType === "nearestHospital") {
-                        nearestHospital(
-                          manualLocation.latitude,
-                          manualLocation.longitude
-                        );
-                      }
+                    if (actionType === "callAmbulance") {
+                      navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                          callAmbulance(
+                            position.coords.latitude,
+                            position.coords.longitude
+                          );
+                        },
+                        (error) => {
+                          setShowLocationModal(true);
+                        }
+                      );
+                    } else if (actionType === "nearestHospital") {
+                      navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                          nearestHospital(
+                            position.coords.latitude,
+                            position.coords.longitude
+                          );
+                        },
+                        (error) => {
+                          setShowLocationModal(true);
+                        }
+                      );
                     }
                   }}
                 >
-                  Submit
+                  Allow Location Access
                 </Button>
               </div>
             </div>
