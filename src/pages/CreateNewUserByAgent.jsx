@@ -16,7 +16,7 @@ import { accessTokenAtom, profileIdAtom } from "../store/UserAtoms";
 
 function Login() {
   const [newUserPhoneNumber, setNewUserPhoneNumber] = useState("");
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = "http://3.108.8.215/api/v1";
   const accessToken = useRecoilValue(accessTokenAtom);
   const setProfileId = useSetRecoilState(profileIdAtom);
   const { toast } = useToast();

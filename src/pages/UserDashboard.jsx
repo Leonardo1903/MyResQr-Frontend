@@ -143,7 +143,10 @@ export default function UserDashboard() {
       const errorMessage = error.response?.data?.message;
     }
   };
-  handleGetPlanDetails();
+  
+  useEffect(()=> {
+    handleGetPlanDetails();
+  }, [])
 
   const data = {
     pin_number: `${pin}`,
@@ -164,9 +167,17 @@ export default function UserDashboard() {
           },
         }
       );
-      //console.log("Response : ", res.data);
+      // console.log("Response : ", res.data);
+      toast({
+        title : "Success",
+        description : res.data.response
+      })
     } catch (error) {
       const errorMessage = error.response?.data?.message;
+      toast({
+        title : "Error",
+        description : errorMessage
+      })
     }
   };
 
@@ -332,9 +343,10 @@ export default function UserDashboard() {
                     variant="destructive"
                     size="lg"
                     className="bg-red-500 hover:bg-red-600 text-white w-full lg:w-auto"
+                    onClick={handleEmergencyAmbulanceCall}
                   >
                     <PhoneCall className="mr-2 h-5 w-5" />
-                    Emergency Call
+                    Ambulance Call
                   </Button>
                 </div>
 

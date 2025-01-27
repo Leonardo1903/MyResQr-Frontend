@@ -18,7 +18,7 @@ import { useSetRecoilState } from "recoil";
 import axios from "axios";
 
 export default function PostScanForm() {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = "http://3.108.8.215/api/v1";
   const { toast } = useToast();
   const navigate = useNavigate();
   const { encrypted_pin } = useParams();

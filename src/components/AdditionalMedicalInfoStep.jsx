@@ -12,7 +12,7 @@ export default function AdditionalMedicalInfoStep({
   onStepChange,
   medicalInfo,
 }) {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = "http://3.108.8.215/api/v1";
   const [regularMeds, setRegularMeds] = useState("");
   const [otherCondition, setOtherCondition] = useState("");
   const [allergies, setAllergies] = useState("");

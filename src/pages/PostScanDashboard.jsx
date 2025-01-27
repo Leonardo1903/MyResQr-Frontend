@@ -36,7 +36,7 @@ import Modal from "../components/ui/modal";
 
 export default function PostScanDashboard() {
   const { toast } = useToast();
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = "http://3.108.8.215/api/v1";
   const pin = useRecoilValue(postScanPinAtom);
   const saviourDetails = useRecoilValue(saviourDetailsAtom);
   const [showMedicalHistory, setShowMedicalHistory] = useState(false);

@@ -18,7 +18,7 @@ import { accessTokenAtom, idAtom, profileIdAtom } from "../store/UserAtoms";
 import axios from "axios";
 
 export default function PersonalInfoStep({ onStepChange }) {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = "http://3.108.8.215/api/v1";
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");

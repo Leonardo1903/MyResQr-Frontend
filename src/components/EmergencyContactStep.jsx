@@ -9,7 +9,7 @@ import { useRecoilValue } from "recoil";
 import { accessTokenAtom, profileIdAtom } from "../store/UserAtoms";
 
 export default function EmergencyContactStep({ onStepChange }) {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = "http://3.108.8.215/api/v1";
   const [emergencyContacts, setEmergencyContacts] = useState([
     {
       contactName: "",

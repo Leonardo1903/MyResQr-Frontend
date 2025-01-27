@@ -28,7 +28,7 @@ export default function Component() {
   const navigate = useNavigate();
   const [timeleft, setTimeleft] = useState(60); // 60 seconds
   const [isResendingDisabled, setIsResendingDisabled] = useState(true);
-  // const baseUrl = import.meta.env.VITE_BASE_URL;
+  // const baseUrl = "http://3.108.8.215/api/v1";
   const { toast } = useToast();
   // const [accessToken, setAccessToken] = useRecoilState(accessTokenAtom);
   const [refreshToken, setRefreshToken] = useRecoilState(refresh_tokenAtom);

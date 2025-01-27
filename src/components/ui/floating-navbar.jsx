@@ -27,7 +27,7 @@ export const FloatingNav = ({ navItems, className }) => {
   const { theme } = useTheme();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const accessToken = useRecoilValue(accessTokenAtom);
+  const accessToken = sessionStorage.getItem("accessToken");
 
   const setAccessToken = useSetRecoilState(accessTokenAtom);
   const setRefreshToken = useSetRecoilState(refresh_tokenAtom);
@@ -42,7 +42,7 @@ export const FloatingNav = ({ navItems, className }) => {
   const setPin = useSetRecoilState(pinAtom);
 
   const handleLogout = () => {
-    setAccessToken("");
+    sessionStorage.setItem("accessToken", "")
     setRefreshToken("");
     setIsUserExisting(false);
     setId("");

@@ -22,7 +22,7 @@ import { Card } from "../components/ui/card";
 import { useNavigate } from "react-router-dom";
 
 export default function ProfileUpdate() {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = "http://3.108.8.215/api/v1";
   const userData = useRecoilValue(userDashboardDataAtom);
   const accessToken = useRecoilValue(accessTokenAtom);
   const setUserDashboardData = useSetRecoilState(userDashboardDataAtom);

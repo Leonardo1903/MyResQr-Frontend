@@ -17,7 +17,7 @@ import {  phoneNumberAtom, trace_idAtom } from "../store/UserAtoms";
 function Login() {
   const [phoneNumber, setPhoneNumber] = useRecoilState(phoneNumberAtom);
   const setTraceId = useSetRecoilState(trace_idAtom);
-  // const baseUrl = import.meta.env.VITE_BASE_URL 
+  // const baseUrl = "http://3.108.8.215/api/v1" 
   const baseUrl = 'http://3.108.8.215/api/v1'
 
   const {toast} = useToast();

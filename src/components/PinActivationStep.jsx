@@ -10,7 +10,7 @@ import { useRecoilValue } from "recoil";
 import { accessTokenAtom, profileIdAtom, roleAtom } from "../store/UserAtoms";
 
 export default function PinActivationStep() {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = "http://3.108.8.215/api/v1";
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activationKey, setActivationKey] = useState("");
