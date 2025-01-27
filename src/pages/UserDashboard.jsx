@@ -75,8 +75,8 @@ export default function UserDashboard() {
   const [showPlanDetails, setShowPlanDetails] = useState(false);
   const id = useRecoilValue(idAtom);
   const [planDetails, setPlanDetails] = useState({});
-  const accessToken = useRecoilValue(accessTokenAtom);
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const accessToken = sessionStorage.getItem("accessToken");
+  const baseUrl = "http://3.108.8.215/api/v1"
   const [pin, setPin] = useRecoilState(pinAtom);
   const [showScanLogs, setShowScanLogs] = useState(false);
   const [scanLogData, setScanLogData] = useState({});
@@ -114,6 +114,8 @@ export default function UserDashboard() {
   const handleGetPlanDetails = async () => {
     // console.log("ID:", id);
     // console.log("Access token:", accessToken);
+    console.log("User Data : ", userData.id);
+    
     try {
       const response = await axios.get(
         `${baseUrl}/pin_manager/pin_details/${userData.id}`,

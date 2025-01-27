@@ -28,9 +28,9 @@ export default function Component() {
   const navigate = useNavigate();
   const [timeleft, setTimeleft] = useState(60); // 60 seconds
   const [isResendingDisabled, setIsResendingDisabled] = useState(true);
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  // const baseUrl = import.meta.env.VITE_BASE_URL;
   const { toast } = useToast();
-  const [accessToken, setAccessToken] = useRecoilState(accessTokenAtom);
+  // const [accessToken, setAccessToken] = useRecoilState(accessTokenAtom);
   const [refreshToken, setRefreshToken] = useRecoilState(refresh_tokenAtom);
   const [phoneNumber, setPhoneNumber] = useRecoilState(phoneNumberAtom);
   const [id, setId] = useRecoilState(idAtom);
@@ -38,6 +38,7 @@ export default function Component() {
   const setUserDashboardData = useSetRecoilState(userDashboardDataAtom);
   const setIsUserExisting = useSetRecoilState(isUserExistingAtom);
   const setRole = useSetRecoilState(roleAtom);
+  const baseUrl = "http://3.108.8.215/api/v1"
 
   useEffect(() => {
     if (timeleft > 0) {
@@ -88,7 +89,8 @@ export default function Component() {
       });
 
       //updating the state
-      setAccessToken(response.data.accessToken);
+      // setAccessToken(response.data.accessToken);
+      sessionStorage.setItem("accessToken", response.data.accessToken);
       setRefreshToken(response.data.refresh_token);
       setId(response.data.user.id);
       setPhoneNumber(response.data.user.phone_number);
@@ -107,31 +109,31 @@ export default function Component() {
       }
 
       // Check if user is existing
-      if (response.data.status === "existing") {
-        setIsUserExisting(true);
-        navigate("/user-dashboard", { replace: true });
+      console.log("Status, ", response.data.status);
+      
+      if (response.data.status !== "existing") {
+        navigate("/signup", { replace: true });
         toast({
-          title: "Welcome Back",
-          description: "You are now signed in",
-          variant: "default",
+          title: "Sign Up Required",
+          description: "You are a new User, please complete the sign up process.",
         });
         return;
       }
 
       // If user is new, navigate to signup
-      navigate("/signup", { replace: true });
-      toast({
-        title: "Sign Up Required",
-        description: "You are a new User, please complete the sign up process.",
-      });
-
+      
+      setIsUserExisting(true);
+      const accessToken = sessionStorage.getItem("accessToken");
       //calling getProfile route
       try {
+        console.log("Calling getProfile route");
+        console.log("ID : ", id);
+        
         const res = await axios.get(
-          `${baseUrl}/profile/get_profile/${response.data.user.id}`,
+          `${baseUrl}/profile/get_profile/${id}`,
           {
             headers: {
-              Authorization: `Bearer ${response.data.accessToken}`,
+              Authorization: `Bearer ${accessToken}`,
             },
           }
         );
@@ -155,9 +157,18 @@ export default function Component() {
           return;
         }
         navigate("/user-dashboard", { replace: true });
+        toast({
+          title: "Welcome Back",
+          description: "You are now signed in",
+          variant: "default",
+        });
       } catch (error) {
         const errorMessage = error.response?.data?.message;
         console.log("Error message : ", error);
+        toast({
+          title : "Error",
+          description : errorMessage
+        })
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message;
@@ -174,8 +185,17 @@ export default function Component() {
       });
       setIsResendingDisabled(true);
       setTimeleft(60);
+      toast({
+        title: "OTP Resent",
+        description: response.message,
+        variant: "default",
+      })
     } catch (error) {
       const errorMessage = error.response?.data?.message;
+      toast({
+        title : "Error",
+        description : errorMessage
+      })
     }
   };
 
