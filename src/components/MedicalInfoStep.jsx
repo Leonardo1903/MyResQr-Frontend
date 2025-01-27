@@ -116,7 +116,7 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           htmlFor="highBP-no"
           className="text-sky-700 dark:text-sky-300"
         >
-          No
+          Don't Know
         </Label>
       </RadioGroup>
     </div>
@@ -141,7 +141,7 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           htmlFor="diabetes-no"
           className="text-sky-700 dark:text-sky-300"
         >
-          No
+          Don't Know
         </Label>
       </RadioGroup>
     </div>
@@ -169,7 +169,7 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           htmlFor="highCholesterol-no"
           className="text-sky-700 dark:text-sky-300"
         >
-          No
+          Don't Know
         </Label>
       </RadioGroup>
     </div>
@@ -194,7 +194,7 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           htmlFor="heartIssues-no"
           className="text-sky-700 dark:text-sky-300"
         >
-          No
+          Don't Know
         </Label>
       </RadioGroup>
     </div>
@@ -222,7 +222,7 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           htmlFor="differentlyAbled-no"
           className="text-sky-700 dark:text-sky-300"
         >
-          No
+          Don't Know
         </Label>
       </RadioGroup>
     </div>
@@ -247,7 +247,7 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           htmlFor="asthma-no"
           className="text-sky-700 dark:text-sky-300"
         >
-          No
+          Don't Know
         </Label>
       </RadioGroup>
     </div>
@@ -275,7 +275,7 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           htmlFor="tuberculosis-no"
           className="text-sky-700 dark:text-sky-300"
         >
-          No
+          Don't Know
         </Label>
       </RadioGroup>
     </div>
@@ -303,7 +303,7 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           htmlFor="mentalIllness-no"
           className="text-sky-700 dark:text-sky-300"
         >
-          No
+          Don't Know
         </Label>
       </RadioGroup>
     </div>
@@ -328,7 +328,7 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           htmlFor="epilepsy-no"
           className="text-sky-700 dark:text-sky-300"
         >
-          No
+          Don't Know
         </Label>
       </RadioGroup>
     </div>
@@ -353,7 +353,7 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           htmlFor="nsaids-no"
           className="text-sky-700 dark:text-sky-300"
         >
-          No
+          Don't Know
         </Label>
       </RadioGroup>
     </div>
@@ -378,7 +378,7 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           htmlFor="steroids-no"
           className="text-sky-700 dark:text-sky-300"
         >
-          No
+          Don't Know
         </Label>
       </RadioGroup>
     </div>
@@ -406,7 +406,7 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           htmlFor="anticoagulant-no"
           className="text-sky-700 dark:text-sky-300"
         >
-          No
+          Don't Know
         </Label>
       </RadioGroup>
     </div>
@@ -431,7 +431,7 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           htmlFor="surgery-no"
           className="text-sky-700 dark:text-sky-300"
         >
-          No
+          Don't Know
         </Label>
       </RadioGroup>
     </div>
@@ -459,7 +459,7 @@ export default function MedicalInfoStep({ onStepChange, onDataChange }) {
           htmlFor="organImplant-no"
           className="text-sky-700 dark:text-sky-300"
         >
-          No
+          Don't Know
         </Label>
       </RadioGroup>
     </div>

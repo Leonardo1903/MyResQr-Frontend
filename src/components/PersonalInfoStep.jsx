@@ -37,7 +37,7 @@ export default function PersonalInfoStep({ onStepChange }) {
   const [captureMode, setCaptureMode] = useState(null); // null, 'upload', 'capture'
   const { toast } = useToast();
   const userId = useRecoilValue(idAtom);
-  const accessToken = useRecoilValue(accessTokenAtom);
+  const accessToken = sessionStorage.getItem("accessToken");
   const setProfileId = useSetRecoilState(profileIdAtom);
 
   const handleWhatsAppCheckboxChange = (checked) => {
@@ -133,7 +133,8 @@ export default function PersonalInfoStep({ onStepChange }) {
       });
       return;
     }
-
+    console.log("Id : ", userId);
+    
     const formData = new FormData();
     formData.append("account", userId);
     formData.append("first_name", firstName);

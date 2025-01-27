@@ -18,7 +18,7 @@ export default function AdditionalMedicalInfoStep({
   const [allergies, setAllergies] = useState("");
   const [familyHistory, setFamilyHistory] = useState("");
   const { toast } = useToast();
-  const accessToken = useRecoilValue(accessTokenAtom);
+  const accessToken = sessionStorage.getItem("accessToken");
   const profileId = useRecoilValue(profileIdAtom);
 
   const additionalMedicalDetails = {

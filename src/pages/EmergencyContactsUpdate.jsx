@@ -5,7 +5,7 @@ import { Separator } from "../components/ui/separator";
 import { Button } from "../components/ui/button";
 import { useToast } from "../hooks/use-toast";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { accessTokenAtom, userDashboardDataAtom } from "../store/UserAtoms";
+import {  userDashboardDataAtom } from "../store/UserAtoms";
 import axios from "axios";
 import GridPattern from "../components/ui/grid-pattern";
 import { cn } from "../lib/utils";
@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 export default function EmergencyContactsUpdate() {
   const baseUrl = "http://3.108.8.215/api/v1";
   const userData = useRecoilValue(userDashboardDataAtom);
-  const accessToken = useRecoilValue(accessTokenAtom);
+  const accessToken = sessionStorage.getItem("accessToken");
   const setUserDashboardData = useSetRecoilState(userDashboardDataAtom);
   const { toast } = useToast();
   const navigate = useNavigate();

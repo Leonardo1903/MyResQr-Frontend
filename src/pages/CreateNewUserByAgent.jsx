@@ -17,7 +17,7 @@ import { accessTokenAtom, profileIdAtom } from "../store/UserAtoms";
 function Login() {
   const [newUserPhoneNumber, setNewUserPhoneNumber] = useState("");
   const baseUrl = "http://3.108.8.215/api/v1";
-  const accessToken = useRecoilValue(accessTokenAtom);
+  const accessToken = sessionStorage.getItem("accessToken");
   const setProfileId = useSetRecoilState(profileIdAtom);
   const { toast } = useToast();
   const navigate = useNavigate();

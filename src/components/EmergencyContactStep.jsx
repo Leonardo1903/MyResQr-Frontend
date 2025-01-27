@@ -35,7 +35,7 @@ export default function EmergencyContactStep({ onStepChange }) {
   const { toast } = useToast();
 
   const profileId = useRecoilValue(profileIdAtom);
-  const accessToken = useRecoilValue(accessTokenAtom);
+  const accessToken = sessionStorage.getItem("accessToken");
 
   const updateEmergencyContact = (field, value, index) => {
     const newContacts = [...emergencyContacts];

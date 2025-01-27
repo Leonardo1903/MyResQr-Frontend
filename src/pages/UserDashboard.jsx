@@ -233,11 +233,11 @@ export default function UserDashboard() {
         }
       },
     },
-    {
-      icon: Shield,
-      label: "Insurance",
-      color: "bg-sky-500 hover:bg-sky-600",
-    },
+    // {
+    //   icon: Shield,
+    //   label: "Insurance",
+    //   color: "bg-sky-500 hover:bg-sky-600",
+    // },
     {
       icon: Users,
       label: "Emergency Contacts",

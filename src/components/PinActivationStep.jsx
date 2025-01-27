@@ -17,7 +17,7 @@ export default function PinActivationStep() {
   const [otp, setOtp] = useState(Array(8).fill(""));
   const inputRefs = useRef([]);
 
-  const accessToken = useRecoilValue(accessTokenAtom);
+  const accessToken = sessionStorage.getItem("accessToken");
   const profileId = useRecoilValue(profileIdAtom);
   const role = useRecoilValue(roleAtom);
 

@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 export default function ProfileUpdate() {
   const baseUrl = "http://3.108.8.215/api/v1";
   const userData = useRecoilValue(userDashboardDataAtom);
-  const accessToken = useRecoilValue(accessTokenAtom);
+  const accessToken = sessionStorage.getItem("accessToken");
   const setUserDashboardData = useSetRecoilState(userDashboardDataAtom);
   const { toast } = useToast();
   const navigate = useNavigate();
