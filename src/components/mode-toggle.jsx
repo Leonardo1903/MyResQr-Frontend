@@ -1,4 +1,3 @@
-import { Moon, Sun } from "lucide-react";
 import { useTheme } from "./theme-provider";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
@@ -27,11 +26,6 @@ export function ModeToggle() {
           />
         </div>
       </Label>
-      {theme === "dark" ? (
-        <Moon className="h-8 w-8 text-gray-500" />
-      ) : (
-        <Sun className="h-8 w-8 text-yellow-500" />
-      )}
     </div>
   );
 }

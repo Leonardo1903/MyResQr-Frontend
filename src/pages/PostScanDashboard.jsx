@@ -129,11 +129,15 @@ export default function PostScanDashboard() {
         handleNearbyHospital();
       },
     },
-    {
-      icon: Shield,
-      label: "Insurance",
-      color: "bg-sky-500 hover:bg-sky-600",
-    },
+    ...(saviourDetails.isDoctor === "True"
+      ? [
+          {
+            icon: Shield,
+            label: "Insurance",
+            color: "bg-sky-500 hover:bg-sky-600",
+          },
+        ]
+      : []),
   ].filter(
     (button) =>
       planDescription === "Rakshak plan" || button.label !== "Medical History"

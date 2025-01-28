@@ -105,7 +105,7 @@ function AboutUs() {
       />
       {/* About Us Hero Section */}
       <section className="w-full min-h-screen flex flex-col justify-center items-center text-center p-4">
-        <h1 className="text-4xl md:text-6xl mb-6">
+        <h1 className="text-4xl md:text-6xl mb-4">
           About <span className="text-sky-600 font-bold">myresQR.life</span>
         </h1>
         <p className="text-lg md:text-xl max-w-3xl">

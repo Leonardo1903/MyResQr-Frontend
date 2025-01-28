@@ -144,8 +144,7 @@ function Home() {
     },
     {
       title: "Display Your myresQR safetag",
-      description:
-        "Display your myres QR safetag on helmet and bike and phone",
+      description: "Display your myres QR safetag on helmet and bike and phone",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -197,7 +196,11 @@ function Home() {
             >
               &times;
             </Button>
-            <img src={HomePopup} alt="Home Popup" className="w-[50rem] h-auto" />
+            <img
+              src={HomePopup}
+              alt="Home Popup"
+              className="w-[50rem] h-auto"
+            />
           </div>
         </div>
       )}
@@ -296,7 +299,10 @@ function Home() {
       <StylishSeparator />
 
       {/* Contact us section */}
-      <section className="min-h-screen flex items-center justify-center bg-gradient-to-br p-4 md:p-8">
+      <section
+        id="contact"
+        className="min-h-screen flex items-center justify-center bg-gradient-to-br p-4 md:p-8"
+      >
         <div className="w-full max-w-6xl flex flex-col md:flex-row items-center justify-between gap-8">
           {/* Contact Form */}
 
