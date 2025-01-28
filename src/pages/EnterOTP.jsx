@@ -28,9 +28,7 @@ export default function Component() {
   const navigate = useNavigate();
   const [timeleft, setTimeleft] = useState(60); // 60 seconds
   const [isResendingDisabled, setIsResendingDisabled] = useState(true);
-  // const baseUrl = "http://3.108.8.215/api/v1";
   const { toast } = useToast();
-  // const [accessToken, setAccessToken] = useRecoilState(accessTokenAtom);
   const [refreshToken, setRefreshToken] = useRecoilState(refresh_tokenAtom);
   const [phoneNumber, setPhoneNumber] = useRecoilState(phoneNumberAtom);
   const [id, setId] = useRecoilState(idAtom);
@@ -70,112 +68,6 @@ export default function Component() {
       inputRefs[index - 1].current.focus();
     }
   };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const enteredOtp = otp.join("");
-  //   if (enteredOtp.length !== 4) {
-  //     toast({
-  //       title: "Error",
-  //       description: "Please enter a valid OTP.",
-  //       variant: "destructive",
-  //     });
-  //     return;
-  //   }
-  //   try {
-  //     const response = await axios.post(`${baseUrl}/account/validate_otp`, {
-  //       phone_number: phoneNumber,
-  //       otp: enteredOtp,
-  //     });
-
-  //     //updating the state
-  //     // setAccessToken(response.data.accessToken);
-  //     sessionStorage.setItem("accessToken", response.data.accessToken);
-  //     setRefreshToken(response.data.refresh_token);
-  //     setId(response.data.user.id);
-  //     setPhoneNumber(response.data.user.phone_number);
-  //     setEmail(response.data.user.email);
-
-  //     //checking role
-  //     if (response.data.role === "agent") {
-  //       setRole("agent");
-  //       navigate("/agent-dashboard", { replace: true });
-  //       toast({
-  //         title: "Successfully signed in",
-  //         description: "You are now signed in as an agent",
-  //         variant: "default",
-  //       });
-  //       return;
-  //     }
-
-  //     // Check if user is existing
-  //     console.log("Status, ", response.data.status);
-      
-  //     if (response.data.status !== "existing") {
-  //       navigate("/signup", { replace: true });
-  //       toast({
-  //         title: "Sign Up Required",
-  //         description: "You are a new User, please complete the sign up process.",
-  //       });
-  //       return;
-  //     }
-
-  //     // If user is new, navigate to signup
-      
-  //     setIsUserExisting(true);
-  //     const accessToken = sessionStorage.getItem("accessToken");
-  //     //calling getProfile route
-  //     try {
-  //       console.log("Calling getProfile route");
-  //       console.log("ID : ", id);
-        
-  //       const res = await axios.get(
-  //         `${baseUrl}/profile/get_profile/${id}`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${accessToken}`,
-  //           },
-  //         }
-  //       );
-  //       setUserDashboardData(res.data);
-
-  //       // TODO:  Making Medical details optional for now...
-  //       // if (res.data.medical_detail.length === 0) {
-  //       //   navigate("/medical-info", { replace: true });
-  //       //   toast({
-  //       //     title: "Incomplete Profile",
-  //       //     description: "Please complete your profile",
-  //       //   });
-  //       //   return;
-  //       // }
-  //       if (res.data.emergency_contact.length === 0) {
-  //         navigate("/emergency-info", { replace: true });
-  //         toast({
-  //           title: "Incomplete Profile",
-  //           description: "Please complete your profile",
-  //         });
-  //         return;
-  //       }
-  //       navigate("/user-dashboard", { replace: true });
-  //       toast({
-  //         title: "Welcome Back",
-  //         description: "You are now signed in",
-  //         variant: "default",
-  //       });
-  //     } catch (error) {
-  //       const errorMessage = error.response?.data?.message;
-  //       console.log("Error message : ", error);
-  //       toast({
-  //         title : "Error",
-  //         description : errorMessage
-  //       })
-  //     }
-  //   } catch (error) {
-  //     const errorMessage = error.response?.data?.message;
-  //     console.log("Error message : ", error);
-  //   }
-  //   // console.log('Submitted OTP:', enteredOtp)
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

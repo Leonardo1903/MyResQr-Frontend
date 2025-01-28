@@ -1,63 +1,59 @@
-import { useState, useRef, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import { Badge } from "../components/ui/badge";
-import { Input } from "../components/ui/input";
-import { MapPin } from "lucide-react";
-import { GridPattern } from "../components/ui/grid-pattern";
-import { cn } from "../lib/utils";
-import { useToast } from "../hooks/use-toast";
-import { useNavigate, useParams } from "react-router-dom";
-import { postScanPinAtom, saviourDetailsAtom } from "../store/UserAtoms";
-import { useSetRecoilState } from "recoil";
-import axios from "axios";
+import { useState, useRef, useEffect } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
+import { Button } from "../components/ui/button"
+import { Badge } from "../components/ui/badge"
+import { Input } from "../components/ui/input"
+import { MapPin } from "lucide-react"
+import { GridPattern } from "../components/ui/grid-pattern"
+import { cn } from "../lib/utils"
+import { useToast } from "../hooks/use-toast"
+import { useNavigate, useParams } from "react-router-dom"
+import { postScanPinAtom, saviourDetailsAtom } from "../store/UserAtoms"
+import { useSetRecoilState } from "recoil"
+import axios from "axios"
 
 export default function PostScanForm() {
-  const baseUrl = "http://3.108.8.215/api/v1";
-  const { toast } = useToast();
-  const navigate = useNavigate();
-  const { encrypted_pin } = useParams();
-  const [isDoctor, setIsDoctor] = useState(null);
-  const [otpRequested, setOtpRequested] = useState(false);
-  const [otp, setOtp] = useState(Array(4).fill(""));
-  const inputRefs = useRef([]);
-  const [pinNumber, setPinNumber] = useState("");
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  const [message, setMessage] = useState("");
+  const baseUrl = "http://3.108.8.215/api/v1"
+  const { toast } = useToast()
+  const navigate = useNavigate()
+  const { encrypted_pin } = useParams()
+  const [isDoctor, setIsDoctor] = useState(null)
+  const [otpRequested, setOtpRequested] = useState(false)
+  const [otp, setOtp] = useState(Array(4).fill(""))
+  const inputRefs = useRef([])
+  const [pinNumber, setPinNumber] = useState("")
+  const [latitude, setLatitude] = useState(null)
+  const [longitude, setLongitude] = useState(null)
+  const [message, setMessage] = useState("")
   const [saviourInfo, setSaviourInfo] = useState({
     fullName: "",
     phoneNumber: "",
     workPlace: "",
-  });
+  })
+  const [isAccident, setIsAccident] = useState(null)
 
-  const setPin = useSetRecoilState(postScanPinAtom);
-  const setSaviourDetails = useSetRecoilState(saviourDetailsAtom);
+  const setPin = useSetRecoilState(postScanPinAtom)
+  const setSaviourDetails = useSetRecoilState(saviourDetailsAtom)
 
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(success, errors);
+      navigator.geolocation.getCurrentPosition(success, errors)
     } else {
       toast({
         title: "Error",
         description: "Geolocation is not supported by this browser.",
         variant: "destructive",
-      });
+      })
     }
-    decryptPin();
-  }, []);
+    decryptPin()
+  }, [])
 
   function success(position) {
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
-    setLatitude(latitude.toFixed(6));
-    setLongitude(longitude.toFixed(6));
-    setMessage("Location Saved");
+    const latitude = position.coords.latitude
+    const longitude = position.coords.longitude
+    setLatitude(latitude.toFixed(6))
+    setLongitude(longitude.toFixed(6))
+    setMessage("Location Saved")
   }
 
   function errors(error) {
@@ -65,42 +61,39 @@ export default function PostScanForm() {
       title: "Error",
       description: "Failed to get location. Please try again." + error.message,
       variant: "destructive",
-    });
+    })
   }
 
   const decryptPin = async () => {
     if (encrypted_pin) {
       try {
-        const response = await axios.get(
-          `${baseUrl}/post_scan/scanqr/${encrypted_pin}`
-        );
-        const decryptedPin = response.data.pin_number;
-        setPinNumber(decryptedPin);
-        setPin(decryptedPin);
+        const response = await axios.get(`${baseUrl}/post_scan/scanqr/${encrypted_pin}`)
+        const decryptedPin = response.data.pin_number
+        setPinNumber(decryptedPin)
+        setPin(decryptedPin)
 
-        const pinResponse = await axios.get(
-          `${baseUrl}/post_scan/pin/${decryptedPin}`
-        );
+        const pinResponse = await axios.get(`${baseUrl}/post_scan/pin/${decryptedPin}`)
 
         if (pinResponse.data.profile === null) {
-          navigate("/login");
+          navigate("/login")
         }
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     } else {
       toast({
         title: "Error",
         description: "No encrypted pin found in URL.",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   const saviourDetails = {
     saviour_name: saviourInfo.fullName,
     saviour_phone_number: saviourInfo.phoneNumber,
     is_doctor: isDoctor ? "True" : "False",
+    is_accident: isAccident ? "True" : "False",
     pin_number: pinNumber,
     latitude: latitude,
     longitude: longitude,
@@ -113,65 +106,62 @@ export default function PostScanForm() {
     pinNumber: pinNumber,
     latitude: latitude,
     longitude: longitude,
+    isDoctor: isDoctor ? "True" : "False", 
   });
 
   const handleRequestOtp = async () => {
-    setOtpRequested(true);
+    setOtpRequested(true)
     try {
       const response = await axios.post(`${baseUrl}/post_scan/otp_generation`, {
         saviour_phone_number: saviourInfo.phoneNumber,
-      });
-      console.log(response);
+      })
+      console.log(response)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   const handleOtpVerification = async () => {
     try {
-      const otpInt = parseInt(otp.join(""), 10);
-      const response = await axios.post(
-        `${baseUrl}/post_scan/otp_verification`,
-        {
-          saviour_phone_number: saviourInfo.phoneNumber,
-          otp: otpInt,
-        }
-      );
+      const otpInt = Number.parseInt(otp.join(""), 10)
+      const response = await axios.post(`${baseUrl}/post_scan/otp_verification`, {
+        saviour_phone_number: saviourInfo.phoneNumber,
+        otp: otpInt,
+      })
       toast({
         title: "Thank you for help, Saviour my Family has been informed",
         message: response.data.response,
-      });
-      navigate("/scan/dashboard");
+      })
+      navigate("/scan/dashboard")
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
     try {
       const response = await axios.post(`${baseUrl}/post_scan/saviour_info`, {
         ...saviourDetails,
-      });
-      
+      })
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   const handleOtpChange = (index, value) => {
     if (/^\d*$/.test(value)) {
-      const newOtp = [...otp];
-      newOtp[index] = value;
-      setOtp(newOtp);
+      const newOtp = [...otp]
+      newOtp[index] = value
+      setOtp(newOtp)
 
       if (value && index < otp.length - 1) {
-        inputRefs.current[index + 1].focus();
+        inputRefs.current[index + 1].focus()
       }
     }
-  };
+  }
 
   const handleOtpKeyDown = (index, e) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputRefs.current[index - 1].focus();
+      inputRefs.current[index - 1].focus()
     }
-  };
+  }
 
   return (
     <div className="h-screen relative overflow-x-hidden">
@@ -197,51 +187,46 @@ export default function PostScanForm() {
         ]}
         className={cn(
           "[mask-image:radial-gradient(1000px_circle_at_center,white,transparent)]",
-          "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12 overflow-hidden"
+          "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12 overflow-hidden",
         )}
       />
       <div className="max-w-md mx-auto space-y-4 mt-20 sm:mt-60">
         <Card className="bg-sky-100 bg-opacity-30 dark:bg-sky-600 dark:bg-opacity-30 backdrop-blur-md border-0">
           <CardHeader>
-            <CardTitle className="text-center text-2xl text-yellow-400">
-              Save a Life in 15 seconds
-            </CardTitle>
-            <p className="text-center text-yellow-400 mt-2">
-              Thank you for helping!!!
-            </p>
+            <CardTitle className="text-center text-2xl text-yellow-400">Save a Life in 15 seconds</CardTitle>
+            <p className="text-center text-yellow-400 mt-2">Thank you for helping!!!</p>
           </CardHeader>
           <CardContent className="space-y-4">
-            {isDoctor === null ? (
+            {isAccident === null ? (
               <>
-                <h2 className="text-xl font-bold text-center">
-                  Are you a Doctor?
-                </h2>
+                <h2 className="text-xl font-bold text-center">Accident?</h2>
                 <div className="flex justify-center space-x-4">
-                  <Button
-                    className="bg-green-500 hover:bg-green-600 px-8"
-                    onClick={() => setIsDoctor(true)}
-                  >
+                  <Button className="bg-green-500 hover:bg-green-600 px-8" onClick={() => setIsAccident(true)}>
                     YES
                   </Button>
-                  <Button
-                    className="bg-red-500 hover:bg-red-600 px-8"
-                    onClick={() => setIsDoctor(false)}
-                  >
+                  <Button className="bg-red-500 hover:bg-red-600 px-8" onClick={() => setIsAccident(false)}>
+                    NO
+                  </Button>
+                </div>
+              </>
+            ) : isDoctor === null ? (
+              <>
+                <h2 className="text-xl font-bold text-center">Are you a Doctor?</h2>
+                <div className="flex justify-center space-x-4">
+                  <Button className="bg-sky-500 hover:bg-sky-600 px-8" onClick={() => setIsDoctor(true)}>
+                    YES
+                  </Button>
+                  <Button className="bg-sky-500 hover:bg-sky-600 px-8" onClick={() => setIsDoctor(false)}>
                     NO
                   </Button>
                 </div>
               </>
             ) : !otpRequested ? (
               <>
-                <h2 className="text-xl font-bold text-center">
-                  Pin Number: {pinNumber}
-                </h2>
-                <h3 className="text-red-500 font-bold text-center">
-                  Hello, Help!!!
-                </h3>
+                <h2 className="text-xl font-bold text-center">Pin Number: {pinNumber}</h2>
+                <h3 className="text-red-500 font-bold text-center">Hello, Help!!!</h3>
                 <p className="text-center text-sm">
-                  Your details are required to inform my family that you are the
-                  one who saved my life.
+                  Your details are required to inform my family that you are the one who saved my life.
                 </p>
                 <Input
                   placeholder="Your Full name"
@@ -259,7 +244,7 @@ export default function PostScanForm() {
                     setSaviourInfo((prev) => ({
                       ...prev,
                       phoneNumber: e.target.value,
-                    }));
+                    }))
                   }}
                   className="bg-white/20 border-0 placeholder-white/50"
                 />
@@ -270,15 +255,12 @@ export default function PostScanForm() {
                       setSaviourInfo((prev) => ({
                         ...prev,
                         workPlace: e.target.value,
-                      }));
+                      }))
                     }}
                     className="bg-white/20 border-0 placeholder-white/50"
                   />
                 )}
-                <Button
-                  className="w-full bg-sky-500 hover:bg-sky-600"
-                  onClick={handleRequestOtp}
-                >
+                <Button className="w-full bg-sky-500 hover:bg-sky-600" onClick={handleRequestOtp}>
                   REQUEST OTP
                 </Button>
               </>
@@ -300,10 +282,7 @@ export default function PostScanForm() {
                     />
                   ))}
                 </div>
-                <Button
-                  className="w-full bg-sky-500 hover:bg-sky-600"
-                  onClick={handleOtpVerification}
-                >
+                <Button className="w-full bg-sky-500 hover:bg-sky-600" onClick={handleOtpVerification}>
                   SUBMIT OTP
                 </Button>
               </>
@@ -316,5 +295,6 @@ export default function PostScanForm() {
         </Card>
       </div>
     </div>
-  );
+  )
 }
+
