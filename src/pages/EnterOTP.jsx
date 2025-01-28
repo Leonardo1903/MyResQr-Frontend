@@ -257,12 +257,10 @@ export default function Component() {
           //   return;
           // }
           if (res.data.emergency_contact.length === 0) {
-            navigate("/emergency-info", { replace: true });
             toast({
               title: "Incomplete Profile",
               description: "Please complete your profile",
             });
-            return;
           }
           navigate("/user-dashboard", { replace: true });
           toast({
@@ -274,7 +272,7 @@ export default function Component() {
           const errorMessage = error.response?.data?.message;
           console.log("Error message : ", error);
           toast({
-            title: "Error",
+            title: "Error. Please try again",
             description: errorMessage,
           });
         }
@@ -288,6 +286,11 @@ export default function Component() {
     } catch (error) {
       const errorMessage = error.response?.data?.message;
       console.log("Error message : ", error);
+      toast({
+        title : "Error",
+        description : errorMessage,
+        variant : "destructive"
+      })
     }
   };
 
