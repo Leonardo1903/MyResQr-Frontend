@@ -30,6 +30,11 @@ export const emailAtom = atom({
   default: "",
 });
 
+export const genderAtom = atom({
+  key: "genderAtom",
+  default: "",
+});
+
 export const trace_idAtom = atom({
   key: "trace_idAtom",
   default: "",

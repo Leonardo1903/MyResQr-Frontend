@@ -14,7 +14,7 @@ import { X } from "lucide-react";
 import { Separator } from "../components/ui/separator";
 import { useToast } from "../hooks/use-toast";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { accessTokenAtom, userDashboardDataAtom } from "../store/UserAtoms";
+import { userDashboardDataAtom } from "../store/UserAtoms";
 import axios from "axios";
 import GridPattern from "../components/ui/grid-pattern";
 import { cn } from "../lib/utils";
@@ -33,7 +33,9 @@ export default function ProfileUpdate() {
   const [lastName, setLastName] = useState(userData.last_name);
   const [email, setEmail] = useState(userData.email_id);
   const [mobileNumber, setMobileNumber] = useState(userData.mobile_number);
-  const [whatsappNumber, setWhatsappNumber] = useState(userData.whatsapp_number);
+  const [whatsappNumber, setWhatsappNumber] = useState(
+    userData.whatsapp_number
+  );
   const [gender, setGender] = useState(userData.gender);
   const [dateOfBirth, setDateOfBirth] = useState(userData.dob);
   const [avatar, setAvatar] = useState(null);
@@ -43,6 +45,8 @@ export default function ProfileUpdate() {
   const [state, setState] = useState(userData.state);
   const [country, setCountry] = useState(userData.country);
   const [isWhatsAppSame, setIsWhatsAppSame] = useState(true);
+  const [aadharFront, setAadharFront] = useState(null);
+  const [aadharBack, setAadharBack] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [captureMode, setCaptureMode] = useState(null); // null, 'upload', 'capture'
 
@@ -68,6 +72,23 @@ export default function ProfileUpdate() {
   const handleRemoveAvatar = () => {
     setAvatar(null);
     document.getElementById("avatar").value = null;
+  };
+  const handleAadharFrontChange = (e) => {
+    setAadharFront(e.target.files[0]);
+  };
+
+  const handleRemoveAadharFront = () => {
+    setAadharFront(null);
+    document.getElementById("aadharFront").value = null;
+  };
+
+  const handleAadharBackChange = (e) => {
+    setAadharBack(e.target.files[0]);
+  };
+
+  const handleRemoveAadharBack = () => {
+    setAadharBack(null);
+    document.getElementById("aadharBack").value = null;
   };
 
   const fetchLocationData = async (pincode) => {
@@ -156,6 +177,12 @@ export default function ProfileUpdate() {
     if (avatar) {
       formData.append("image", avatar);
     }
+    if (aadharFront) {
+      formData.append("adhaar_front", aadharFront);
+    }
+    if (aadharBack) {
+      formData.append("adhaar_back", aadharBack);
+    }
 
     const headers = {
       Authorization: `Bearer ${accessToken}`,
@@ -222,7 +249,10 @@ export default function ProfileUpdate() {
               <Separator className="bg-sky-200 dark:bg-sky-700" />
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName" className="text-sky-700 dark:text-sky-300">
+                  <Label
+                    htmlFor="firstName"
+                    className="text-sky-700 dark:text-sky-300"
+                  >
                     First Name
                   </Label>
                   <Input
@@ -235,7 +265,10 @@ export default function ProfileUpdate() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName" className="text-sky-700 dark:text-sky-300">
+                  <Label
+                    htmlFor="lastName"
+                    className="text-sky-700 dark:text-sky-300"
+                  >
                     Last Name
                   </Label>
                   <Input
@@ -250,7 +283,10 @@ export default function ProfileUpdate() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sky-700 dark:text-sky-300">
+                  <Label
+                    htmlFor="email"
+                    className="text-sky-700 dark:text-sky-300"
+                  >
                     Email
                   </Label>
                   <Input
@@ -317,10 +353,17 @@ export default function ProfileUpdate() {
               )}
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="gender" className="text-sky-700 dark:text-sky-300">
+                  <Label
+                    htmlFor="gender"
+                    className="text-sky-700 dark:text-sky-300"
+                  >
                     Gender
                   </Label>
-                  <Select onValueChange={(value) => setGender(value)} value={gender} disabled={true}>
+                  <Select
+                    onValueChange={(value) => setGender(value)}
+                    value={gender}
+                    disabled={true}
+                  >
                     <SelectTrigger className="bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600">
                       <SelectValue placeholder="Select gender" />
                     </SelectTrigger>
@@ -348,7 +391,10 @@ export default function ProfileUpdate() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="avatar" className="text-sky-700 dark:text-sky-300">
+                  <Label
+                    htmlFor="avatar"
+                    className="text-sky-700 dark:text-sky-300"
+                  >
                     Avatar
                   </Label>
                   <div className="relative">
@@ -413,8 +459,93 @@ export default function ProfileUpdate() {
                   />
                 </div>
               </div>
+              <div className="flex gap-4">
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="aadharFront"
+                    className="text-sky-700 dark:text-sky-300"
+                  >
+                    Aadhar Front
+                  </Label>
+                  <div className="relative">
+                    <Button
+                      type="button"
+                      onClick={() =>
+                        document.getElementById("aadharFront").click()
+                      }
+                      className="bg-sky-600 hover:bg-sky-800 text-white px-2 rounded-md"
+                    >
+                      Choose Aadhar Front
+                    </Button>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sky-700 dark:text-sky-300 mt-2">
+                    <span>
+                      {aadharFront ? aadharFront.name : "No file chosen"}
+                    </span>
+                    {aadharFront && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveAadharFront}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                  <Input
+                    id="aadharFront"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAadharFrontChange}
+                    className="hidden"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="aadharBack"
+                    className="text-sky-700 dark:text-sky-300"
+                  >
+                    Aadhar Back
+                  </Label>
+                  <div className="relative">
+                    <Button
+                      type="button"
+                      onClick={() =>
+                        document.getElementById("aadharBack").click()
+                      }
+                      className="bg-sky-600 hover:bg-sky-800 text-white px-2 rounded-md"
+                    >
+                      Choose Aadhar Back
+                    </Button>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sky-700 dark:text-sky-300 mt-2">
+                    <span>
+                      {aadharBack ? aadharBack.name : "No file chosen"}
+                    </span>
+                    {aadharBack && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveAadharBack}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                  <Input
+                    id="aadharBack"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAadharBackChange}
+                    className="hidden"
+                  />
+                </div>
+              </div>
               <div className="space-y-2">
-                <Label htmlFor="address" className="text-sky-700 dark:text-sky-300">
+                <Label
+                  htmlFor="address"
+                  className="text-sky-700 dark:text-sky-300"
+                >
                   Address
                 </Label>
                 <Input
@@ -427,7 +558,10 @@ export default function ProfileUpdate() {
               </div>
               <div className="grid grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="pincode" className="text-sky-700 dark:text-sky-300">
+                  <Label
+                    htmlFor="pincode"
+                    className="text-sky-700 dark:text-sky-300"
+                  >
                     Pincode
                   </Label>
                   <Input
@@ -439,7 +573,10 @@ export default function ProfileUpdate() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="city" className="text-sky-700 dark:text-sky-300">
+                  <Label
+                    htmlFor="city"
+                    className="text-sky-700 dark:text-sky-300"
+                  >
                     City
                   </Label>
                   <Input
@@ -451,7 +588,10 @@ export default function ProfileUpdate() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="state" className="text-sky-700 dark:text-sky-300">
+                  <Label
+                    htmlFor="state"
+                    className="text-sky-700 dark:text-sky-300"
+                  >
                     State
                   </Label>
                   <Input
@@ -463,7 +603,10 @@ export default function ProfileUpdate() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="country" className="text-sky-700 dark:text-sky-300">
+                  <Label
+                    htmlFor="country"
+                    className="text-sky-700 dark:text-sky-300"
+                  >
                     Country
                   </Label>
                   <Input
