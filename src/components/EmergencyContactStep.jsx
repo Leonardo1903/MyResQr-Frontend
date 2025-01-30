@@ -6,7 +6,14 @@ import { Button } from "../components/ui/button";
 import { useToast } from "../hooks/use-toast";
 import axios from "axios";
 import { useRecoilValue } from "recoil";
-import { accessTokenAtom, profileIdAtom } from "../store/UserAtoms";
+import { profileIdAtom, genderAtom } from "../store/UserAtoms";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
 
 export default function EmergencyContactStep({ onStepChange }) {
   const baseUrl = "http://3.108.8.215/api/v1";
@@ -15,31 +22,44 @@ export default function EmergencyContactStep({ onStepChange }) {
       contactName: "",
       contactPhone: "",
       relationship: "Family",
+      nominee: false,
     },
     {
       contactName: "",
       contactPhone: "",
       relationship: "Family",
+      nominee: false,
     },
     {
       contactName: "",
       contactPhone: "",
       relationship: "Friend",
+      nominee: false,
     },
     {
       contactName: "",
       contactPhone: "",
       relationship: "Friend",
+      nominee: false,
     },
   ]);
   const { toast } = useToast();
 
   const profileId = useRecoilValue(profileIdAtom);
+  const gender = useRecoilValue(genderAtom);
   const accessToken = sessionStorage.getItem("accessToken");
 
   const updateEmergencyContact = (field, value, index) => {
     const newContacts = [...emergencyContacts];
     newContacts[index][field] = value;
+    setEmergencyContacts(newContacts);
+  };
+
+  const handleNomineeChange = (index) => {
+    const newContacts = emergencyContacts.map((contact, i) => ({
+      ...contact,
+      nominee: i === index,
+    }));
     setEmergencyContacts(newContacts);
   };
 
@@ -53,6 +73,11 @@ export default function EmergencyContactStep({ onStepChange }) {
     family_phone2: emergencyContacts[1].contactPhone,
     friend_phone1: emergencyContacts[2].contactPhone,
     friend_phone2: emergencyContacts[3].contactPhone,
+    family_rel1: emergencyContacts[0].relationship,
+    family_rel2: emergencyContacts[1].relationship,
+    friend_rel1: emergencyContacts[2].relationship,
+    friend_rel2: emergencyContacts[3].relationship,
+    nominee: emergencyContacts.find((contact) => contact.nominee)?.contactName,
   };
 
   const handleSubmit = async (e) => {
@@ -85,6 +110,7 @@ export default function EmergencyContactStep({ onStepChange }) {
         }
       );
       if (response.status < 200 || response.status >= 300) {
+        return;
       }
       onStepChange(5);
       toast({
@@ -92,8 +118,15 @@ export default function EmergencyContactStep({ onStepChange }) {
         description: "Emergency contacts submitted successfully.",
       });
     } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
+
+  const getPronoun = () => (gender === "Male" ? "his" : "her");
 
   return (
     <div className="space-y-4">
@@ -103,7 +136,7 @@ export default function EmergencyContactStep({ onStepChange }) {
       <Separator className="bg-sky-200 dark:bg-sky-700" />
       <div className="space-y-4">
         {emergencyContacts.map((contact, index) => (
-          <div key={index} className="grid grid-cols-3 gap-4">
+          <div key={index} className="grid grid-cols-4 gap-4">
             <div className="space-y-2">
               <Label
                 htmlFor={`contactName-${index}`}
@@ -143,16 +176,56 @@ export default function EmergencyContactStep({ onStepChange }) {
                 htmlFor={`relationship-${index}`}
                 className="text-sky-700 dark:text-sky-300"
               >
-                Relationship
+                You are {getPronoun()}:
               </Label>
-              <Input
-                id={`relationship-${index}`}
-                value={contact.relationship}
-                onChange={(e) =>
-                  updateEmergencyContact("relationship", e.target.value, index)
-                }
-                className="bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600"
-                required
+              {contact.relationship === "Family" ? (
+                <Select
+                  onValueChange={(value) =>
+                    updateEmergencyContact("relationship", value, index)
+                  }
+                >
+                  <SelectTrigger className="bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600">
+                    <SelectValue placeholder="Select relationship" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Father">Father</SelectItem>
+                    <SelectItem value="Mother">Mother</SelectItem>
+                    <SelectItem value="Brother">Brother</SelectItem>
+                    <SelectItem value="Sister">Sister</SelectItem>
+                    <SelectItem value="Spouse">Spouse</SelectItem>
+                    <SelectItem value="Child">Child</SelectItem>
+                    <SelectItem value="Relative">Relative</SelectItem>
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Input
+                  id={`relationship-${index}`}
+                  value={contact.relationship}
+                  onChange={(e) =>
+                    updateEmergencyContact(
+                      "relationship",
+                      e.target.value,
+                      index
+                    )
+                  }
+                  className="bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600"
+                  required
+                />
+              )}
+            </div>
+            <div className="space-y-2 flex items-center justify-center">
+              <Label
+                htmlFor={`nominee-${index}`}
+                className="text-sky-700 dark:text-sky-300"
+              >
+                Nominee
+              </Label>
+              <input
+                type="checkbox"
+                id={`nominee-${index}`}
+                checked={contact.nominee}
+                onChange={() => handleNomineeChange(index)}
+                className="form-checkbox h-5 w-5 text-sky-600"
               />
             </div>
           </div>

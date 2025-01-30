@@ -29,7 +29,6 @@ export const FloatingNav = ({ navItems, className }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const accessToken = sessionStorage.getItem("accessToken");
 
-  const setAccessToken = useSetRecoilState(accessTokenAtom);
   const setRefreshToken = useSetRecoilState(refresh_tokenAtom);
   const setIsUserExisting = useSetRecoilState(isUserExistingAtom);
   const setId = useSetRecoilState(idAtom);
@@ -42,7 +41,8 @@ export const FloatingNav = ({ navItems, className }) => {
   const setPin = useSetRecoilState(pinAtom);
 
   const handleLogout = () => {
-    sessionStorage.setItem("accessToken", "")
+    // sessionStorage.setItem("accessToken", "")
+    sessionStorage.clear();
     setRefreshToken("");
     setIsUserExisting(false);
     setId("");
@@ -133,6 +133,12 @@ export const FloatingNav = ({ navItems, className }) => {
                 Login
               </Link>
             ))}
+          <Link
+            to="/dealer"
+            className="border text-xs sm:text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-2 sm:px-4 py-1 sm:py-2 rounded-full"
+          >
+            Dealer
+          </Link>
           <ModeToggle />
         </div>
 

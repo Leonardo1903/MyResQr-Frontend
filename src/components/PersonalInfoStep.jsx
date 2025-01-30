@@ -14,17 +14,17 @@ import { X } from "lucide-react";
 import { Separator } from "../components/ui/separator";
 import { useToast } from "../hooks/use-toast";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { accessTokenAtom, idAtom, profileIdAtom } from "../store/UserAtoms";
+import { idAtom, profileIdAtom, genderAtom } from "../store/UserAtoms";
 import axios from "axios";
 
 export default function PersonalInfoStep({ onStepChange }) {
   const baseUrl = "http://3.108.8.215/api/v1";
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
-  const [gender, setGender] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [avatar, setAvatar] = useState(null);
   const [address, setAddress] = useState("");
@@ -33,12 +33,16 @@ export default function PersonalInfoStep({ onStepChange }) {
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
   const [isWhatsAppSame, setIsWhatsAppSame] = useState(true);
+  const [aadharFront, setAadharFront] = useState(null);
+  const [aadharBack, setAadharBack] = useState(null);
+
   const [showDropdown, setShowDropdown] = useState(false);
   const [captureMode, setCaptureMode] = useState(null); // null, 'upload', 'capture'
   const { toast } = useToast();
   const userId = useRecoilValue(idAtom);
   const accessToken = sessionStorage.getItem("accessToken");
   const setProfileId = useSetRecoilState(profileIdAtom);
+  const setGenderAtom = useSetRecoilState(genderAtom);
 
   const handleWhatsAppCheckboxChange = (checked) => {
     setIsWhatsAppSame(checked);
@@ -58,6 +62,24 @@ export default function PersonalInfoStep({ onStepChange }) {
     document.getElementById("avatar").value = null;
   };
 
+  const handleAadharFrontChange = (e) => {
+    setAadharFront(e.target.files[0]);
+  };
+
+  const handleRemoveAadharFront = () => {
+    setAadharFront(null);
+    document.getElementById("aadharFront").value = null;
+  };
+
+  const handleAadharBackChange = (e) => {
+    setAadharBack(e.target.files[0]);
+  };
+
+  const handleRemoveAadharBack = () => {
+    setAadharBack(null);
+    document.getElementById("aadharBack").value = null;
+  };
+
   const fetchLocationData = async (pincode) => {
     try {
       const response = await fetch(
@@ -70,6 +92,11 @@ export default function PersonalInfoStep({ onStepChange }) {
         setState(postOffice.State);
         setCountry(postOffice.Country);
       } else {
+        toast({
+          title: "Error",
+          description: "Invalid pincode. Please enter a valid pincode.",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error("Error fetching location data:", error);
@@ -104,7 +131,9 @@ export default function PersonalInfoStep({ onStepChange }) {
       !state ||
       !pincode ||
       !country ||
-      !avatar
+      !avatar ||
+      !aadharFront ||
+      !aadharBack
     ) {
       toast({
         title: "Error",
@@ -134,7 +163,7 @@ export default function PersonalInfoStep({ onStepChange }) {
       return;
     }
     console.log("Id : ", userId);
-    
+
     const formData = new FormData();
     formData.append("account", userId);
     formData.append("first_name", firstName);
@@ -150,6 +179,8 @@ export default function PersonalInfoStep({ onStepChange }) {
     formData.append("pin_code", pincode);
     formData.append("country", country);
     formData.append("image", avatar);
+    formData.append("adhaar_front", aadharFront);
+    formData.append("adhaar_back", aadharBack);
 
     const headers = {
       Authorization: `Bearer ${accessToken}`,
@@ -283,7 +314,9 @@ export default function PersonalInfoStep({ onStepChange }) {
           <Label htmlFor="gender" className="text-sky-700 dark:text-sky-300">
             Gender
           </Label>
-          <Select onValueChange={(value) => setGender(value)}>
+          <Select
+            onValueChange={(value) => (setGender(value), setGenderAtom(value))}
+          >
             <SelectTrigger className="bg-white bg-opacity-50 dark:bg-sky-800 dark:bg-opacity-50 border-sky-300 dark:border-sky-600">
               <SelectValue placeholder="Select gender" />
             </SelectTrigger>
@@ -375,6 +408,74 @@ export default function PersonalInfoStep({ onStepChange }) {
             className="hidden"
           />
         </div>
+      </div>
+      <div className="flex gap-4">
+      <div className="space-y-2">
+        <Label htmlFor="aadharFront" className="text-sky-700 dark:text-sky-300">
+          Aadhar Front
+        </Label>
+        <div className="relative">
+          <Button
+            type="button"
+            onClick={() => document.getElementById("aadharFront").click()}
+            className="bg-sky-600 hover:bg-sky-800 text-white px-2 rounded-md"
+          >
+            Choose Aadhar Front
+          </Button>
+        </div>
+        <div className="flex items-center space-x-2 text-sky-700 dark:text-sky-300 mt-2">
+          <span>{aadharFront ? aadharFront.name : "No file chosen"}</span>
+          {aadharFront && (
+            <button
+              type="button"
+              onClick={handleRemoveAadharFront}
+              className="text-red-600 hover:text-red-800"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+        <Input
+          id="aadharFront"
+          type="file"
+          accept="image/*"
+          onChange={handleAadharFrontChange}
+          className="hidden"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="aadharBack" className="text-sky-700 dark:text-sky-300">
+          Aadhar Back
+        </Label>
+        <div className="relative">
+          <Button
+            type="button"
+            onClick={() => document.getElementById("aadharBack").click()}
+            className="bg-sky-600 hover:bg-sky-800 text-white px-2 rounded-md"
+          >
+            Choose Aadhar Back
+          </Button>
+        </div>
+        <div className="flex items-center space-x-2 text-sky-700 dark:text-sky-300 mt-2">
+          <span>{aadharBack ? aadharBack.name : "No file chosen"}</span>
+          {aadharBack && (
+            <button
+              type="button"
+              onClick={handleRemoveAadharBack}
+              className="text-red-600 hover:text-red-800"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+        <Input
+          id="aadharBack"
+          type="file"
+          accept="image/*"
+          onChange={handleAadharBackChange}
+          className="hidden"
+        />
+      </div>
       </div>
       <div className="space-y-2">
         <Label htmlFor="address" className="text-sky-700 dark:text-sky-300">
