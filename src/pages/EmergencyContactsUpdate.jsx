@@ -171,8 +171,8 @@ export default function EmergencyContactsUpdate() {
               <Separator className="bg-sky-200 dark:bg-sky-700" />
               <div className="space-y-4">
                 {emergencyContacts.map((contact, index) => (
-                  <div key={index} className="grid grid-cols-4 gap-4">
-                    <div className="space-y-2">
+                  <div key={index} className="flex flex-wrap gap-4">
+                    <div className="space-y-2 flex-1 min-w-[200px]">
                       <Label
                         htmlFor={`contactName-${index}`}
                         className="text-sky-700 dark:text-sky-300"
@@ -189,7 +189,7 @@ export default function EmergencyContactsUpdate() {
                         required
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2 flex-1 min-w-[200px]">
                       <Label
                         htmlFor={`contactPhone-${index}`}
                         className="text-sky-700 dark:text-sky-300"
@@ -206,7 +206,7 @@ export default function EmergencyContactsUpdate() {
                         required
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2 flex-1 min-w-[200px]">
                       <Label
                         htmlFor={`relationship-${index}`}
                         className="text-sky-700 dark:text-sky-300"
@@ -234,7 +234,7 @@ export default function EmergencyContactsUpdate() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-2 flex items-center justify-center">
+                    <div className="space-y-2 flex items-center justify-center flex-1 min-w-[200px]">
                       <Label
                         htmlFor={`nominee-${index}`}
                         className="text-sky-700 dark:text-sky-300"

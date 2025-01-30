@@ -1,11 +1,14 @@
 import hero1 from "../assets/hero-1.png";
 import { Link } from "react-router-dom";
 import {
+  Check,
   CircleArrowRight,
   Cpu,
   HandHeart,
   Mails,
+  MessageSquare,
   ScanSearch,
+  Shield,
 } from "lucide-react";
 import { Spotlight } from "../components/ui/Spotlight";
 import { useEffect, useState } from "react";
@@ -13,7 +16,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { Label } from "../components/ui/label";
-import { Card, CardContent } from "../components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
 import StylishSeparator from "../components/StylishSeparator";
 import HomePopup from "../assets/HomePopup.jpg";
 
@@ -27,6 +30,25 @@ function Home() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  const plans = [
+    {
+      name: "Rakshak",
+      icon: <Shield className="h-6 w-6 text-sky-600" />,
+      description: "The premium plan for enhanced protection",
+      price: "₹999",
+      features: [
+        "⁠SOS to 4 emergency contacts within 15 Seconds",
+        "Free ambulance in 600+ cities PAN India",
+        "Free Emergency treatment upto ₹50K (ONLY one in India to provide this)",
+        "⁠10K+ Geotagged hospitals PAN India",
+      ],
+      buttonText: "Upgrade to Premium",
+      variant: "default" ,
+      featured: true
+    }
+  ]
+
   const aboutUsData = [
     {
       index: 1,
@@ -298,6 +320,66 @@ function Home() {
       </section>
       <StylishSeparator />
 
+      {/* Our Plans Section */}
+      <div className="w-full py-12">
+      <div className="text-center space-y-4 mb-12">
+        <h2 className="text-3xl md:text-5xl font-bold">
+          Choose Your <span className="text-sky-600">Protection Plan</span>
+        </h2>
+        <p className="text-muted-foreground max-w-2xl mx-auto">
+          Select the plan that best fits your needs. All plans include our core emergency response features.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap justify-center items-center gap-8 max-w-5xl mx-auto px-4">
+        {plans.map((plan) => (
+          <Card 
+            key={plan.name}
+            className={`relative ${
+              plan.featured 
+                ? 'border-sky-600 bg-sky-500/10 dark:bg-sky-500/5' 
+                : 'border-border'
+            }`}
+          >
+            {plan.featured && (
+              <div className="absolute -top-4 left-0 right-0 flex justify-center">
+                <span className="bg-sky-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  Recommended
+                </span>
+              </div>
+            )}
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                {plan.icon}
+                <CardTitle className="text-2xl">{plan.name}</CardTitle>
+              </div>
+              <CardDescription>{plan.description}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="text-4xl font-bold">{plan.price}</div>
+              <ul className="space-y-2">
+                {plan.features.map((feature) => (
+                  <li key={feature} className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-sky-600" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+            {/* <CardFooter>
+              <Button 
+                variant={plan.variant} 
+                className="w-full"
+                size="lg"
+              >
+                {plan.buttonText}
+              </Button>
+            </CardFooter> */}
+          </Card>
+        ))}
+      </div>
+    </div>
+      <StylishSeparator />
       {/* Contact us section */}
       <section
         id="contact"
