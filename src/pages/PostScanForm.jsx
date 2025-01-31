@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import {
   Card,
-  CardContent,
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Input } from "../components/ui/input";
+import { Avatar, AvatarImage, AvatarFallback } from "../components/ui/avatar";
 import { MapPin } from "lucide-react";
 import { GridPattern } from "../components/ui/grid-pattern";
 import { cn } from "../lib/utils";
@@ -16,6 +16,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { postScanPinAtom, saviourDetailsAtom } from "../store/UserAtoms";
 import { useSetRecoilState } from "recoil";
 import axios from "axios";
+import { useRecoilState } from "recoil";
+import { userDashboardDataAtom } from "../store/UserAtoms";
 
 export default function PostScanForm() {
   const baseUrl = "http://3.108.8.215/api/v1";
@@ -35,7 +37,7 @@ export default function PostScanForm() {
     phoneNumber: "",
     workPlace: "",
   });
-
+  const [userData, setUserData] = useRecoilState(userDashboardDataAtom);
   const setPin = useSetRecoilState(postScanPinAtom);
   const setSaviourDetails = useSetRecoilState(saviourDetailsAtom);
 
@@ -84,6 +86,8 @@ export default function PostScanForm() {
 
         if (pinResponse.data.profile === null) {
           navigate("/login");
+        } else {
+          setUserData(pinResponse.data.profile);
         }
       } catch (error) {
         console.log(error);
@@ -201,7 +205,7 @@ export default function PostScanForm() {
         )}
       />
       <div className="max-w-md mx-auto space-y-4 mt-20 sm:mt-60">
-        <Card className="bg-sky-100 bg-opacity-30 dark:bg-sky-600 dark:bg-opacity-30 backdrop-blur-md border-0">
+        <Card className="bg-sky-100 bg-opacity-30 dark:bg-sky-600 dark:bg-opacity-30 backdrop-blur-md border-0 p-6">
           <CardHeader>
             <CardTitle className="text-center text-2xl text-yellow-400">
               Save a Life in 15 seconds
@@ -211,12 +215,27 @@ export default function PostScanForm() {
             </p>
           </CardHeader>
 
+          {userData.image && (
+            <div className="flex justify-center mb-4">
+              <Avatar className="w-24 h-24 md:w-32 md:h-32 border-4 border-yellow-400">
+                <AvatarImage
+                  src={userData.image}
+                  alt={`${userData.first_name} ${userData.last_name}`}
+                />
+                <AvatarFallback className="text-2xl md:text-3xl bg-sky-500">
+                  {userData.first_name[0]}
+                  {userData.last_name[0]}
+                </AvatarFallback>
+              </Avatar>
+            </div>
+          )}
+
           {isDoctor === null ? (
             <>
-              <h2 className="text-xl font-bold text-center">
+              <h2 className="text-xl font-bold text-center mb-4">
                 Are you a Doctor or First Respondent?
               </h2>
-              <div className="flex justify-center space-x-4">
+              <div className="flex justify-center space-x-4 mb-4">
                 <Button
                   className="bg-sky-500 hover:bg-sky-600 px-8"
                   onClick={() => setIsDoctor(true)}
@@ -233,13 +252,13 @@ export default function PostScanForm() {
             </>
           ) : !otpRequested ? (
             <>
-              <h2 className="text-xl font-bold text-center">
+              <h2 className="text-xl font-bold text-center mb-4">
                 Pin Number: {pinNumber}
               </h2>
-              <h3 className="text-red-500 font-bold text-center">
+              <h3 className="text-red-500 font-bold text-center mb-4">
                 Hello, Help!!!
               </h3>
-              <p className="text-center text-sm">
+              <p className="text-center text-sm mb-4">
                 Your details are required to inform my family that you are the
                 one who saved my life.
               </p>
@@ -251,7 +270,7 @@ export default function PostScanForm() {
                     fullName: e.target.value,
                   }))
                 }
-                className="bg-white/20 border-0 placeholder-white/50"
+                className="bg-white/20 border-0 placeholder-white/50 mb-4"
               />
               <Input
                 placeholder="Your phone number"
@@ -261,7 +280,7 @@ export default function PostScanForm() {
                     phoneNumber: e.target.value,
                   }));
                 }}
-                className="bg-white/20 border-0 placeholder-white/50"
+                className="bg-white/20 border-0 placeholder-white/50 mb-4"
               />
               {isDoctor && (
                 <Input
@@ -272,11 +291,11 @@ export default function PostScanForm() {
                       workPlace: e.target.value,
                     }));
                   }}
-                  className="bg-white/20 border-0 placeholder-white/50"
+                  className="bg-white/20 border-0 placeholder-white/50 mb-4"
                 />
               )}
               <Button
-                className="w-full bg-sky-500 hover:bg-sky-600"
+                className="w-full bg-sky-500 hover:bg-sky-600 mb-4"
                 onClick={handleRequestOtp}
               >
                 REQUEST OTP
@@ -284,7 +303,7 @@ export default function PostScanForm() {
             </>
           ) : (
             <>
-              <div className="flex space-x-2 justify-center">
+              <div className="flex space-x-2 justify-center mb-4">
                 {otp.map((digit, index) => (
                   <Input
                     key={index}
@@ -301,7 +320,7 @@ export default function PostScanForm() {
                 ))}
               </div>
               <Button
-                className="w-full bg-sky-500 hover:bg-sky-600"
+                className="w-full bg-sky-500 hover:bg-sky-600 mb-4"
                 onClick={handleOtpVerification}
               >
                 SUBMIT OTP
