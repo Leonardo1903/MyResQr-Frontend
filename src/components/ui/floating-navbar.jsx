@@ -133,12 +133,12 @@ export const FloatingNav = ({ navItems, className }) => {
                 Login
               </Link>
             ))}
-          <Link
-            to="/dealer"
+          <a
+            href="http://dealer.myresqr.life"
             className="border text-xs sm:text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-2 sm:px-4 py-1 sm:py-2 rounded-full"
           >
             Dealer
-          </Link>
+          </a>
           <ModeToggle />
         </div>
 
