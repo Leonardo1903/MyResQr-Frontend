@@ -137,7 +137,7 @@ export const FloatingNav = ({ navItems, className }) => {
             href="https://dealer.myresqr.life/contact"
             className="border text-xs sm:text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-2 sm:px-4 py-1 sm:py-2 rounded-full"
           >
-            Register as Dealer
+            Reseller
           </a>
           <ModeToggle />
         </div>
